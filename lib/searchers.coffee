@@ -1,9 +1,9 @@
 stream = require 'highland'
 log = require '@vonholzen/log'
 
-{bookmarks} = require './lib/bookmarks'
-dates = require './lib/dates'
-{Stat} = require './lib/inodes'
+{bookmarks} = require './bookmarks'
+dates = require './dates'
+{Stat} = require './inodes'
 # require './lib/application'
 # require './lib/json'
 # require './lib/urlQueries'

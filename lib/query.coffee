@@ -4,7 +4,7 @@ stream = require 'highland'
 content = require './content'
 parse = require './parse'
 getContent = content
-{searchers} = require '../lib'
+searchers = require './searchers'
 
 class Query
   constructor: (query, options)->
@@ -25,8 +25,6 @@ class Query
 
     # refactor to setMatch
     @_match = query
-    log 'query.setMatch', @_match
-
     if typeof @_match == 'undefined'
       @_match = random
 
@@ -123,6 +121,7 @@ class Query
     new Query (value)=>
       @_match(value) and query.match(value)
 
+  toJSON: -> {matches: @matches, options: @options}
   toString: ->
     return if @model?
       JSON.stringify @model
@@ -133,7 +132,7 @@ class Query
     options = options ? {}
     output = options.output ? stream()
     resources = resources ? searchers
-    log 'searchIn start', {recurse: @recurse(), query: this, resources: resources}
+    log 'searchIn start', {query: this, resources: resources, recurse: @recurse()}
 
     resources = if stream.isStream resources then resources else stream resources
 
