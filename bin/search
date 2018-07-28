@@ -1,0 +1,5 @@
+#!/bin/bash
+
+root="$( cd "$( dirname "$0" )"/.. && pwd )"
+coffee=$root/node_modules/.bin/coffee
+$coffee $root/bin/search.coffee "$@"
