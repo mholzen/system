@@ -1,10 +1,10 @@
 #!/usr/bin/env coffee
 h = require 'highland'
 log = require '@vonholzen/log'
-parse = require '../parse'
+{parse} = require '../lib'
 Promise = require 'bluebird'
 isPromise = require 'is-promise'
-reducers = require '../reducers'
+{reducers} = require '../lib'
 commandLineArgs = require 'command-line-args'
 
 options = commandLineArgs [
