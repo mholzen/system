@@ -13,4 +13,4 @@ if [ "$type" == 'file' ]; then    # executable
   exit
 fi
 
-search limit:1 type:file "$@" | map content
+file "$@" | map content
