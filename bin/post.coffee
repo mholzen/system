@@ -3,7 +3,7 @@ log = require '@vonholzen/log'
 
 resource = process.argv[2]
 
-post = require '../post'
+{post} = require '../lib'
 
 # read content from stdin
 content = process.stdin
