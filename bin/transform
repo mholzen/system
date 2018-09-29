@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+require('coffeescript/register');
+transform = require ('../lib/transforms');
+args = process.argv.slice(2); // remove `node` and `transform`
+transform.apply(this, args);
