@@ -1,1 +1,1 @@
-search type:file "$@"
+search recurse:1 "$@"
