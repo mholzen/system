@@ -63,15 +63,11 @@ class JsonFile
       name: @name
 
 bookmarksFile = process.env.HOME + '/Library/Application Support/Google/Chrome/Default/Bookmarks'
+log 'bookmarks reading bookmarks file', {bookmarksFile}
 bookmarks = new JsonFile bookmarksFile, '$..[?(@.url)]', (i)->
-  i.toString = (i)->i.name + ' ' + i.url
+  log 'bookmarks read bookmark', {i}
+  i.toString = -> i.name + ' ' + i.url
   i
 
 module.exports =
   bookmarks: bookmarks
-  head: (query)->
-    if query.type?
-      return types.includes query?.type
-
-  types: ['bookmark', 'url']
-  # search: search
