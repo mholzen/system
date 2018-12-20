@@ -12,7 +12,9 @@ stream = (data)->
 
   if data?.path?
     readStream = fs.createReadStream(data.path)
-    highland(readStream)
+    data = readStream
+
+  highland(data)
 
 stream.strings = (data)->
   stream(data).split().filter (line) -> line.length > 0

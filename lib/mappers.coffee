@@ -166,6 +166,17 @@ mappers =
           value = value.values()
         value = JSON.stringify value
 
+  sum: (opts)->
+    opts = opts ? []
+    total = opts.initial ? 0
+    (x)->
+      if (typeof x == 'object')
+        x = x.value
+      if (n = _.toNumber x) != NaN
+        x = n
+      log 'sum', {x, total}
+      total = total + x
+
   summarize: summarize
 
   timestamp: ->
