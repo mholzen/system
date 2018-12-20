@@ -6,15 +6,16 @@ dates = require './dates'
 {Stat} = require './inodes'
 # require './lib/application'
 # require './lib/json'
-# require './lib/urlQueries'
+urlQueries = require './urlQueries'
 # require './lib/url'
 # require './lib/sql'
 # require './lib/sparql'
 
 searchers = [
   # bookmarks
+  urlQueries
   # dates
-  new Stat()
+  # new Stat()
 ]
 
 module.exports = searchers

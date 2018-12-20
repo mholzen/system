@@ -2,7 +2,7 @@
 
 describe 'search', ->
   it 'returns a stream', ->
-    results = search 'abc'
+    results = search 'abc', 'recurse:false'
     expect(typeof results.head == 'function').true
 
   it.skip 'returns top level resources', (done)->

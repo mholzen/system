@@ -148,8 +148,9 @@ describe 'query', ()->
       expect(q.match({foo:'bar', bing:'google'})).be.true
 
     it 'should handle options', ()->
-      q = fromArgs ['foo:bar', 'limit:1']
+      q = fromArgs ['foo:bar', 'limit:1', 'recurse:2']
       expect(q.options.limit).equal(1)
+      expect(q.options.recurse).equal(2)
 
   describe 'searchIn', ->
     it 'should find nonrecurse', (done)->
@@ -167,6 +168,14 @@ describe 'query', ()->
       o = q.searchIn [ref]
       o.toArray (results)->
         expect(results).eql ['bar']
+
+    it.skip 'should search', (done)->
+      q = createQuery 'abc'
+      o = q.searchIn()          # TODO: does not return
+      o.toArray (results)->
+        expect(results).eql ['foo']
+        done()
+
 
   describe 'toString', ->
     it 'work', ->

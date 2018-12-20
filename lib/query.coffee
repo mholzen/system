@@ -1,5 +1,6 @@
 _ = require 'lodash'
 log = require '@vonholzen/log'
+# log = console.log
 stream = require 'highland'
 content = require './content'
 parse = require './parse'
@@ -114,7 +115,7 @@ class Query
 
   nonMatches: (value)->
     new Query @matches.filter (match)->
-      log 'here', {match, value, result: not match.match value  }
+      log 'query nonMatches', {match, value, result: not match.match value  }
       not match.match value
 
   and: (query)->
@@ -206,14 +207,19 @@ parseValue = (value)->
 
   value
 
-query.fromArgs = (args)->
+query.fromArgs = ->
+  args = Array.from _.flattenDeep arguments
   if not (args instanceof Array)
     args = [ args ]
 
   terms = []
   options = {}
   for arg in args
-    [key, value] = arg.split ':'
+    if typeof arg == 'string'
+      [key, value] = arg.split ':'
+    else
+      throw new Error "typeof arg #{typeof arg} is not a string"
+
     if not value?
       terms.push key
     else

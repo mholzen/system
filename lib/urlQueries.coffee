@@ -1,8 +1,6 @@
 {createQuery, Query} = require './query'
 log = require '@vonholzen/log'
 
-types = ['url']
-
 urls =
   google: 'http://google.com/search?q=#{query}'
 
@@ -40,9 +38,4 @@ search = (query, out)->
       out.write url
 
 
-module.exports =
-  head: (query)->
-    if query.type?
-      return types.includes query?.type
-  types: types
-  search: search
+module.exports = Object.keys(urls).map (k)-> {name: k, url: urls[k]}
