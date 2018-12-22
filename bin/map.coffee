@@ -10,7 +10,8 @@ mappers = require '../lib/mappers'
 name = process.argv[2]
 
 mapper = mappers[name]
-# TODO: refactor with map.get()
+# TODO: use factory
+
 if not mapper?
   console.error 'cannot find mapper ' + name
   console.log "Available mappers:\n" + Object.keys(mappers).join "\n"

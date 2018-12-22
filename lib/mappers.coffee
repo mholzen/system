@@ -187,10 +187,4 @@ mappers =
   text: -> text
   url: -> url
 
-get = (name, opts)->
-  mapper = mappers[name]
-  if not mapper?
-    throw new Error "cannot find mapper #{name}\n" +
-      "Available mappers:\n" + Object.keys(mappers).join "\n"
-
 module.exports = mappers
