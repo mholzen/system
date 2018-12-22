@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.coffee",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "forever -a -c coffee start server/start.coffee",
+    "stop": "forever -a stop server/start.coffee",
+    "watch": "forever --debug -v -a -w --watchIgnore 'files/**' -c coffee server/start.coffee | bunyan",
+    "log": "forever logs -f start.coffee",
+    "open": "open http://localhost:3000"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +22,7 @@
     "expand-tilde": "^2.0.2",
     "expect": "^1.20.2",
     "express": "^4.16.4",
+    "forever": "^0.15.3",
     "highland": "^2.10.2",
     "is-promise": "^2.1.0",
     "lodash": "^4.17.4",
@@ -29,6 +35,7 @@
     "walk": "^2.3.9"
   },
   "devDependencies": {
+    "bunyan": "^1.8.12",
     "chai": "^3.5.0",
     "chai-string": "^1.4.0",
     "mocha": "^3.2.0",
