@@ -87,6 +87,11 @@ class Query
       return
 
     if typeof @_match == 'object'
+
+      if @_match == null
+        @_match = (against)->true
+        return
+
       @matches = [ @_match ]
       @model = @_match
       for key, value of @model

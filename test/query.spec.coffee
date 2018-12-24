@@ -1,7 +1,17 @@
 {createQuery, fromArgs, Query} = require '../lib/query'
 {post} = require '../lib'
 
-describe 'query', ()->
+describe 'query', ->
+  describe 'from null', ->
+    it 'match always', ->
+      q = createQuery null
+      expect(q.match(null)).be.true
+      expect(q.match(true)).be.true
+      expect(q.match(false)).be.true
+      expect(q.match(0)).be.true
+      expect(q.match('bar')).be.true
+      expect(q.match({a:1})).be.true
+
   describe 'from a boolean', ->
     it 'match', ->
       q = createQuery true
