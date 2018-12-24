@@ -5,7 +5,6 @@ stream = require 'highland'
 content = require './content'
 parse = require './parse'
 getContent = content
-searchers = require './searchers'
 
 class Query
   constructor: (query, options)->
@@ -137,14 +136,19 @@ class Query
   searchIn: (resources, options)->
     options = options ? {}
     output = options.output ? stream()
-    resources = resources ? searchers
-    log 'searchIn start', {query: this, resources: resources, recurse: @recurse()}
 
-    resources = if stream.isStream resources then resources else stream resources
+    log 'debug', {resources}
+    if typeof resources == 'undefined'
+      return stream([])
+
+    if not stream.isStream resources
+      resources = stream resources
 
     resultStreams = stream()
     mergedResults = resultStreams.merge()
     resultStreams.write output
+
+    log 'searchIn start', {query: this, resources: resources, recurse: @recurse()}
 
     resources.each (resource)=>
       log 'searchIn new resource', {resource}

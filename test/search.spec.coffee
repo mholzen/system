@@ -1,13 +1,8 @@
 {search} = require '../lib'
 
 describe 'search', ->
-  it 'returns a stream', ->
-    results = search 'abc', 'recurse:false'
-    expect(typeof results.head == 'function').true
-
-  it.skip 'returns top level resources', (done)->
-    results = search 'abc', 'recurse:false'
-
-    results.toArray (results)->
+  it 'should find top level', (done)->
+    search(null).toArray (results)->
       expect(results).length.above(0)   # files, urls, urlQueries
+      log 'test', {results}
       done()

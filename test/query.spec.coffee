@@ -1,4 +1,5 @@
-{createQuery, fromArgs, Query} = require '../lib/query'
+query = require '../lib/query'
+{createQuery, fromArgs, Query} = query
 {post} = require '../lib'
 
 describe 'query', ->
@@ -163,6 +164,7 @@ describe 'query', ->
       expect(q.options.recurse).equal(2)
 
   describe 'searchIn', ->
+
     it 'should find nonrecurse', (done)->
       q = createQuery 'foo', recurse:false
       o = q.searchIn ['bar', 'foo']
@@ -179,11 +181,11 @@ describe 'query', ->
       o.toArray (results)->
         expect(results).eql ['bar']
 
-    it.skip 'should search', (done)->
+    it 'should search in nothing', (done)->
       q = createQuery 'abc'
       o = q.searchIn()          # TODO: does not return
       o.toArray (results)->
-        expect(results).eql ['foo']
+        expect(results.length).eql 0
         done()
 
 

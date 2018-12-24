@@ -1,7 +1,9 @@
 log = require '@vonholzen/log'
 query = require './query'
 
+searchers = require './searchers'
+
 search = (args...)->
-  query.fromArgs(args).searchIn()
+  query(args).searchIn searchers
 
 module.exports = search
