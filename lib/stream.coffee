@@ -19,5 +19,7 @@ stream = (data)->
 stream.strings = (data)->
   stream(data).split().filter (line) -> line.length > 0
 
+stream.highland = highland
+stream.nil = highland.nil
 
 module.exports = stream

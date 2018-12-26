@@ -3,7 +3,7 @@ log = require '@vonholzen/log'
 
 {bookmarks} = require './bookmarks'
 dates = require './dates'
-{Stat} = require './inodes'
+inodes = require './inodes'
 # require './lib/application'
 # require './lib/json'
 urlQueries = require './urlQueries'
@@ -11,11 +11,11 @@ urlQueries = require './urlQueries'
 # require './lib/sql'
 # require './lib/sparql'
 
-searchers = [
-  # bookmarks
+searchers = {
+  bookmarks
   urlQueries
-  # dates
-  # new Stat()
-]
+  dates
+  inodes
+}
 
 module.exports = searchers

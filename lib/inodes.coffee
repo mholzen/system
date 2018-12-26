@@ -14,8 +14,10 @@ fs = require 'fs'
 statAsync = promisify fs.stat
 
 class Stat
-  constructor: (path)->
+  constructor: (path, options)->
     @path = path ? process.cwd()
+    @options = options ? {}
+    @options.recurse = @options.recurse ? false
     log 'Stat', {path:@path}
     @stat = statAsync @path
     @items = stream @walker()
@@ -24,19 +26,23 @@ class Stat
     name: 'inodes'
 
   isDirectory: ->
-    await @stat.isDirectory()
+    stat = await @stat
+    stat.isDirectory()
+
+  recurse: -> @options.recurse
 
   walker: ->
     root = @path
     directories = {}
-    (push, streamNext)->
+    (push, streamNext)=>
       directories = {}
       walker = walk.walk root, {followLinks: true}   # can cause recursive loop
       .on 'error', (err)->
         push err
       .on 'end', ()->
         log 'file.end'
-        push null # end?
+        push null, stream.nil
+
       .on 'file', (base, stat, next) ->
         stat.path = resolve base, stat.name
         log 'file.onFile', stat.path
@@ -49,7 +55,13 @@ class Stat
         push null, stat
         # streamNext()
         next()
-      .on 'directories', (base, dirStatsArray, next)->
+      .on 'directories', (base, dirStatsArray, next) =>
+        if not @recurse()
+          log 'file.directories not recursing'
+          dirStatsArray.length = 0
+          next()
+          return
+
         parent = resolve base, '..'
         if parent != '/'
           log 'file.onDirectories', {parent}
@@ -85,7 +97,10 @@ class Stat
         log 'file.order sorted', dirStatsArray.map (d)->d.name
         next()
 
+stat = (args...)->
+  new Stat args...
 
-module.exports = {
-  Stat
-}
+stat.Stat = Stat
+stat.statAsync = statAsync
+
+module.exports = stat

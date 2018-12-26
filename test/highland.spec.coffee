@@ -14,9 +14,9 @@ describe 'highland', ()->
       expect(a.length == 0)
       done()
 
-  it 'toArray blocks?', (done)->
+  it 'toArray blocks', (done)->
     s = _()
-    setTimeout ( -> s.end() ), 500
+    setTimeout ( -> s.end() ), 20
     m = s.merge()
     m.toArray (a)->
       expect(a.length == 0)
