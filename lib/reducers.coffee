@@ -2,7 +2,15 @@ log = require '@vonholzen/log'
 marked = require 'marked'
 table = require './table'
 
-module.exports =
+reducers =
+  reduce: (stream, name, opts)->
+    reducer = reducers[name] opts
+    stream.reduce reducer[0], reducer[1]
+    .map (r)->
+      if reducer[2]
+        r = reducer[2] r
+      r
+
   count: -> [
     0,
     (memo, value)->
@@ -45,8 +53,8 @@ module.exports =
     [
       null
       (memo, value)->
-        input = input + '\n' + value
-        marked input + '\n' + value
+        input = input + '\n\n' + value
+      (v)-> marked v
     ]
 
   object: (opts)->
@@ -90,3 +98,5 @@ module.exports =
         table
       (table)->table.toHTML()
     ]
+
+module.exports = reducers

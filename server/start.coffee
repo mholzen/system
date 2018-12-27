@@ -1,27 +1,47 @@
 express = require 'express'
 log = require '@vonholzen/log'
-{mappers, searchers} = require '../lib'
-{keys} = require '../lib/generators'
-
+{stream, mappers, searchers, reducers, generators} = require '../lib'
+keys = generators.keys
 app = express()
 port = 3000
 
-root = {mappers, searchers}
+root = {mappers, searchers, reducers, generators}
+
+id = (obj)->
+  if typeof obj.path == 'string'
+    return obj.path
+  obj
 
 streamResponse = (req, res)->
-  keys(req.data).toArray (array)->
-    res.send array.join "\n"
+  if not stream.isStream req.data
+    req.data = keys req.data
 
-app.get '/', (req, res) ->
-  req.data = root
-  streamResponse req, res
+  reducers.reduce req.data.map(id), 'html'
+  .toArray (r)->
+    res.send r[0]
 
-app.get '/mappers', (req, res) ->
-  req.data = mappers
-  streamResponse req, res
+addRoute = (app, prefix, data)->
 
-app.get '/searchers', (req, res) ->
-  req.data = searchers
+  console.log 'addRoute', {prefix}
+  app.get prefix, (req, res) ->
+    req.data = data
+    streamResponse req, res
+
+  if not prefix.endsWith '/'
+    prefix += '/'
+
+  children = keys data
+  if not children?
+    return
+
+  children.each (key)->
+    if data[key]?
+      addRoute app, prefix + key, data[key]
+
+addRoute app, '/', root
+
+app.get '/files', (req, res) ->
+  req.data = searchers.inodes().items
   streamResponse req, res
 
 app.listen port, ->

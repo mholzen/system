@@ -23,7 +23,7 @@ describe 'inodes', ->
       expect(r.length).equal 0
       done()
 
-  it 'should return a file in a new directory', ->
+  it 'should find a file in a new directory', ->
     directory = tempy.directory()
     resource = await post 'foo', directory
     new Promise (resolve)->

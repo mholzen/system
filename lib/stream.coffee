@@ -21,5 +21,6 @@ stream.strings = (data)->
 
 stream.highland = highland
 stream.nil = highland.nil
+stream.isStream = highland.isStream
 
 module.exports = stream

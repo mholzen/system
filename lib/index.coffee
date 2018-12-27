@@ -1,5 +1,6 @@
 module.exports = {
   content: require './content'
+  generators: require './generators'
   mappers: require './mappers'
   open: require './open'
   parse: require './parse'
