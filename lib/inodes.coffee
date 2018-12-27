@@ -16,6 +16,7 @@ statAsync = promisify fs.stat
 class Stat
   constructor: (path, options)->
     @path = path ? process.cwd()
+    @path = expandTilde @path
     @options = options ? {}
     @options.recurse = @options.recurse ? false
     log 'Stat', {path:@path}

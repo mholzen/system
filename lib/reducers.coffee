@@ -51,7 +51,7 @@ reducers =
   html: (opts)->
     input = ''
     [
-      null
+      ''
       (memo, value)->
         input = input + '\n\n' + value
       (v)-> marked v

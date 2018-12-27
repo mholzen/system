@@ -21,8 +21,6 @@ streamResponse = (req, res)->
     res.send r[0]
 
 addRoute = (app, prefix, data)->
-
-  console.log 'addRoute', {prefix}
   app.get prefix, (req, res) ->
     req.data = data
     streamResponse req, res
@@ -40,8 +38,13 @@ addRoute = (app, prefix, data)->
 
 addRoute app, '/', root
 
-app.get '/files', (req, res) ->
-  req.data = searchers.inodes().items
+app.get '/files/*', (req, res) ->
+  path = '~/data/'
+  if req.params[0]?
+    path += req.params[0]
+
+  log 'files', {path}
+  req.data = searchers.inodes(path).items
   streamResponse req, res
 
 app.listen port, ->
