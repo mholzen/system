@@ -1,5 +1,6 @@
 inodes = require '../lib/inodes'
 tempy = require 'tempy'
+post = require '../lib/post'
 
 describe 'statAsync', ->
   it 'should know / as directory', ->
@@ -21,3 +22,11 @@ describe 'inodes', ->
     inodes(directory).items.toArray (r)->
       expect(r.length).equal 0
       done()
+
+  it 'should return a file in a new directory', ->
+    directory = tempy.directory()
+    resource = await post 'foo', directory
+    new Promise (resolve)->
+      i = inodes(directory).items.toArray (r)->
+        expect(r.length).equal 1
+        resolve true

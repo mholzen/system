@@ -8,6 +8,9 @@ url = require './url'
 highland = require 'highland'
 log = require '@vonholzen/log'
 tempy = require 'tempy'
+uuidv1 = require 'uuid/v1'
+path = require 'path'
+
 post = (content, resource)->
   if not resource?
     resource = tempy.file()
@@ -26,7 +29,13 @@ post = (content, resource)->
     if typeof content == 'string'
       log 'post.appendFile', resource
       return appendFile(resource, content).then -> resource
-      # return resource
+      .catch (e)->
+        if e.code != 'EISDIR'
+          throw e
+
+        resource = path.join resource, uuidv1()
+        log 'post.appendFile', resource
+        return appendFile(resource, content).then -> resource
 
     # from Stream
     if content instanceof Stream
