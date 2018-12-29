@@ -4,7 +4,7 @@ walk = require 'walk'
 expandTilde = require 'expand-tilde'
 _ = require 'lodash'
 strings = require './strings'
-{join} = require 'path'
+{join, sep} = require 'path'
 {sortAs} = require './util'
 p = require 'path'
 stream = require 'highland'
@@ -19,8 +19,8 @@ class Stat
     @path = expandTilde @path
     @options = options ? {}
     @options.recurse = @options.recurse ? false
-    log 'Stat', {path:@path}
-    @stat = statAsync @path
+    log 'inodes.Stat', {path:@path}
+    @stat = statAsync(@path)
     @items = stream @walker()
 
   toJSON: ->
@@ -31,6 +31,40 @@ class Stat
     stat.isDirectory()
 
   recurse: -> @options.recurse
+
+  get: (path)->
+    if not path?
+      return this
+
+    if typeof path == 'string'
+      if path.startsWith sep    # absolute
+        if not path.startsWith @path
+          throw new Error 'get with absolute path does not match @path'
+        path = path[ @path.length .. ]
+
+      # relative path
+      path = expandTilde path
+      path = path.split sep
+
+    if path instanceof Array
+      log 'inodes.get', {path}
+      if path.length == 0
+        log 'inodes.get return this'
+        return this
+
+      try
+        if await @isDirectory()
+          next = path.shift()
+          return new Stat(join @path, next).get path
+
+        # this file is the resource
+        log 'inodes.get found file', {remainder: path}
+        return this
+
+      catch error
+        log 'inodes.get', {error}
+        throw error
+
 
   walker: ->
     root = @path

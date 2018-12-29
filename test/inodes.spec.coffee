@@ -30,3 +30,46 @@ describe 'inodes', ->
       i = inodes(directory).items.toArray (r)->
         expect(r.length).equal 1
         resolve true
+
+  describe 'get', ->
+    it 'should return self with no arguments', ->
+      cwd = inodes()
+      cwd.get().then (i)->
+        expect(i).equal cwd
+
+    it 'should return self with empty array', ->
+      cwd = inodes()
+      cwd.get([]).then (i)->
+        expect(i).equal cwd
+
+    it 'should return self with .', ->
+      cwd = inodes()
+      cwd.get('.').then (i)->
+        expect(i.path).equal cwd.path
+
+    it 'should return a file in a directory', ->
+      dir = tempy.directory()
+      file = await post 'abc', dir
+      inodes(dir).get(file).then (f)->
+        expect(file).equal f.path
+
+    it 'should return a file in a directory from root', ->
+      dir = tempy.directory()
+      file = await post 'abc', dir
+      inodes('/').get(file).then (f)->
+        expect(file).equal f.path
+
+    it 'should get a resource path in a directory from root', ->
+      dir = tempy.directory()
+      file = await post 'abc', dir
+      files =
+      inodes('/').get(file+'/resource').then (f)->
+        expect(f.path).equal file
+
+    it 'should get a resource path in a directory from root with remainder', ->
+      dir = tempy.directory()
+      file = await post 'abc', dir
+      file = file.split '/'
+      file.push 'resource'
+      inodes('/').get(file).then (f)->
+        expect(file).eql ['resource']
