@@ -48,6 +48,16 @@ reducers =
 
   graph: require './graph'
 
+  join: (options)->
+    delimeter = options.delimeter ? ', '
+    [
+      undefined
+      (memo, value)->
+        return value if not memo?
+        return memo if not value?
+        return memo + delimeter + value
+    ]
+
   html: (opts)->
     input = ''
     [
