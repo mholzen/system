@@ -67,6 +67,23 @@ mappers =
       c = await content(value)
       return append c, opts.value
 
+  amount: (opts)->
+    opts = opts ? []
+    field = opts.field ? 'Amount'
+
+    (x)->
+      if (typeof x == 'object')
+        if x['Transaction Type'] == 'debit'
+          x = x[field]
+        else
+          x = -x[field]
+
+      if (n = _.toNumber x) != NaN
+        x = n
+
+      log 'number', {x}
+      x
+
   basename: ->
     (value)->
       if value?.path
@@ -169,12 +186,14 @@ mappers =
   sum: (opts)->
     opts = opts ? []
     total = opts.initial ? 0
+    amount = mappers.amount(opts)
     (x)->
-      if (typeof x == 'object')
-        x = x.value
-      if (n = _.toNumber x) != NaN
-        x = n
+      x = amount(x)
+
       log 'sum', {x, total}
+      if x == null or isNaN(x)
+        x = 0
+
       total = total + x
 
   summarize: summarize
