@@ -1,5 +1,6 @@
 express = require 'express'
 log = require '@vonholzen/log'
+_ = require 'lodash'
 {stream, mappers, searchers, reducers, generators, content} = require '../lib'
 keys = generators.keys
 
@@ -28,6 +29,23 @@ streamResponse = (req, res)->
   log 'router.sending', {data}
   res.send data
 
+get = (data, path, context)->
+  if not (path?.length > 0)
+    return data
+
+  matches = path.match new RegExp '/*([^/]*)(.*)'
+  if not (matches?[1]?.length > 0)
+    return data
+
+  [, first, remainder] = matches
+
+  resource = _.get data, first
+  if not resource?
+    resource = _.get context, first
+
+  return resource
+
+
 class TreeRouter
   constructor: (data)->
     @data = data
@@ -44,17 +62,17 @@ class TreeRouter
       if not matches? or not matches[1]?
         return res.status(404).send('cannot determine first path element')
 
-      [ ,first, remainder] = matches
+      [, first, remainder] = matches
       if not first?
         return res.status(404).send('empty first path element')
 
-      if (first.length == 0)
+      if not (first?.length > 0)
         break
 
       if typeof req.data != 'object'
         return res.status(400).send("cannot lookup '#{first}' in req.data of type #{typeof req.data}")
 
-      handler = req.data[first]
+      handler = await get req.data, first, @data
       if not handler?
         return res.status(404).send("cannot find '#{first}' in #{Object.keys req.data}")
 
@@ -105,5 +123,6 @@ router = ->
 
 router.TreeRouter = TreeRouter
 router.root = root
+router.get = get
 
 module.exports = router
