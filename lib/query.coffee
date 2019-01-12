@@ -142,6 +142,8 @@ class Query
       return stream([])
 
     if not stream.isStream resources
+      if typeof resources[Symbol.iterator] != 'function'
+        resources = [ resources ]
       resources = stream resources
 
     resultStreams = stream()

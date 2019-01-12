@@ -13,7 +13,7 @@ urlQueries = require './urlQueries'
 searchers = {
   bookmarks
   urlQueries
-  inodes
+  inodes: inodes()
 }
 
 module.exports = searchers
