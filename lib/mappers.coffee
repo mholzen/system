@@ -12,6 +12,7 @@ path = require 'path'
 graph = require './graph'
 parse = require './parse'
 request = require './request'
+stream = require './stream'
 
 mappers =
   augment: (opts)->
@@ -111,10 +112,15 @@ mappers =
   html: html
 
   json: (opts)->
+    replacer = (key, value)->
+      return if stream.isStream value
+        undefined
+      else
+        value
     (value)->
       result = {}
       result[opts] = value
-      JSON.stringify result
+      JSON.stringify result, replacer
 
   location: ->
     (value)->
