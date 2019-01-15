@@ -91,7 +91,7 @@ class TreeRouter
     await streamResponse req, res
     next()
 
-rootInode = searchers.inodes '~'
+rootInode = searchers.inodes
 
 fileHandler = (req, res) ->
   path = req.remainder ? ''
