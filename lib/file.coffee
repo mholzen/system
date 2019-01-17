@@ -117,7 +117,7 @@ file =
       log 'file.onFile', stat.path
 
       # TODO: type test should be moved out of '.on file'
-      if (not query.type? or ['file', 'inode'].includes query.type) and query.match stat
+      if (not query.type? or ['file', 'inode'].includes query.type) and query.test stat
         try
           out.write stat
         catch err
@@ -129,7 +129,7 @@ file =
       stat.path = resolve base, stat.name
       log 'file.onDirectory', stat.path
 
-      if (not query.type? or ['directory', 'inode'].includes query.type) and query.match stat
+      if (not query.type? or ['directory', 'inode'].includes query.type) and query.test stat
         # console.log 'writing', query.context, result base, stat
         try
           out.write stat

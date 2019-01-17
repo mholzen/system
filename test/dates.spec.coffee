@@ -9,21 +9,21 @@ describe 'dates', ->
 
   it 'match', (done)->
     q = new query.Query {name:'dates'}
-    expect(q.match dates).true
+    expect(q.test dates).true
     dates.items.take(1).toArray (items)->
       expect(items[0] instanceof Date).true
       done()
 
   it 'partial match', (done)->
     q = new query.Query [{name:'dates'}, 'GMT']
-    expect(q.match dates).false
+    expect(q.test dates).false
     u = q.nonMatches dates
     expect(u.matches.length).equal 1
-    expect(u.match 'GMT').true
-    expect(u.match dates).false
+    expect(u.test 'GMT').true
+    expect(u.test dates).false
     dates.items.take(1).toArray (date)->
       expect(u.toString()).equal 'GMT'
-      expect(u.match date).true
+      expect(u.test date).true
       uu = u.nonMatches date
       expect(uu.matches.length).equal 0
       done()

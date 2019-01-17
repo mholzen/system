@@ -35,18 +35,10 @@ describe 'get', ->
     r = await get('abc', 'a', context)
     expect(r).equal 1
 
-  it 'with a function name in data should return context', ->
-    r = await get('abc', 'b', context)
+  it.skip 'with a function name in data should return context', ->
+    r = await get('abc', 'f', {f: (v)->v.length })
     expect(r).equal 3
 
   it 'with a function name in data should return context', ->
     r = await get('abc', 'c', context)
     expect(r).eql a: 2
-
-  it 'with a function name in data should return context', ->
-    context =
-      reducers:
-        length: (data)-> data.length
-
-    r = await get('abc', 'reducers.length', context)
-    expect(r).equal 3

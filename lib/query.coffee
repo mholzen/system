@@ -80,7 +80,7 @@ class Query
       @_match = (against) ->
         for query in @matches
           log 'array query match', {query, against}
-          if not query.match against
+          if not query.test against
             return false
         return true
       return
@@ -99,7 +99,7 @@ class Query
       @_match = (against)->
         for key, query of @model
           log 'object query match', {key, query, against}
-          if not query.match against[key]
+          if not query.test against[key]
               return false
         return true
 
@@ -111,6 +111,10 @@ class Query
     if typeof @options.recurse == 'number'
       return @options.recurse > 0
 
+  test: (value)->
+    @_match value
+    # @_match(value).head().toArray (r)-> true
+
   match: (value)->
     @_match value
 
@@ -119,12 +123,12 @@ class Query
 
   nonMatches: (value)->
     new Query @matches.filter (match)->
-      log 'query nonMatches', {match, value, result: not match.match value  }
-      not match.match value
+      log 'query nonMatches', {match, value, result: not match.test value  }
+      not match.test value
 
   and: (query)->
     new Query (value)=>
-      @_match(value) and query.match(value)
+      @_match(value) and query.test(value)
 
   toJSON: -> {matches: @matches, options: @options}
   toString: ->

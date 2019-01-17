@@ -30,7 +30,7 @@ stream = require 'highland'
 #       flatten: true
 #       callback: (bookmark)->
 #         bookmark.toString = () -> @name + ' ' + @url
-#         if query.match bookmark
+#         if query.test bookmark
 #           if query.in? and query.content?
 #             bookmark = bookmark + query.content.toString()
 #           out.write bookmark
