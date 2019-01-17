@@ -137,7 +137,6 @@ class Query
     options = options ? {}
     output = options.output ? stream()
 
-    log 'debug', {resources}
     if typeof resources == 'undefined'
       return stream([])
 
@@ -150,48 +149,48 @@ class Query
     mergedResults = resultStreams.merge()
     resultStreams.write output
 
-    log 'searchIn start', {query: this, resources: resources, recurse: @recurse()}
+    log 'query.searchIn start', {query: this, resources: resources, recurse: @recurse()}
 
     resources.each (resource)=>
-      log 'searchIn new resource', {resource}
+      log 'query.searchIn new resource', {resource}
       match = @match resource
       if not @recurse()
-        log 'searchIn recurse:false', {match}
+        log 'query.searchIn recurse:false', {match}
         return if not match
-        log 'searchIn writing result'
+        log 'query.searchIn writing result'
         return output.write resource
 
       unmetMatches = @nonMatches(resource)
       if typeof @options.recurse == 'number'
         unmetMatches.options.recurse = @options.recurse - 1
 
-      log 'searchIn recurse:true', {match, unmetMatches: unmetMatches.toString() }
+      log 'query.searchIn recurse:true', {match, unmetMatches: unmetMatches.toString() }
       if unmetMatches.isEmpty()
         # full match
-        log 'searchIn writing result'
+        log 'query.searchIn empty unmetMatches. returning'
         return output.write resource
 
 
-      log 'searchIn searching inside'
+      log 'query.searchIn searching inside'
       try
         subResults = stream()
         resultStreams.write subResults
 
         # TODO: refactor to accept searchers
         if stream.isStream resource.items
-          log 'searchIn reading from items stream', {name: resource?.name}
+          log 'query.searchIn reading from items stream', {name: resource?.name}
           parsedContent = resource.items
         else
           c = await getContent(resource)
           parsedContent = parse c    # refactor to accept stream
-        log 'searchIn content', {c, parsedContent}
+        log 'query.searchIn content', {c, parsedContent}
 
         unmetMatches.searchIn parsedContent, {output: subResults}
       catch error
-        log 'searchIn error', {error}
+        log 'query.searchIn error', {error}
 
     .done ->
-      log 'searchIn done'
+      log 'query.searchIn done'
       output.end()
       resultStreams.end()
 
