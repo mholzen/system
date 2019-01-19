@@ -1,6 +1,11 @@
 query = require '../lib/query'
-{createQuery, fromArgs, Query} = query
+{createQuery, fromArgs, Query, ObjectQuery} = query
 {post} = require '../lib'
+
+describe 'ObjectQuery', ->
+  it 'matches', ->
+    q = new ObjectQuery a: 'foo'
+    expect(q.matches({a:'foo', b:'bar'})).eql a:'foo'
 
 describe 'query', ->
   describe 'from null', ->

@@ -6,6 +6,52 @@ content = require './content'
 parse = require './parse'
 getContent = content
 
+class StringQuery
+  constructor: (query, options)->
+    @query = query
+
+  matches: (data)->
+    if typeof data == 'object'
+      data =
+        if data.toString == Object.prototype.toString
+          log 'query match: using JSON.stringify'
+          JSON.stringify(data)
+        else
+          log 'query match: using object.toString'
+          data.toString()
+
+    if typeof data == 'string'
+      if @query.startsWith '-'
+        log 'match string avoid'
+        if not data?.includes @query.slice(1)
+          return data
+      else
+        log 'match string match', {data}
+        if data?.includes @query
+          return data
+
+    log 'query.match', "matching string data #{typeof data} returns undefined"
+    return undefined
+
+class ObjectQuery
+  constructor: (object, options)->
+    if typeof object != 'object'
+      throw new Error "cannot create ObjectQuery with a '#{typeof object}'"
+    @object = object
+
+  match: (data)->
+    _.isEmpty @matches data
+
+  matches: (data)->
+    return true if @object == null
+
+    matches = {}
+    for key, value of @object
+      log 'object query match', {key, query, data}
+      matches[key] = query(value).matches data[key]
+
+    return matches
+
 class Query
   constructor: (query, options)->
     log 'query.constructor', {query, options}
@@ -159,9 +205,10 @@ class Query
       log 'query.searchIn new resource', {resource}
       match = @match resource
       if not @recurse()
-        log 'query.searchIn recurse:false', {match}
-        return if not match
-        log 'query.searchIn writing result'
+        if not match
+          log 'query.searchIn: not recurse. no match. returning'
+          return
+        log 'query.searchIn: not recurse.'
         return output.write resource
 
       unmetMatches = @nonMatches(resource)
@@ -171,7 +218,7 @@ class Query
       log 'query.searchIn recurse:true', {match, unmetMatches: unmetMatches.toString() }
       if unmetMatches.isEmpty()
         # full match
-        log 'query.searchIn empty unmetMatches. returning'
+        log 'query.searchIn: no unmet matches. writing result'
         return output.write resource
 
 
@@ -185,7 +232,7 @@ class Query
           log 'query.searchIn reading from items stream', {name: resource?.name}
           parsedContent = resource.items
         else
-          c = await getContent(resource)
+          c = await getContent(@matches(resource))
           parsedContent = parse c    # refactor to accept stream
         log 'query.searchIn content', {c, parsedContent}
 
@@ -203,10 +250,15 @@ class Query
 
 
 query = (terms, options)->
+  if typeof terms == 'string'
+    return new StringQuery terms, options
+  if typeof terms == 'object'
+    return new ObjectQuery terms, options
   new Query terms, options
 
 query.Query = Query
 query.createQuery = query
+query.ObjectQuery = ObjectQuery
 
 optionNames = [ 'duration', 'depth', 'limit', 'type', 'recurse' ]
 query.optionNames = optionNames
