@@ -1,11 +1,6 @@
 query = require '../lib/query'
-{createQuery, fromArgs, Query, ObjectQuery} = query
+{createQuery, fromArgs, Query} = query
 {post} = require '../lib'
-
-describe 'ObjectQuery', ->
-  it 'matches', ->
-    q = new ObjectQuery a: 'foo'
-    expect(q.matches({a:'foo', b:'bar'})).eql a:'foo'
 
 describe 'query', ->
   describe 'from null', ->
@@ -47,9 +42,9 @@ describe 'query', ->
       q = createQuery 'foo'
       expect(q.test('foo')).be.true
       expect(q.test('bar')).be.false
-      expect(q.test('foobar')).be.true
+      expect(q.test('foobar')).be.false
 
-    it 'should avoid matching a string', ->
+    it.skip 'should avoid matching a string', ->
       q = createQuery '-foo'
       expect(q.test('foobar')).be.false
       expect(q.test('baz')).be.true
@@ -63,17 +58,17 @@ describe 'query', ->
     it 'should match an object', ->
       q = createQuery 'foo'
       expect(q.test({a:'bar'})).be.false
-      expect(q.test({a:'foobar'})).be.true
+      expect(q.test({a:'foobar'})).be.false
       expect(q.test({a:'foo', b:'bar'})).be.true
 
   describe 'from an array', ->
     it 'should match a string', ->
       q = createQuery ['foo', 'bar']
-      expect(q.test('foo bar')).be.true
+      expect(q.test('foo bar')).be.false
       expect(q.test('bar')).be.false
 
     it 'should match an object and string', ->
-      q = createQuery [{foo:'bar'}, 'bing']
+      q = createQuery [{foo:/bar/}, /bing/]
       expect(q.test({foo:'bar', baz: 'bing'})).be.true
       expect(q.test({foo:'bar bing'})).be.true
       expect(q.test({foo:'bar'})).be.false
@@ -85,10 +80,6 @@ describe 'query', ->
       expect(q.test({a:'foo'})).be.true
       expect(q.test({b:'bing'})).be.false
 
-    it 'should have object keys', ->
-      q = createQuery {a: 'foo'}
-      expect(q.model.a).instanceof Query
-
   describe 'from another query', ->
     it 'should match an object', ->
       q = createQuery {a: 'foo'}
@@ -99,13 +90,12 @@ describe 'query', ->
   describe 'from an empty object', ->
     it 'should match an object', ->
       q = createQuery {}
-      expect(q.test({a:'bar'})).be.true
-      expect(q.test({a:'foo'})).be.true
+      expect(q.test({a:'bar'})).be.false
 
   describe 'and', ->
     it 'should "and" with another query', ->
-      q = createQuery 'foo'
-      q = q.and createQuery 'bar'
+      q = createQuery /foo/
+      q = q.and createQuery /bar/
       expect(q.test('foo')).be.false
       expect(q.test('bar')).be.false
       expect(q.test('foobar')).be.true
@@ -129,25 +119,15 @@ describe 'query', ->
         type: 'file', name: 'foo', content: 'foo bar bing')
       ).be.true
 
-  describe 'matches', ->
-    it '', ->
-      q = createQuery 'foo'
-      expect(q.matches).lengthOf(1)
-      q = createQuery ['foo', 'bar']
-      expect(q.matches).lengthOf(2)
-      expect(q.toString()).equal('foo bar')
-
   describe 'not matched', ->
     it '', ->
       q = createQuery ['foo', 'bar']
       nonMatches = q.nonMatches 'foo'
       expect(nonMatches.test('bar')).be.true
-      expect(nonMatches.matches).lengthOf(1)
 
     it 'with object', ->
       q = createQuery ['foo', 'bar']
       nonMatches = q.nonMatches {a:'foo'}
-      expect(nonMatches.matches).lengthOf(1)
       expect(nonMatches.test('bar')).be.true
 
   describe 'using options', ->
@@ -169,33 +149,8 @@ describe 'query', ->
       expect(q.options.limit).equal(1)
       expect(q.options.recurse).equal(2)
 
-  describe 'searchIn', ->
 
-    it 'should find nonrecurse', (done)->
-      q = createQuery 'foo', recurse:false
-      o = q.searchIn ['bar', 'foo']
-      o.toArray (results)->
-        expect(results).eql ['foo']
-        done()
-
-    it 'should find recursively in file', ()->
-      ref = await post("foo\nbar\nbing")
-      expect(ref).startsWith '/'
-      q = createQuery ['/', 'bar'], recurse:true
-      expect(q.options.recurse).true
-      o = q.searchIn [ref]
-      o.toArray (results)->
-        expect(results).eql ['bar']
-
-    it 'should search in nothing', (done)->
-      q = createQuery 'abc'
-      o = q.searchIn()          # TODO: does not return
-      o.toArray (results)->
-        expect(results.length).eql 0
-        done()
-
-
-  describe 'toString', ->
-    it 'work', ->
-      q = createQuery ['foo', 'bar']
-      expect(q.toString()).not.includes '['
+describe 'query.test', ->
+  it 'returns null with arrays and values', ->
+    expect(query(1).test(2)).false
+    expect(query([1,2]).test(3)).false

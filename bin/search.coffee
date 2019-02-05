@@ -4,7 +4,6 @@ process.env.NODE_CONFIG_DIR = __dirname + '../config'
 
 query = require '../lib/query'
 searchers = require '../lib/searchers'
-log = require '@vonholzen/log'
 {json} = require '../lib/mappers'
 
 args = process.argv[2..-1]
@@ -17,7 +16,7 @@ process.stdout.on 'error', (event)->
 
 count = 0
 
-results = query.searchIn searchers
+results = query.searchIn searchers.all
 
 toJSON = json()
 results.each (result)->

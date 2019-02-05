@@ -1,7 +1,4 @@
-stream = require 'highland'
-log = require '@vonholzen/log'
-
-{bookmarks} = require './bookmarks'
+bookmarks = require './bookmarks'
 inodes = require './inodes'
 urlQueries = require './urlQueries'
 # require './lib/application'
@@ -15,5 +12,7 @@ searchers = {
   urlQueries
   inodes: inodes()
 }
+
+searchers.all = Object.values searchers
 
 module.exports = searchers

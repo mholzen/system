@@ -38,4 +38,6 @@ search = (query, out)->
       out.write url
 
 
-module.exports = Object.keys(urls).map (k)-> {name: k, url: urls[k]}
+module.exports =
+  name: 'urlQueries'
+  items: Object.keys(urls).map (k)-> {name: k, url: urls[k]}

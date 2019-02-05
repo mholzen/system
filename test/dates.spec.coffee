@@ -14,7 +14,7 @@ describe 'dates', ->
       expect(items[0] instanceof Date).true
       done()
 
-  it 'partial match', (done)->
+  it.skip 'partial match', (done)->
     q = new query.Query [{name:'dates'}, 'GMT']
     expect(q.test dates).false
     u = q.nonMatches dates

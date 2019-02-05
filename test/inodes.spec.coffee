@@ -1,6 +1,9 @@
 inodes = require '../lib/inodes'
 tempy = require 'tempy'
 post = require '../lib/post'
+_ = require 'lodash'
+query = require '../lib/query'
+stream = require '../lib/stream'
 
 describe 'statAsync', ->
   it 'should know / as directory', ->

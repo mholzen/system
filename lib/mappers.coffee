@@ -2,17 +2,18 @@ log = require '@vonholzen/log'
 _ = require 'lodash'
 
 content = require './content'
+graph = require './graph'
 html = require './html'
+image = require './image'
+json = require './map/json'
+parse = require './parse'
+path = require 'path'
+request = require './request'
+stream = require './stream'
 summarize = require './summarize'
 table = require './table'
 text = require './text'
 url = require './url'
-image = require './image'
-path = require 'path'
-graph = require './graph'
-parse = require './parse'
-request = require './request'
-stream = require './stream'
 
 mappers =
   augment: (opts)->
@@ -111,16 +112,7 @@ mappers =
 
   html: html
 
-  json: (opts)->
-    replacer = (key, value)->
-      return if stream.isStream value
-        undefined
-      else
-        value
-    (value)->
-      result = {}
-      result[opts] = value
-      JSON.stringify result, replacer
+  json: json
 
   location: ->
     (value)->

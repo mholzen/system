@@ -1,4 +1,4 @@
-{bookmarks} = require '../lib/bookmarks'
+bookmarks = require '../lib/bookmarks'
 
 describe 'bookmarks', ->
   it 'iterator', (done)->

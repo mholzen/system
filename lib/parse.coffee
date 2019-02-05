@@ -26,7 +26,7 @@ parse = (value, context)->
     value = value.toString()
 
   if typeof value == 'string'
-    if value.startsWith '{'
+    if ['[', '{'].includes value?[0]
       return JSON.parse value
 
     d = delimiter value
@@ -66,5 +66,16 @@ class Parser
     parse value, {columns: @headers}
 
 parse.Parser = Parser
+
+parse.parseValue = (data)->
+  if data == 'true' or data == 'false'
+    return (data == 'true')
+
+  number = parseInt data
+  if number != NaN
+    return number
+
+  data
+
 
 module.exports = parse
