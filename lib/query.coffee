@@ -40,8 +40,6 @@ class Query
     @options.recurse ?= true
     @options.partialMatches ?= false
 
-    # @type = query.type ? options?.type
-
     if options?.limit?
       @options.limit = parseInt options.limit
 
@@ -302,7 +300,7 @@ query = (terms, options)->
 query.Query = Query
 query.createQuery = query
 
-optionNames = [ 'duration', 'depth', 'limit', 'type', 'recurse' ]
+optionNames = [ 'duration', 'depth', 'limit', 'recurse' ]
 query.optionNames = optionNames
 
 
