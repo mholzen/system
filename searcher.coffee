@@ -5,7 +5,6 @@ log = require '@vonholzen/log'
 searchers = [
   require './lib/file'
   # require './lib/application'
-  # require './lib/json'
   require './lib/bookmarks'
   require './lib/urlQueries'
   # require './lib/url'
