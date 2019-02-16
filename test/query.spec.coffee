@@ -17,6 +17,7 @@ describe 'query', ->
     it 'match', ->
       q = createQuery true
       expect(q.test(true)).be.true
+      expect(q.match(false)).null
       expect(q.test(false)).be.false
       expect(q.test('foo')).be.true
       expect(q.test('bar')).be.true
@@ -24,16 +25,17 @@ describe 'query', ->
 
   describe 'from a function', ->
     it 'match', ->
-      q = createQuery (v)->v == 'foo'
+      q = createQuery (v)-> if v == 'foo' then 'foo' else null
       expect(q.test('foo')).be.true
+      expect(q.match('bar')).null
       expect(q.test('bar')).be.false
       expect(q.test('foobar')).be.false
 
     it 'and', ->
-      q = createQuery (v)->v > 1
+      q = createQuery (v)-> if v > 1 then v else null
       expect(q.test(1)).be.false
       expect(q.test(2)).be.true
-      q = q.and createQuery (v)-> v > 2
+      q = q.and createQuery (v)-> if v > 2 then v else null
       expect(q.test(2)).be.false
       expect(q.test(3)).be.true
 

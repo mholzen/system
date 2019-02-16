@@ -5,19 +5,21 @@ query = require '../lib/query'
 describe 'query.match', ->
   it 'from empty', ->
     r = await query().match 'abc'
-    expect(r).eql 'abc'
+    expect(r).eql ['abc']
 
   it 'string', ->
-    r = await query('a').match 'abc'
+    r = await query('a').match 'ab'
     expect(r).eql null
-    r = await query('a').match ['a', 'b']
+    r = await query('a').match 'a'
     expect(r).eql ['a']
-    r = await query('-a').match ['a', 'b']
-    expect(r).eql ['b']
+    r = await query('a').match ['a', 'b', 'a']
+    expect(r).eql ['a', 'a']
+    # r = await query('-a').match ['a', 'b']
+    # expect(r).eql ['b']
 
   it 'regexp', ->
     r = await query(/a/).match 'abc'
-    expect(r).property 0,  'a'
+    expect(r).property(0).eql 'a'
     r = await query(/a/).match ['a', 'b']
     expect(r).eql ['a']
 
@@ -27,9 +29,9 @@ describe 'query.match', ->
 
   it 'from array', ->
     r = await query([]).match 'abc'
-    expect(r).eql 'abc'
+    expect(r).eql ['abc']
     r = await query([/a.c/, /.b./]).match 'abc'
-    expect(r).property(0).property 0, 'abc'
+    expect(r).property(0).eql 'abc'
     r = await query([/a/, /d/]).match 'abc'
     expect(r).null
     r = await query([{a:1}, 2]).match {a:1}
@@ -37,7 +39,7 @@ describe 'query.match', ->
 
   it 'object value', ->
     r = await query(1).match {a:1, b:2}
-    expect(r).eql a:1
+    expect(r).eql [a:1]
     r = await query(['marc', 'von holzen']).match {first:'marc', last:'von holzen'}
     expect(r).property(0).includes first:'marc'
     expect(r).property(0).includes last:'von holzen'
@@ -48,7 +50,7 @@ describe 'query.match', ->
 
   it 'object key', ->
     r = await query({a:1}).match {a:1, b:2}
-    expect(r).eql a:1
+    expect(r).property(0).eql a:1
 
   it.skip '-string on object key', ->
     # TODO: -a matches the value :1

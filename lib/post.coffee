@@ -3,7 +3,7 @@ request = require 'request-promise'
 
 {promisify} = require 'util'
 appendFile = promisify fs.appendFile
-url = require './url'
+url = require './map/url'
 {Stream} = require 'stream'
 highland = require 'highland'
 log = require '@vonholzen/log'

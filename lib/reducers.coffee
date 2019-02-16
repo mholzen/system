@@ -1,11 +1,12 @@
 log = require '@vonholzen/log'
 marked = require 'marked'
 table = require './table'
+stream = require './stream'
 
 reducers =
-  reduce: (stream, name, opts)->
+  reduce: (data, name, opts)->
     reducer = reducers[name] opts
-    stream.reduce reducer[0], reducer[1]
+    stream(data).reduce reducer[0], reducer[1]
     .map (r)->
       if reducer[2]
         r = reducer[2] r

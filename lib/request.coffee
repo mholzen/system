@@ -1,6 +1,17 @@
 requestPromise = require 'request-promise'
 log = require '@vonholzen/log'
-url = require './url'
+url = require './map/url'
+
+isURL = (data)->
+  if typeof data == 'object'
+    data = url data
+  if typeof data == 'string'
+    return /https?:\/\//.test data
+
+isFilename = (data)->
+
+isReference = (data)->
+
 
 request = (resource)->
   if not resource.url?

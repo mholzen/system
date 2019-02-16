@@ -14,5 +14,5 @@ module.exports = {
   summarize: require './summarize'
   table: require './table'
   text: require './text'
-  url: require './url'
+  url: require './map/url'
 }

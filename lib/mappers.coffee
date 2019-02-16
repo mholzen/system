@@ -8,12 +8,13 @@ image = require './image'
 json = require './map/json'
 parse = require './parse'
 path = require 'path'
+pick = require './map/pick'
 request = require './request'
 stream = require './stream'
 summarize = require './summarize'
 table = require './table'
 text = require './text'
-url = require './url'
+url = require './map/url'
 
 mappers =
   augment: (opts)->
@@ -144,13 +145,7 @@ mappers =
   path: ->
     mappers.pick 'path'
 
-  pick: (fields)->
-    (value)->
-      log 'pick', {fields, value}
-      if fields instanceof Array
-        _.pick value, fields
-      else
-        value[fields]
+  pick: pick
 
   request: -> request
 
@@ -201,7 +196,8 @@ mappers =
 
   table: table.map
   tableString: table.mapString
+  template: require './map/template'
   text: -> text
-  url: -> url
+  url: url
 
 module.exports = mappers

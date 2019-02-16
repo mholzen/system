@@ -22,7 +22,7 @@ if name == 'tableString'
   options.width = process.stdout.columns
 
 log 'options', {options}
-map = mapper(options)
+map = mapper options
 
 parser = new parse.Parser()
 

@@ -6,6 +6,7 @@ content = require './content'
 {parseValue} = require './parse'
 getContent = content
 {items} = require './generators'
+iterable = require './map/iterable'
 
 class Query
   setQuery: (query) ->
@@ -14,7 +15,7 @@ class Query
       when query instanceof Query
         _.assign(this, query)
       when typeof query == 'undefined'
-        @_match = (data)->data
+        @_match = (data)-> data
       when typeof query == 'boolean'
         @_match = @booleanMatch
       when typeof query == 'number'
@@ -53,7 +54,9 @@ class Query
 
   booleanMatch: (data)->
     if typeof data == 'boolean'
-      data == @query
+      if data == @query
+        return data
+      return null
     else
       (typeof data != 'undefined') == @query
 
@@ -113,7 +116,7 @@ class Query
         @regexpMatch(v) or @regexpMatch(k)
       if _.isEmpty matches
         return null
-      return matches
+      return [matches]
 
     throw new Error "regexp query against '#{typeof data}' data"
 
@@ -128,13 +131,13 @@ class Query
       match = query(value).match data[key]
 
       if match != null
-        matches[key] = match
+        matches[key] = match[0]
 
     if _.isEmpty matches
       return null
     return matches
 
-  joinMatches: (matches)->
+  _joinMatches: (matches)->
     isRegeExpAnswer = (a)->
       typeof a?[0] == 'string' and
       typeof a?.index == 'number' and
@@ -142,7 +145,9 @@ class Query
 
     add = (a,b)->
       if typeof a == 'string'
-        return a+b
+        if a != b
+          throw new Error "joining different strings matches (#{a},#{b})"
+        return a
 
       if typeof a == 'object'
         if isRegeExpAnswer(a) and isRegeExpAnswer(b)
@@ -164,36 +169,36 @@ class Query
 
   arrayMatch: (data)->
     if @query.length == 0
-      return data
+      return [data]
 
     matches = []
     nullSeen = false
     for subquery in @query
       match = query(subquery).match data
-      matches.push match
       nullSeen = (match == null) or nullSeen
+      matches.push match?[0]
 
     if not @options.partialMatches
       if nullSeen
         return null
 
-
-    matches.unshift @joinMatches matches
+    matches.unshift @_joinMatches matches
     matches
 
   test: (data)->
     return true if @query == null
     match = @_match data
-    log.debug {match}
-    return true if match == true
-    return undefined if typeof match == 'undefined'
-    return not _.isEmpty match
+    log 'query', {match}
+    if match == null or match[0] == null
+      return false
+    true
 
   match: (data)->
     if typeof data == 'undefined'
-      return undefined
+      return null
 
-    return data if @query == null
+    if @query == null
+      return [ data ]
 
     if data instanceof Array
       return data.filter (d) => @match d
@@ -201,7 +206,15 @@ class Query
     if stream.isStream data
       return data.filter @_match data
 
-    @_match data
+    match = @_match data
+    if match == null
+      return null
+
+    if not [@arrayMatch, @regexpMatch].includes @_match
+      match = [ match ]
+
+    return match
+
 
   partialMatch: (data)->
     pre = @options.partialMatch
@@ -221,7 +234,10 @@ class Query
 
   and: (query)->
     new Query (value)=>
-      @_match(value) and query.test(value)
+      if @test(value) and query.test(value)
+        return @_match value
+      else
+        null
 
   toJSON: -> {matches: @matches, options: @options}
 
@@ -231,67 +247,52 @@ class Query
     else
       @matches?.join ' '
 
-  searchIn: (resources, options)->
+  search: (data, options)->
+    if not iterable data
+      data = [ data ]
+
+    data = stream data
+
     options = options ? {}
     output = options.output ? stream()
-
-    log 'query.searchIn start', {query: this, 'typeof resource': typeof resources}
-
-    resources = items resources
-
-    # if typeof resources == 'undefined'
-    #   return stream([])
-
-    # if not stream.isStream resources
-    #   if typeof resources[Symbol.iterator] != 'function'
-    #     resources = [ resources ]
-    #   resources = stream resources
-
     resultStreams = stream()
-    mergedResults = resultStreams.merge()
+    mergedResults = resultStreams.merge()   # TODO: consider moving to end of function
     resultStreams.write output
 
-    resources.each (resource)=>
+    data.each (item)=>
 
       if not @recurse()
-        log 'query.searchIn not recursing', {recurse: @recurse()}
-
-        if @test resource
-          log 'query.searchIn writing ', {resource}
-          output.write resource
-
+        if @test item
+          output.write item
         return
 
-      log 'query.searchIn recursing', {recurse: @recurse()}
-
-      unmetMatches = @nonMatches resource
-      # TODO: consider if unmetMatches is empty
-      # write this resource and don't search into it
+      unmetMatches = @nonMatches item
 
       if typeof @options.recurse == 'number'
         unmetMatches.options.recurse = @options.recurse - 1
-
-      log 'query.searchIn', {unmetMatches}
 
       try
         subResults = stream()
         resultStreams.write subResults
 
-        data = await getContent resource
-        log 'query.searchIn getContent', {data}
-
         unmetMatches.searchIn data, {output: subResults}
       catch error
-        log 'query.searchIn error', {error, e: error instanceof Error }
-        throw error
+        log 'query.search error', {error, e: error instanceof Error }
+        # throw error
 
     .done ->
-      log 'query.searchIn done'
+      log 'query.search done'
       output.end()
       resultStreams.end()
 
     return mergedResults
 
+
+  searchIn: (data, options)->
+    if not iterable data
+      data = items data
+
+    @search data, options
 
 
 query = (terms, options)->

@@ -16,15 +16,17 @@ keys = (x)->
   if typeof x == 'function'
     return stream [ x.name ]
 
+
+# TODO: should this be in stream?
 items = (data)->
   if typeof data == 'undefined'
     return stream []
 
-  if isStream data
-    return data
+  if iterable data
+    return stream data
 
-  if typeof data == 'object' and isStream data.items
-    return data.items
+  if data?.items?
+    return items data.items
 
   if data instanceof Buffer
     data = data.toString()    # TODO: optimize
@@ -32,9 +34,6 @@ items = (data)->
   if typeof data == 'string'
     # TODO: use parser
     return stream data.split '\n'
-
-  if typeof data[Symbol.iterator] == 'function'
-    return stream data
 
   throw new Error "cannot get items from #{data}"
 

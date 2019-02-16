@@ -3,18 +3,18 @@ query = require '../lib/query'
 
 describe 'query.searchIn', ->
 
-  it 'should find in array', (done)->
+  it 'should find in array of strings', (done)->
     q = query 'foo', recurse:false
     o = q.searchIn ['bar', 'foo']
     o.toArray (results)->
       expect(results).eql ['foo']
       done()
 
-  it 'should find in string', (done)->
-    q = query 'line2', recurse:false
-    o = q.searchIn 'line1\nline2\nline3'
+  it 'should find in array of numbers', (done)->
+    q = query 2, recurse:false
+    o = q.searchIn [1,2,3]
     o.toArray (results)->
-      expect(results).eql ['line2']
+      expect(results).eql [2]
       done()
 
   it 'should find recursively in file', ->

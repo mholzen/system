@@ -17,6 +17,7 @@ process.stdout.on 'error', (event)->
 count = 0
 
 results = query.searchIn searchers.all
+# results = query.searchIn [searchers.urlQueries]
 
 toJSON = json()
 results.each (result)->

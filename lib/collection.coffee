@@ -17,7 +17,6 @@ fromObject = (object)->
   for name, value of object
     array.push value
     array[name] = value
-  log.debug array
   array
 
 collection = (data)->
