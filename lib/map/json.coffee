@@ -1,7 +1,8 @@
 module.exports = (opts)->
   (data)->
-    if opts?
-      output = {}
-      output[opts] = value
-    output = data
-    JSON.stringify output
+    # TODO: use augment?
+    # if opts?
+    #   output = {}
+    #   output[opts] = value
+    # output = data
+    JSON.stringify data, opts?.replacer

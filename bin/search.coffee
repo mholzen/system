@@ -19,7 +19,14 @@ count = 0
 results = query.searchIn searchers.all
 # results = query.searchIn [searchers.urlQueries]
 
-toJSON = json()
+{isStream} = require '../lib/stream'
+replacer = (key, value)->
+  if isStream value
+    return undefined
+  value
+
+toJSON = json {replacer}
+
 results.each (result)->
   if not ('toString' in result)
     result.toString = ()-> toJSON result

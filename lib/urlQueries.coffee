@@ -27,7 +27,9 @@ class UrlGenerator
     @items = _.pipeline _.map mappers.template @template
 
 urlGenerators =
+  name: 'urlGenerators'
   items: []
+
 for key, value of urls
   u = new UrlGenerator value, key
   urlGenerators[key] = u
