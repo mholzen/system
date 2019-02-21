@@ -12,6 +12,7 @@
 - interactively pick one of several if multiple
 - order search results
   - order files based on "relevance" (eg. a query "foo" should first return names matching query entirely: ["foo", "abcfoodef"])
+- store search results in temporary files to be able to access the content again
 
 # transform
 - head/tail for x milliseconds
