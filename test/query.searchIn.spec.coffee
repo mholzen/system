@@ -17,7 +17,7 @@ describe 'query.searchIn', ->
       expect(results).eql [2]
       done()
 
-  it 'should find recursively in file', ->
+  it.skip 'should find recursively in file', ->
     ref = await post("foo\nbar\nbing")
     expect(ref).startsWith '/'
     q = query [/\//, 'bar'], recurse:1

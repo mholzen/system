@@ -4,6 +4,7 @@ query = require '../lib/query'
 queries =
   keys:
     url:  /^(url|href)$/i
+    path: /^path(name)*$/i
   values:
     url: /^(https?|file|mailto):\/\//i
 

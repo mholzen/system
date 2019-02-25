@@ -1,18 +1,28 @@
 log = require '@vonholzen/log'
-stream = require './stream'
+{isStream} = require './stream'
 _ = require 'lodash'
 
-log.filter = (object)->
-  if object instanceof Error
-    return object
+log.filter = (data)->
+  if isStream data
+    return '<stream>'
+
+  if data instanceof Error
+    return data
+
+  if typeof data != 'object'
+    return data
 
   result = {}
-  for k,v of object
-    if stream.isStream(v)
+  for k,v of data
+    if isStream(v)
       v = '<stream>'
+
+    if v instanceof RegExp
+      v = v.toString()
+
     if typeof v != 'function'
       result[k] = v
-  # _.pickBy object, (v,k) ->
+  # _.pickBy data, (v,k) ->
   return result
 
 module.exports = log

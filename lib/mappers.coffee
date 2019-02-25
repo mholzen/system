@@ -197,6 +197,9 @@ mappers =
   table: table.map
   tableString: table.mapString
   template: require './map/template'
+
+  templates: require './map/templates'
+
   text: -> text
   url: url
 

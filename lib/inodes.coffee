@@ -17,14 +17,15 @@ class Stat
   constructor: (path, options)->
     @path = path ? process.cwd()
     @path = expandTilde @path
+    @name = 'inodes'
     @options = options ? {}
     @options.recurse = @options.recurse ? false
     log 'inodes.Stat', {path:@path}
     @stat = statAsync(@path)
     @items = stream @walker()
 
-  toJSON: ->
-    name: 'inodes'
+  # toJSON: ->
+  #   name: 'inodes'
 
   isDirectory: ->
     stat = await @stat

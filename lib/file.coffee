@@ -130,7 +130,6 @@ file =
       log 'file.onDirectory', stat.path
 
       if (not query.type? or ['directory', 'inode'].includes query.type) and query.test stat
-        # console.log 'writing', query.context, result base, stat
         try
           out.write stat
         catch err
@@ -183,7 +182,6 @@ file =
       throw err
 
     .on 'end', ()->
-      # console.log 'end'
       out.end()
 
   File: File

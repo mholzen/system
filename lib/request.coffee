@@ -1,29 +1,25 @@
 requestPromise = require 'request-promise'
-log = require '@vonholzen/log'
+inodes = require './inodes'
 url = require './map/url'
+filepath = require './map/filepath'
 
-isURL = (data)->
-  if typeof data == 'object'
-    data = url data
-  if typeof data == 'string'
-    return /https?:\/\//.test data
+log = require '@vonholzen/log'
 
-isFilename = (data)->
+request = (data)->
+  u = url data
 
-isReference = (data)->
+  try
+    return requestPromise
+      uri: url data
+      simple: false # reject only if the request failed without a response
+      resolveWithFullResponse: true
 
-
-request = (resource)->
-  if not resource.url?
-    resource =
-      url: url resource
-
-  if not resource.method
-      method: 'GET'
-
-  await requestPromise
-    uri: resource.url
-    simple: false # reject only if the request failed without a response
-    resolveWithFullResponse: true
+  catch e
+    console.log e
+    try
+      return inodes filepath data
+    catch
+      throw new Error "cannot make a request from #{data}"
+  throw new Error "cannot make a request from #{log.toPrettyString data}"
 
 module.exports = request

@@ -1,7 +1,7 @@
 _ = require 'lodash'
 log = require '@vonholzen/log'
 # log = console.log
-stream = require './stream'
+{stream, isStream} = require './stream'
 content = require './content'
 {parseValue} = require './parse'
 getContent = content
@@ -38,7 +38,7 @@ class Query
 
     @options = options ? {}
 
-    @options.recurse ?= true
+    @options.recurse ?= false
     @options.partialMatches ?= false
 
     if options?.limit?
@@ -194,6 +194,8 @@ class Query
     true
 
   match: (data)->
+    log 'query.match', {query: @query, data}
+
     if typeof data == 'undefined'
       return null
 
@@ -248,10 +250,12 @@ class Query
       @matches?.join ' '
 
   search: (data, options)->
+    log 'search', {data}
     if not iterable data
       data = [ data ]
 
-    data = stream data
+    if not isStream data
+      data = stream data
 
     options = options ? {}
     output = options.output ? stream()
@@ -275,10 +279,10 @@ class Query
         subResults = stream()
         resultStreams.write subResults
 
-        unmetMatches.searchIn data, {output: subResults}
+        unmetMatches.searchIn item, {output: subResults}
       catch error
         log 'query.search error', {error, e: error instanceof Error }
-        # throw error
+        throw error
 
     .done ->
       log 'query.search done'
@@ -329,7 +333,7 @@ query.fromArgs = ->
         arg = {}
         arg[key] = new RegExp value, 'i'
         terms.push arg
-
+  log 'query.fromArgs', {terms}
   new Query terms, options
 
 module.exports = query

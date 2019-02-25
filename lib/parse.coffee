@@ -22,6 +22,12 @@ delimiter = (value)->
   r.char
 
 parse = (value, context)->
+  # console.log value instanceof Request
+
+  # if value instanceof Request
+  #   value = await value
+  # throw new Error "cannot parse #{log.toPrettyString value}"
+
   if value instanceof Buffer
     value = value.toString()
 
@@ -47,7 +53,9 @@ parse = (value, context)->
     highland(value)
     .split()
     # .filter (line) -> line.length > 0
-    .map parse
+    # .map parse
+
+  throw new Error "cannot parse #{value}"
 
 class Parser
   constructor: (options)->

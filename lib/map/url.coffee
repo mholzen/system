@@ -1,8 +1,7 @@
 log = require '@vonholzen/log'
 
-
 url = (data)->
-  log 'url', data
+  # log 'url', data
 
   if typeof data == 'string'
     if data.match /https*:\/\/[^/]+/
@@ -15,5 +14,7 @@ url = (data)->
 
   if data.path?
     return 'file://' + data.path
+
+  throw new Error "cannot get url from #{data}"
 
 module.exports = url

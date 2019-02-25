@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+text {
+  font: 20px sans-serif;
+}
+
+/*circle {
+  fill: rgb(198, 232, 255);
+}*/
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = window.innerWidth,
+    height = window.innerHeight;
+
+var color = d3.scale.category20();
+
+var force = d3.layout.force()
+    .charge(-1500)
+    .linkDistance(100)
+    .size([width, height]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+function render(graph) {
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+  var link = svg.selectAll(".link")
+      .data(graph.links)
+      .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+  var node = svg.selectAll(".node")
+      .data(graph.nodes)
+      .enter().append('g')
+      .attr("class", "node")
+      .call(force.drag);
+
+  svg.insert('defs', ':first-child')
+      .append('pattern')
+        .attr('id', 'image')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('patternUnits', "userSpaceOnUse")
+        .attr('height', "1")
+        .attr('width', "1")
+        .append('image')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('xlink:href', 'http://beta.vonholzen.org/static/commodore.jpeg');
+          // .attr('xlink:href', function(d) { return d.href });
+      // <defs>
+      //     <pattern id="image" x="0" y="0" patternUnits="userSpaceOnUse" height="1" width="1">
+      //       <image x="0" y="0" xlink:href="url.png"></image>
+      //     </pattern>
+      //   </defs>
+
+  node.append('circle')
+      .attr("r", 60)
+      // .attr("fill", "#eee")
+      .attr("fill", function(d) { return "url(#image)"; });
+
+  node.append("title")
+      .text(function(d) { return d.label; });
+
+  node.append("text")
+      .attr("dy", ".3em")
+      .style("text-anchor", "middle")
+      .text(function(d) { return d.label; });
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("transform", function(d){return "translate("+d.x+","+d.y+")"});
+  });
+}
+var graph = '{{graph}}';
+function empty(s) { return s.length == 0; }   // TODO: extract
+if (!empty(graph)) {
+  render(JSON.parse(graph));
+}
+
+d3.json("/{{uri}}", function(error, graph) {
+  if (error) console.error(error);
+  render(graph);
+});
+</script>

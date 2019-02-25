@@ -15,34 +15,33 @@ post = (content, resource)->
   if not resource?
     resource = tempy.file()
   if typeof resource == 'string'
-    u = url(resource)
-    if u
-      # url
+    try
       return request
-        url: u
+        url: url resource
         method: 'POST'
         body: content
+    catch
 
-    # to file
+      # to file
 
-    # from string
-    if typeof content == 'string'
-      log 'post.appendFile', resource
-      return appendFile(resource, content).then -> resource
-      .catch (e)->
-        if e.code != 'EISDIR'
-          throw e
-
-        resource = path.join resource, uuidv1()
+      # from string
+      if typeof content == 'string'
         log 'post.appendFile', resource
         return appendFile(resource, content).then -> resource
+        .catch (e)->
+          if e.code != 'EISDIR'
+            throw e
 
-    # from Stream
-    if content instanceof Stream
-      return highland(content).each (chunk)->
-        await appendFile(resource, chunk)
-      .toPromise(Promise).then ->
-        resource
+          resource = path.join resource, uuidv1()
+          log 'post.appendFile', resource
+          return appendFile(resource, content).then -> resource
+
+      # from Stream
+      if content instanceof Stream
+        return highland(content).each (chunk)->
+          await appendFile(resource, chunk)
+        .toPromise(Promise).then ->
+          resource
 
 
 module.exports = post

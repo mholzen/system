@@ -1,6 +1,9 @@
 {stream, isStream} = require './stream'
 log = require '@vonholzen/log'
 dates = require './dates'
+iterable = require './map/iterable'
+request = require './request'
+parse = require './parse'
 
 keys = (x)->
   if stream.isStream x
@@ -19,6 +22,9 @@ keys = (x)->
 
 # TODO: should this be in stream?
 items = (data)->
+  if isStream data
+    return data
+
   if typeof data == 'undefined'
     return stream []
 
@@ -35,7 +41,11 @@ items = (data)->
     # TODO: use parser
     return stream data.split '\n'
 
-  throw new Error "cannot get items from #{data}"
+  r = request data
+  if r?
+    return parse r
+
+  throw new Error "cannot get items from #{log.toPrettyString data}"
 
 module.exports = {
   keys

@@ -1,10 +1,11 @@
 {post, stream} = require '../lib'
 _ = require 'lodash'
 
-it 'should stream a file', ->
-  file = await post 'a\nb\n'
-  stream.strings(file).toArray (items)->
+it.skip 'should split content', (done)->
+  content = 'a\nb\n'
+  stream.strings(content).toArray (items)->
     expect(items).eql(['a', 'b'])
+    done()
 
 describe 'pickBy', ->
   it.skip 'ignores functions', ->

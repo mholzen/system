@@ -1,5 +1,13 @@
 log = require '../log'
 
+class Template
+  constructor: (template)->
+    @template = template ? ''
+    @expression = /#{(.*?)}/g
+
+  expressions: ->
+    @template.match @expression
+
 template = (options)->
   if options instanceof Array
     if typeof options?[0] == 'string'
@@ -16,5 +24,7 @@ template = (options)->
     for key, value of data
       result = result.replace '#{'+key+'}', value
     result
+
+template.Template = Template
 
 module.exports = template
