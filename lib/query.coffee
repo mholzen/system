@@ -294,7 +294,13 @@ class Query
 
   searchIn: (data, options)->
     if not iterable data
-      data = items data
+      try
+        data = items data
+        if data instanceof Promise
+          log.debug 'here', data
+      catch e
+        log.error 'query', {e}
+        return
 
     @search data, options
 

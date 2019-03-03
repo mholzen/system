@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 highland = require 'highland'
 {Readable} = require 'stream'
-log = require '@vonholzen/log'
+log = require './log'
 
 csvParse = require 'csv-parse/lib/sync'
 
@@ -55,7 +55,10 @@ parse = (value, context)->
     # .filter (line) -> line.length > 0
     # .map parse
 
-  throw new Error "cannot parse #{value}"
+  if value instanceof Promise
+    throw new Error "cannot parse promise"
+
+  throw new Error "cannot parse #{log.toPrettyString value}"
 
 class Parser
   constructor: (options)->

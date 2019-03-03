@@ -8,6 +8,12 @@ class Template
   expressions: ->
     @template.match @expression
 
+  substitute: (data)->
+    result = @template
+    for key, value of data
+      result = result.replace '#{'+key+'}', value
+    result
+
 template = (options)->
   if options instanceof Array
     if typeof options?[0] == 'string'

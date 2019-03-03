@@ -94,6 +94,8 @@ mappers =
 
   content: -> content
 
+  columns: require './map/columns'
+
   dirname: ->
     (value)->
       if value?.path

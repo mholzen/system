@@ -13,8 +13,8 @@ searchers = {
   urlQueries
   inodes: inodes()
   templates: {name: 'templates', path:/\.hbs$/}
-  mappers: {keys: Object.keys mappers}
-  reducers: {keys: Object.keys reducers}
+  mappers: {name: 'mappers', mappers, items: Object.keys mappers}
+  reducers: {name: 'reducers', reducers, items: Object.keys reducers }
 }
 
 searchers.all = Object.values searchers

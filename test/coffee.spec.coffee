@@ -17,11 +17,13 @@ describe 'coffee', ()->
     throw new Error()
     await 1
 
-  it 'async functions that throw before await', ->
+  it 'async functions that throw before await', (done)->
     try
       r = foo()
       expect(r).instanceof Promise
       r.catch (e)->
         expect(e).instanceof Error
+        done()
     catch e
       expect.fail()
+    return # dont return a promise

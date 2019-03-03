@@ -1,3 +1,5 @@
+_ = require 'lodash'
+
 module.exports = (fields)->
   (data)->
     if fields instanceof Array

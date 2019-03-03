@@ -42,8 +42,15 @@ items = (data)->
     return stream data.split '\n'
 
   r = request data
-  if r?
-    return parse r
+  r = r
+  .then (d)->
+    if not d?
+      log.error 'empty request'
+      return []
+    parse d
+  .catch (e)->
+    log.error e
+    return []
 
   throw new Error "cannot get items from #{log.toPrettyString data}"
 
