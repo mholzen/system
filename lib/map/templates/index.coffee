@@ -1,3 +1,7 @@
+handlebars = require 'handlebars'
+{fileContentSync} = require '../../content'
+{Template} = require '../template'
+
 module.exports = {
-  graph: 'graph.html'
+  graph: new Template fileContentSync __dirname+'/graph.html'
 }

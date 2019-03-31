@@ -85,21 +85,33 @@ class Query
 
   stringMatch: (data)->
     if typeof data == 'object'
-      matches = _.pickBy data, (v, k)=>
-        # recurses into v if v is Class
-        @stringMatch(v) or @stringMatch(k)
-      if _.isEmpty matches
-        return null
-      return matches
+      match = {}
+      for key, value of data
+        if @stringMatch key
+          match[key] = value
+          continue
+        if (m = @stringMatch value)
+          match.data = m[0]
+          match.path = [key]
+          continue
 
-    if ['number', 'boolean'].includes typeof data
-      data = data.toString()
+      if _.isEmpty match
+        return null
+
+      return match
+
+
+    if ['number', 'boolean', 'symbol'].includes typeof data
+      if data.toString() == @query
+        return data
+      else
+        return null
 
     if typeof data == 'string'
       if @query.startsWith '-'
         return not data?.includes @query.slice(1)
       if data == @query
-        return @query
+        return data
       return null
 
     if typeof data == 'function' or typeof data == 'undefined'
@@ -108,6 +120,12 @@ class Query
     throw new Error "string query against '#{typeof data}' data"
 
   regexpMatch: (data)->
+    if ['number', 'boolean', 'symbol'].includes typeof data
+      if @query.exec data.toString()
+        return [data]
+      else
+        return null
+
     if typeof data == 'string'
       return @query.exec data
 
@@ -120,22 +138,60 @@ class Query
 
     throw new Error "regexp query against '#{typeof data}' data"
 
+
+  _objectMatch: (data, matchFunction)->
+    match = {}
+    for key, value of @query
+      if not (key of data)
+        return null
+
+      m = matchFunction key, value
+      if m != null
+        match[key] = m[0].data ? m[0]
+
+    if _.isEmpty match
+      return null
+
+    return match
+
+
   objectMatch: (data)->
     if typeof data != 'object'
       throw new Error "cannot query object against '#{typeof data}' data"
 
-    matches = {}
+    match = {}
     for key, value of @query
       if not (key of data)
-        continue
-      match = query(value).match data[key]
+        break
+      valueMatch = query(value).match data[key]
+      if valueMatch != null
+        match[key] = valueMatch[0].data ? valueMatch[0]
 
-      if match != null
-        matches[key] = match[0]
+    if not _.isEmpty match
+      return [{
+        data: match
+        path: []
+      }]
 
-    if _.isEmpty matches
+    if not @recurse()
       return null
+
+    matches = []
+    for key, value of data
+      match = @match value
+      if match != null
+        m =
+          data: match[0].data ? match[0]
+          path: [key]
+        if match[0].path?.length > 0
+          m.path.push match[0].path
+        matches.push m
+
+    if matches.length == 0
+      return null
+
     return matches
+
 
   _joinMatches: (matches)->
     isRegeExpAnswer = (a)->
@@ -212,7 +268,7 @@ class Query
     if match == null
       return null
 
-    if not [@arrayMatch, @regexpMatch].includes @_match
+    if not [@arrayMatch, @regexpMatch, @objectMatch].includes @_match
       match = [ match ]
 
     return match
@@ -267,7 +323,8 @@ class Query
 
       if not @recurse()
         if @test item
-          output.write item
+
+          output.write @match(item)[0]
         return
 
       unmetMatches = @nonMatches item

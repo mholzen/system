@@ -1,5 +1,6 @@
 #!/usr/bin/env coffee
 
+
 process.env.NODE_CONFIG_DIR = __dirname + '../config'
 
 query = require '../lib/query'

@@ -16,6 +16,9 @@ fileContent = (path)->
       log 'readFile', {content: content.toString()}
       resolve content
 
+fileContentSync = (path)->
+  fs.readFileSync path
+
 content = (from, context)->
   log 'content', {from}
   if typeof from == 'undefined'
@@ -50,5 +53,7 @@ content = (from, context)->
 
   log 'cannot get content', {from}
   throw new Error "cannot get content from #{from}"
+
+content.fileContentSync = fileContentSync
 
 module.exports = content

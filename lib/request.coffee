@@ -28,4 +28,6 @@ request = (data)->
       throw new Error "cannot make a filepath from #{log.toPrettyString data}"
   throw new Error "cannot make a request from #{log.toPrettyString data}"
 
+request.request = request
+
 module.exports = request

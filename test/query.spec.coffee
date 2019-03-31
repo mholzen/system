@@ -39,7 +39,7 @@ describe 'query', ->
       expect(q.test(2)).be.false
       expect(q.test(3)).be.true
 
-  describe 'create from a string', ->
+  describe 'from:string', ->
     it 'match a string', ->
       q = createQuery 'foo'
       expect(q.test('foo')).be.true
@@ -57,11 +57,12 @@ describe 'query', ->
       value.toString = -> this.foo
       expect(q.test(value)).be.true
 
-    it 'should match an object', ->
+    it 'match:object', ->
       q = createQuery 'foo'
       expect(q.test({a:'bar'})).be.false
       expect(q.test({a:'foobar'})).be.false
       expect(q.test({a:'foo', b:'bar'})).be.true
+      expect(q.test({b:{a:'foo', b:'bar'}})).be.false
 
   describe 'from an array', ->
     it 'should match a string', ->
@@ -150,6 +151,7 @@ describe 'query', ->
       q = fromArgs ['foo:bar', 'limit:1', 'recurse:2']
       expect(q.options.limit).equal(1)
       expect(q.options.recurse).equal(2)
+      expect(q.recurse()).true
 
 
 describe 'query.test', ->

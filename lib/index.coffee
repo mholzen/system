@@ -9,7 +9,6 @@ module.exports = {
   request: require './request'
   stream: require './stream'
   strings: require './strings'
-  search: require './search'
   searchers: require './searchers'
   summarize: require './summarize'
   table: require './table'

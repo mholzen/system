@@ -1,10 +1,7 @@
+query = require './query'
 bookmarks = require './bookmarks'
 inodes = require './inodes'
 urlQueries = require './urlQueries'
-# require './lib/application'
-# require './lib/url'
-# require './lib/sql'
-# require './lib/sparql'
 mappers = require './mappers'
 reducers = require './reducers'
 
@@ -18,5 +15,8 @@ searchers = {
 }
 
 searchers.all = Object.values searchers
+
+searchers.search = (args...)->
+  query(args).searchIn searchers.all
 
 module.exports = searchers
