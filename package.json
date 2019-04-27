@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.coffee",
   "scripts": {
-    "mocha": "fswatch . | xargs -n1 -I{} mocha -b",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "mocha": "fswatch . | xargs -n1 -I{} mocha -b -g",
+    "test": "mocha",
     "start": "forever -a -c coffee start server/start.coffee",
     "stop": "forever -a stop server/start.coffee",
     "watch": "forever --debug -v -a -w --watchIgnore 'files/**' -c coffee server/start.coffee | bunyan",
