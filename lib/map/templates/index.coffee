@@ -3,5 +3,5 @@ handlebars = require 'handlebars'
 {Template} = require '../template'
 
 module.exports = {
-  graph: new Template fileContentSync __dirname+'/graph.html'
+  graph: new Template fileContentSync( __dirname+'/graph.html').toString()
 }
