@@ -4,6 +4,7 @@ dates = require './dates'
 iterable = require './map/iterable'
 request = require './request'
 parse = require './parse'
+{edges, value, traverse} = require './generators/traverse'
 
 keys = (x)->
   if stream.isStream x
@@ -58,4 +59,7 @@ module.exports = {
   keys
   dates
   items
+  edges
+  value
+  traverse
 }
