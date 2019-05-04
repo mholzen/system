@@ -36,5 +36,5 @@ describe 'query.searchIn', ->
   it 'should find in objects', (done)->
     query({a:1}).searchIn [{a:1, b:1, c:{d:1}}, {c:1}]
     .toArray (results)->
-      expect(results).eql [{a:1, b:1}]
+      expect(results).eql [value:{a:1}, path:[]]
       done()

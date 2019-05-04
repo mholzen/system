@@ -11,6 +11,7 @@ iterable = require './map/iterable'
 class Query
   setQuery: (query) ->
     @query = query
+    @path = true
     switch
       when query instanceof Query
         _.assign(this, query)
@@ -60,6 +61,33 @@ class Query
     else
       (typeof data != 'undefined') == @query
 
+  _objectMatch: (data)->
+    matches = []
+    for key, value of data
+
+      keyQuery = @query[key] ? @query
+      if query(keyQuery).test key
+        matches.push
+          value:
+            [key]: value
+          path: []
+
+      if (m = @match value)
+        if not (m instanceof Array)
+          m = [m]
+
+        for m1 in m
+          m1 =
+            value: m1?.value ? m1
+            path: m1?.path ? []
+          m1.path.unshift key
+          matches.push m1
+    if _.isEmpty matches
+      return null
+
+    return matches
+
+
   numberMatch: (data)->
     if typeof data == 'string'
       data = _.toNumber data
@@ -68,42 +96,20 @@ class Query
       return data.filter (d)=> @match d
 
     if typeof data == 'object'
-      match = _.pickBy data, (v, k)=>
-        (@query == v) or (@query == k)
-      return if _.isEmpty match
-        null
-      else
-        match
+      return @_objectMatch data
 
     if typeof data == 'number'
       return if @query == data
-        data
+        [data]
       else
         null
 
     throw new Error "number query against '#{typeof data}' data"
 
   stringMatch: (data)->
-    if typeof data == 'object'
-      match = {}
-      for key, value of data
-        if @stringMatch key
-          match[key] = value
-          continue
-        if (m = @stringMatch value)
-          match.data = m[0]
-          match.path = [key]
-          continue
-
-      if _.isEmpty match
-        return null
-
-      return match
-
-
     if ['number', 'boolean', 'symbol'].includes typeof data
       if data.toString() == @query
-        return data
+        return [data]
       else
         return null
 
@@ -111,11 +117,36 @@ class Query
       if @query.startsWith '-'
         return not data?.includes @query.slice(1)
       if data == @query
-        return data
+        return [data]
       return null
 
     if typeof data == 'function' or typeof data == 'undefined'
       return null
+
+    if typeof data == 'object'
+      matches = []
+      for key, value of data
+        if @query == key
+          matches.push
+            value:
+              [key]: value
+            path: []
+
+        if (m = @stringMatch value)
+          if not (m instanceof Array)
+            m = [m]
+
+          for m1 in m
+            m1 =
+              value: m1?.value ? m1
+              path: m1?.path ? []
+            m1.path.unshift key
+            matches.push m1
+
+      if _.isEmpty matches
+        return null
+
+      return matches
 
     throw new Error "string query against '#{typeof data}' data"
 
@@ -126,66 +157,71 @@ class Query
       else
         return null
 
+    if typeof data == 'function' or typeof data == 'undefined'
+      return null
+
     if typeof data == 'string'
       return @query.exec data
 
     if typeof data == 'object'
-      matches = _.pickBy data, (v, k)=>
-        @regexpMatch(v) or @regexpMatch(k)
+      matches = []
+      for key, value of data
+
+        keyQuery = @query
+        if keyQuery.test key
+          matches.push
+            value:
+              [key]: value
+            path: []
+
+        if (m = @match value)
+          if not (m instanceof Array)
+            m = [m]
+
+          for m1 in m
+            m1 =
+              value: m1?.value ? m1
+              path: m1?.path ? []
+            m1.path.unshift key
+            matches.push m1
+
       if _.isEmpty matches
         return null
-      return [matches]
+      return matches
 
     throw new Error "regexp query against '#{typeof data}' data"
 
-
-  _objectMatch: (data, matchFunction)->
-    match = {}
-    for key, value of @query
-      if not (key of data)
-        return null
-
-      m = matchFunction key, value
-      if m != null
-        match[key] = m[0].data ? m[0]
-
-    if _.isEmpty match
-      return null
-
-    return match
 
 
   objectMatch: (data)->
     if typeof data != 'object'
       throw new Error "cannot query object against '#{typeof data}' data"
 
+    matches = []
     match = {}
-    for key, value of @query
-      if not (key of data)
-        break
-      valueMatch = query(value).match data[key]
-      if valueMatch != null
-        match[key] = valueMatch[0].data ? valueMatch[0]
+    for key, value of data
+
+      if @query[key]?
+        if (m = query(@query[key]).match value)
+          match.value = match.value ? {}
+          match.value[key] = m[0]?.value ? m[0]
+          match.path = m[0]?.path ? []
+
+      else
+        # if ((typeof value == 'object') and (m = @match value))
+        if ((typeof value == 'object') and (m = @match value))
+          match1 =
+            value: m[0]?.value ? m
+            path: m[0]?.path ? []
+          match1.path.unshift key
+          matches.push match1
+
 
     if not _.isEmpty match
-      return [{
-        data: match
-        path: []
-      }]
+      matches.push match
 
-    if not @recurse()
+    if _.isEmpty matches
       return null
-
-    matches = []
-    for key, value of data
-      match = @match value
-      if match != null
-        m =
-          data: match[0].data ? match[0]
-          path: [key]
-        if match[0].path?.length > 0
-          m.path.push match[0].path
-        matches.push m
 
     if matches.length == 0
       return null
@@ -268,7 +304,7 @@ class Query
     if match == null
       return null
 
-    if not [@arrayMatch, @regexpMatch, @objectMatch].includes @_match
+    if not [@stringMatch, @numberMatch, @arrayMatch, @regexpMatch, @objectMatch].includes @_match
       match = [ match ]
 
     return match

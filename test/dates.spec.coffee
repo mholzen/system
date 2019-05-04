@@ -3,25 +3,18 @@ query = require '../lib/query'
 
 describe 'dates', ->
   it 'iterator', (done)->
-    dates.items.take(1).toArray (items)->
-      expect(items[0] instanceof Date).true
-      done()
-
-  it 'match', (done)->
-    q = new query.Query {name:'dates'}
-    expect(q.test dates).true
-    dates.items.take(1).toArray (items)->
+    dates().items.take(1).toArray (items)->
       expect(items[0] instanceof Date).true
       done()
 
   it.skip 'partial match', (done)->
-    q = new query.Query [{name:'dates'}, 'GMT']
+    q = query [{name:'dates'}, 'GMT']
     expect(q.test dates).false
     u = q.nonMatches dates
     expect(u.matches.length).equal 1
     expect(u.test 'GMT').true
     expect(u.test dates).false
-    dates.items.take(1).toArray (date)->
+    dates().items.take(1).toArray (date)->
       expect(u.toString()).equal 'GMT'
       expect(u.test date).true
       uu = u.nonMatches date

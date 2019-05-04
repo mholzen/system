@@ -38,6 +38,7 @@ class Dates
     future: ''
     past: ''
 
-dates = new Dates()
+dates = ->
+  new Dates()
 
 module.exports = dates

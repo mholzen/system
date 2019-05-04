@@ -58,11 +58,11 @@ describe 'query', ->
       expect(q.test(value)).be.true
 
     it 'match:object', ->
-      q = createQuery 'foo'
+      q = query 'foo'
       expect(q.test({a:'bar'})).be.false
       expect(q.test({a:'foobar'})).be.false
       expect(q.test({a:'foo', b:'bar'})).be.true
-      expect(q.test({b:{a:'foo', b:'bar'}})).be.false
+      expect(q.test({b:{a:'foo', b:'bar'}})).be.true
 
   describe 'from an array', ->
     it 'should match a string', ->

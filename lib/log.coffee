@@ -9,6 +9,9 @@ log.filter = (data)->
   if data instanceof Error
     return data
 
+  if data instanceof Array
+    return data
+
   if typeof data != 'object'
     return data
 

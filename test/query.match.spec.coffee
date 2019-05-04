@@ -9,7 +9,7 @@ describe 'query', ->
       r = query().match 'abc'
       expect(r).eql ['abc']
 
-    it 'match returns matches as property 0', ->
+    it 'match fundamentals', ->
       r = query(1).match 1
       expect(r).eql [1]
       r = query('1').match 1
@@ -21,20 +21,35 @@ describe 'query', ->
       r = query(1).match [1, 2, 1]
       expect(r).eql [1, 1]
 
-      r = query(1).match {a:1, b:2, c:1}
-      expect(r).eql [{a:1, c:1}]
+      # each key is a separate match
+      r = query(1).match {a:1, b:2, c:1, d:{a:1}}
+      expect(r).eql [
+        {value: 1, path:['a']}
+        {value: 1, path:['c']}
+        {value: 1, path:['d', 'a']}
+      ]
+
+      expect(query('foo').match({a:{b:'foo', c:'bar'}})).eql [
+        {value: 'foo', path: ['a', 'b']}
+      ]
 
       r = query(/[ac]/).match {a:1, b:2, c:1}
-      expect(r).eql [{a:1, c:1}]
+      expect(r).eql [
+        {value: {a:1}, path:[]}
+        {value: {c:1}, path:[]}
+      ]
 
       r = query({a:1}).match {a:1, b:2, c:1}
-      expect(r).property(0).eql {a:1}
+      expect(r).eql [{value:{a:1}, path:[]}]
 
       r = query({a:1}).match {a:1, b:2, c:{a:1}}
-      expect(r).property('a').eql 1
-      expect(r).property('c').eql {a:1}
+      # TODO: dependency on order
+      expect(r).eql [
+        {value:{a:1}, path:['c']}
+        {value:{a:1}, path:[]}
+      ]
 
-    it 'matches returns matches and paths', ->
+    it.skip 'matches returns matches and paths', ->
       r = query(1).matches 1
       expect(r.values).eql [1]
       r = query('a').matches 'ab'
@@ -75,7 +90,10 @@ describe 'query', ->
       r = query(/a/).match ['a', 'b']
       expect(r).eql ['a']
       r = query(/a/).match {a:1, aa:2, b:1}
-      expect(r).eql [{a:1, aa:2}]
+      expect(r).eql [
+        {value:{a:1}, path: []}
+        {value:{aa:2}, path: []}
+      ]
 
     it 'array', ->
       r = await query([]).match 'abc'
@@ -87,8 +105,95 @@ describe 'query', ->
       r = await query([{a:1}, 2]).match {a:1}
       expect(r).null
 
-  describe 'match', ->
 
+  describe 'high level', ->
+    describe 'matches object', ->
+      data =
+        mvh:
+          first: 'Marc'
+          last: 'von Holzen'
+          address:
+            street: '6703 34th Ave NW'
+            city: 'Seattle'
+          accounts:
+            checking:
+              wellsfargo: 123
+        jdoe:
+          first: 'John'
+          last: 'Doe'
+          address:
+            street: 'Avenue A'
+            city: 'Seattle'
+
+      it 'from string', ->
+        expect(query('mvh').match data).eql [
+          {value:{mvh:data.mvh}, path:[]}
+        ]
+        expect(query('last').match data).eql [
+          {value:{last:'von Holzen'}, path:['mvh']}
+          {value:{last:'Doe'}, path:['jdoe']}
+        ]
+        expect(query('Seattle').match data).eql [
+          {value:'Seattle', path:['mvh', 'address', 'city']}
+          {value:'Seattle', path:['jdoe', 'address', 'city']}
+        ]
+        expect(query('wellsfargo').match data).eql [
+          {value:{wellsfargo: 123}, path:['mvh', 'accounts', 'checking']}
+        ]
+
+      it 'from object', ->
+        q = query first: 'Marc'
+        expect(q.match(data.mvh)).eql [
+          value:{first:'Marc'}, path: []
+        ]
+
+        expect(q.match(data)).eql [
+          value:{first:'Marc'}, path: ['mvh']
+        ]
+
+        expect(query(city: 'Seattle').match(data)).eql [
+          {value:{city: 'Seattle'}, path: ['mvh', 'address']}
+          {value:{city: 'Seattle'}, path: ['jdoe', 'address']}
+          # TODO: order is not guaranteed
+        ]
+
+      it 'from regex', ->
+        expect(query(/first|Marc/).match data).eql [
+          {value:{first:'Marc'}, path:['mvh']}
+          {value:'Marc', path:['mvh', 'first']}
+          {value:{first:'John'}, path:['jdoe']}
+        ]
+
+      it 'from object with regex', ->
+        expect(query(first:/arc/).match data).eql [
+          {value:{first:'arc'}, path:['mvh']}
+        ]
+
+
+      it 'from array', ->
+        # joins each matches
+        expect(query(['mvh', 'address']).match data).property(0).eql
+          value: {address: data.mvh.address}
+          path: ['mvh']
+
+      # array = [data.mvh, data.jdoe]
+      # expect(query('marc').match array).eql ['marc']
+      # expect(query('marc').match array).eql [
+      #   {value:'marc', path:['0', 'first']}
+      # ]
+
+      # expect(query('marc').match data).eql ['marc']
+      # expect(query('mvh').match data).eql [{mvh: data.mvh}]
+
+    describe 'matches searchers', ->
+      it 'templates', ->
+        expect(
+          query('graph').match(system.searchers)
+          .map (r)->r.path.join '.'
+        )
+        .includes 'mappers.mappers.templates'
+
+  describe.skip 'match', ->
     it 'array', ->
       r = await query(1).match [1, 2, 1]
       expect(r).eql [1,1]
@@ -148,15 +253,14 @@ describe 'query', ->
     #   expect(r).property(0).eql 1
     #   expect(r).property('path').eql ['a']
 
+    it.skip '-string on object key', ->
+      # TODO: -a matches the value :1
+      r = await query('-a').match {a:1, b:2}
+      expect(r).eql b:2
 
-  it.skip '-string on object key', ->
-    # TODO: -a matches the value :1
-    r = await query('-a').match {a:1, b:2}
-    expect(r).eql b:2
-
-  it.skip '-string on object value', ->
-    # key 'a' matches '-1' so it returns it too
-    r = await query('-1').match {a:'1', b:2}
-    expect(r).eql b:2
+    it.skip '-string on object value', ->
+      # key 'a' matches '-1' so it returns it too
+      r = await query('-1').match {a:'1', b:2}
+      expect(r).eql b:2
 
 # TODO: match against streams
