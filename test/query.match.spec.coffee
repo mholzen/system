@@ -95,15 +95,23 @@ describe 'query', ->
         {value:{aa:2}, path: []}
       ]
 
-    it 'array', ->
-      r = await query([]).match 'abc'
+    it 'from:array', ->
+      r = query([]).match 'abc'
       expect(r).eql ['abc']
-      r = await query([/a.c/, /.b./]).match 'abc'
+      r = query([/a.c/, /.b./]).match 'abc'
       expect(r).property(0).eql 'abc'
-      r = await query([/a/, /d/]).match 'abc'
+      r = query([/a/, /d/]).match 'abc'
       expect(r).null
-      r = await query([{a:1}, 2]).match {a:1}
+      r = query([{a:1}, 2]).match {a:1}
       expect(r).null
+
+    it 'object match array', ->
+      expect(
+        query(b:2).match([{a:1}, {b:2}, {c:3}])
+      ).eql [{b:2}]
+      expect(
+        query(b:2).match([1,2,3])
+      ).eql null
 
 
   describe 'high level', ->
@@ -186,16 +194,23 @@ describe 'query', ->
       # expect(query('mvh').match data).eql [{mvh: data.mvh}]
 
     describe 'matches searchers', ->
+      path = (match)->match.path.join '.'
       it 'templates', ->
         expect(
           query('graph').match(system.searchers)
-          .map (r)->r.path.join '.'
+          .map path
         )
         .includes 'mappers.mappers.templates'
 
+      it 'urlQueries', ->
+        expect(
+          query(name:'workflowy').match(system.searchers.urlQueries)
+          .map path
+        ).includes 'workflowy'
+
   describe.skip 'match', ->
     it 'array', ->
-      r = await query(1).match [1, 2, 1]
+      r = query(1).match [1, 2, 1]
       expect(r).eql [1,1]
 
     it 'object key', ->

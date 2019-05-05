@@ -2,7 +2,8 @@
 
 
 process.env.NODE_CONFIG_DIR = __dirname + '../config'
-
+log = require '../lib/log'
+{stream} = require '../lib'
 query = require '../lib/query'
 searchers = require '../lib/searchers'
 {json} = require '../lib/mappers'
@@ -17,8 +18,14 @@ process.stdout.on 'error', (event)->
 
 count = 0
 
-results = query.searchIn searchers.all
-# results = query.searchIn [searchers.urlQueries]
+# results = query.searchIn searchers.all
+results = query.match searchers.all
+
+if results == null
+  console.warn "no results found"
+  process.exit 1
+
+results = stream results
 
 {isStream} = require '../lib/stream'
 replacer = (key, value)->

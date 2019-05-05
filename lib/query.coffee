@@ -194,39 +194,42 @@ class Query
 
 
   objectMatch: (data)->
-    if typeof data != 'object'
-      throw new Error "cannot query object against '#{typeof data}' data"
-
-    matches = []
-    match = {}
-    for key, value of data
-
-      if @query[key]?
-        if (m = query(@query[key]).match value)
-          match.value = match.value ? {}
-          match.value[key] = m[0]?.value ? m[0]
-          match.path = m[0]?.path ? []
-
-      else
-        # if ((typeof value == 'object') and (m = @match value))
-        if ((typeof value == 'object') and (m = @match value))
-          match1 =
-            value: m[0]?.value ? m
-            path: m[0]?.path ? []
-          match1.path.unshift key
-          matches.push match1
-
-
-    if not _.isEmpty match
-      matches.push match
-
-    if _.isEmpty matches
+    if ['string', 'number', 'boolean', 'symbol'].includes typeof data
       return null
 
-    if matches.length == 0
-      return null
+    if typeof data == 'object'
+      matches = []
+      match = {}
+      for key, value of data
 
-    return matches
+        if @query[key]?
+          if (m = query(@query[key]).match value)
+            match.value = match.value ? {}
+            match.value[key] = m[0]?.value ? m[0]
+            match.path = m[0]?.path ? []
+
+        else
+          # if ((typeof value == 'object') and (m = @match value))
+          if ((typeof value == 'object') and (m = @match value))
+            match1 =
+              value: m[0]?.value ? m
+              path: m[0]?.path ? []
+            match1.path.unshift key
+            matches.push match1
+
+
+      if not _.isEmpty match
+        matches.push match
+
+      if _.isEmpty matches
+        return null
+
+      if matches.length == 0
+        return null
+
+      return matches
+
+    throw new Error "cannot query object against '#{typeof data}' data #{data}"
 
 
   _joinMatches: (matches)->
@@ -294,11 +297,14 @@ class Query
     if @query == null
       return [ data ]
 
-    if data instanceof Array
-      return data.filter (d) => @match d
+    if (data instanceof Array) #or stream.isStream data
+      results = data.filter (d) => @match d
+      if results.length == 0
+        return null
+      return results
 
-    if stream.isStream data
-      return data.filter @_match data
+    # if stream.isStream data
+    #   return data.filter @_match data
 
     match = @_match data
     if match == null
