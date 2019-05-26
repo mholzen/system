@@ -14,3 +14,4 @@ $coffee $root/bin/post.coffee "$@"
 # echo "search <query> | post - <content>"
 # echo "search <query> | post <resource> -"
 # echo "search <query> | map augment append <content> | map save"
+# echo "echo <filepath> | post ."  # ln -s <filepath> .

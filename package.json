@@ -16,7 +16,6 @@
   "license": "ISC",
   "dependencies": {
     "@vonholzen/log": "^1.0.0",
-    "JSONPath": "^0.11.2",
     "coffeescript": "^2.3.0",
     "command-line-args": "^5.0.2",
     "csv-parse": "^2.5.0",
@@ -27,6 +26,7 @@
     "handlebars": "^4.1.0",
     "highland": "^2.10.2",
     "is-promise": "^2.1.0",
+    "jsonpath": "^1.0.1",
     "lodash": "^4.17.11",
     "map-stream": "0.0.6",
     "marked": "^0.4.0",

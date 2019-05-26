@@ -7,6 +7,7 @@ content = require './content'
 getContent = content
 {items} = require './generators'
 iterable = require './map/iterable'
+{startsWith, intersect, Match, Matches} = require './match'
 
 class Query
   setQuery: (query) ->
@@ -161,7 +162,10 @@ class Query
       return null
 
     if typeof data == 'string'
-      return @query.exec data
+      r = @query.exec data
+      if r == null
+        return null
+      return [new Match r[0], [r.index]]
 
     if typeof data == 'object'
       matches = []
@@ -209,14 +213,16 @@ class Query
             match.path = m[0]?.path ? []
 
         else
-          # if ((typeof value == 'object') and (m = @match value))
           if ((typeof value == 'object') and (m = @match value))
-            match1 =
-              value: m[0]?.value ? m
-              path: m[0]?.path ? []
-            match1.path.unshift key
-            matches.push match1
+            if not (m instanceof Array)
+              m = [m]
 
+            for m1 in m
+              m1 =
+                value: m1?.value ? m1
+                path: m1?.path ? []
+              m1.path.unshift key
+              matches.push m1
 
       if not _.isEmpty match
         matches.push match
@@ -256,7 +262,15 @@ class Query
           result.input = a.input
           return result
 
-        return _.assign a, b
+        if a.path? and b.path?
+          if a.path.length > b.path.length
+            if startsWith a.path, b.path
+              return a
+          else
+            if startsWith b.path, a.path
+              return b
+          return null
+
       throw new Error "adding '#{typeof a}' value neither object or string"
 
     matches.reduce (result, match)->
@@ -266,18 +280,23 @@ class Query
     if @query.length == 0
       return [data]
 
-    matches = []
+    matches = null
     nullSeen = false
     for subquery in @query
       match = query(subquery).match data
       nullSeen = (match == null) or nullSeen
-      matches.push match?[0]
+      if nullSeen
+        break
+      if matches == null
+        matches = match
+        continue
+
+      matches = intersect matches, match
 
     if not @options.partialMatches
       if nullSeen
         return null
 
-    matches.unshift @_joinMatches matches
     matches
 
   test: (data)->
@@ -298,7 +317,23 @@ class Query
       return [ data ]
 
     if (data instanceof Array) #or stream.isStream data
-      results = data.filter (d) => @match d
+      results = []
+      data.forEach (d, i) =>
+
+        m = @match d
+        if m == null
+          return null
+
+        for m1 in m
+          m1 = if m1.value? and m1.path?
+            value: m1.value
+            path: m1.path
+          else
+            value: m1
+            path: []
+          m1.path.unshift i
+          results.push m1
+
       if results.length == 0
         return null
       return results
@@ -365,7 +400,6 @@ class Query
 
       if not @recurse()
         if @test item
-
           output.write @match(item)[0]
         return
 
@@ -407,6 +441,7 @@ class Query
 query = (terms, options)->
   new Query terms, options
 
+query.query = query
 query.Query = Query
 query.createQuery = query
 

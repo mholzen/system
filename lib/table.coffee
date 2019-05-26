@@ -1,6 +1,6 @@
 highland = require 'highland'
 parse = require './parse'
-log = require '@vonholzen/log'
+log = require './log'
 _ = require 'lodash'
 html = require './html'
 
@@ -58,7 +58,9 @@ class Table
     item[key] for key in @keys
 
   mapString: (row)=>
-    @map(row).map (item)=>
+    @map(row)
+    .map (item)-> log.print item
+    .map (item)=>
       fit(item, @width / @keys.length)
     .join ''
 

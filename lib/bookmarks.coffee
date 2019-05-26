@@ -1,8 +1,10 @@
-JSONPath = require 'JSONPath'
 fs = require 'fs'
 _ = require 'lodash'
 log = require '@vonholzen/log'
 stream = require 'highland'
+{promisify} = require 'util'
+readFile = promisify fs.readFile
+jsonpath = require 'jsonpath'
 
 # TODO: move to parser?
 
@@ -13,19 +15,11 @@ class JsonFile
     @generator = generator
     @items = stream()
     @name = 'bookmarks'
-
-    fs.readFile @filename, 'utf8', (err, data)=>
-      if err
-        console.error err
-        return
-
-      JSONPath
-        json: JSON.parse data
-        path: @path
-        flatten: true
-        callback: (item)=>
-          log 'jsonfile reading item', {item}
-          @items.write @generator item
+    @count = 0
+    @read = readFile(@filename, 'utf8').then (data)=>
+      data = JSON.parse data
+      @items = jsonpath.query data, @path
+      return @
 
   toString: ->
     JSON.stringify

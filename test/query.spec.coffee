@@ -1,6 +1,7 @@
 query = require '../lib/query'
 {createQuery, fromArgs, Query} = query
 {post} = require '../lib'
+require './query.match.spec'
 
 describe 'query', ->
   describe 'from null', ->
@@ -64,6 +65,15 @@ describe 'query', ->
       expect(q.test({a:'foo', b:'bar'})).be.true
       expect(q.test({b:{a:'foo', b:'bar'}})).be.true
 
+  describe 'from:regex', ->
+    it 'match a string', ->
+      expect query(/./).match 'abc'
+      .eql [value: 'a', path: [0]]
+
+      expect query(/b/).match 'abc'
+      .eql [value: 'b', path: [1]]
+
+
   describe 'from an array', ->
     it 'should match a string', ->
       q = createQuery ['foo', 'bar']
@@ -72,9 +82,12 @@ describe 'query', ->
 
     it 'should match an object and string', ->
       q = createQuery [{foo:/bar/}, /bing/]
-      expect(q.test({foo:'bar', baz: 'bing'})).be.true
-      expect(q.test({foo:'bar bing'})).be.true
+      expect(q.test({foo:'bar', baz: 'bing'})).be.false
+      expect(q.test({foo:'bar bing'})).be.false
       expect(q.test({foo:'bar'})).be.false
+
+      q = query [{foo:/bar.*$/}, /bar bing/]
+      expect(q.test({foo:'bar bing'})).be.true
 
   describe 'from an object', ->
     it 'should match an object', ->

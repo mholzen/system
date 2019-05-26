@@ -1,7 +1,6 @@
 query = require '../lib/query'
 {createQuery, fromArgs, Query} = query
 {post} = require '../lib'
-# require './query.spec'
 
 describe 'query', ->
   describe 'match', ->
@@ -18,8 +17,14 @@ describe 'query', ->
       expect(r).eql null
       r = query('a').match 'a'
       expect(r).eql ['a']
-      r = query(1).match [1, 2, 1]
-      expect(r).eql [1, 1]
+      expect query(1).match [1, 2, 1]
+      .eql [
+        {value: 1, path: [0]}
+        {value: 1, path: [2]}
+      ]
+
+      expect query(/./).match 'abc'
+      .eql [ value:'a', path: [0] ]
 
       # each key is a separate match
       r = query(1).match {a:1, b:2, c:1, d:{a:1}}
@@ -39,6 +44,12 @@ describe 'query', ->
         {value: {c:1}, path:[]}
       ]
 
+      r = query(/[ac]/).match {i:[{a:1}, {b:2}, {c:1}]}
+      expect(r).eql [
+        {value: {a:1}, path:['i', 0]}
+        {value: {c:1}, path:['i', 2]}
+      ]
+
       r = query({a:1}).match {a:1, b:2, c:1}
       expect(r).eql [{value:{a:1}, path:[]}]
 
@@ -48,6 +59,12 @@ describe 'query', ->
         {value:{a:1}, path:['c']}
         {value:{a:1}, path:[]}
       ]
+
+      r = query({a:/a/, b:/b/}).match {a:'abc', b:'abc'}
+      expect(r).eql [
+        {value:{a:'a', b:'b'}, path:[]}
+      ]
+
 
     it.skip 'matches returns matches and paths', ->
       r = query(1).matches 1
@@ -86,9 +103,11 @@ describe 'query', ->
       r = query(/1/).match 11
       expect(r).eql [11]
       r = query(/a/).match 'abc'
-      expect(r).property(0).eql 'a'
+      expect(r).eql [value:'a', path:[0]]
       r = query(/a/).match ['a', 'b']
-      expect(r).eql ['a']
+      expect(r).eql [
+        {value:'a', path: [0,0]}
+      ]
       r = query(/a/).match {a:1, aa:2, b:1}
       expect(r).eql [
         {value:{a:1}, path: []}
@@ -99,16 +118,24 @@ describe 'query', ->
       r = query([]).match 'abc'
       expect(r).eql ['abc']
       r = query([/a.c/, /.b./]).match 'abc'
-      expect(r).property(0).eql 'abc'
+      expect(r).eql [
+        {value:'abc', path:[0]}
+      ]
+
       r = query([/a/, /d/]).match 'abc'
       expect(r).null
       r = query([{a:1}, 2]).match {a:1}
       expect(r).null
 
+      q = query [{foo:/bar.*$/}, /bar bing/]
+      # a:{value:bar bing path:[foo,0]} b:{value:{foo:bar bing} path:[0]}
+      expect(q.match({foo:'bar bing'})).eql []
+
     it 'object match array', ->
-      expect(
-        query(b:2).match([{a:1}, {b:2}, {c:3}])
-      ).eql [{b:2}]
+      expect query(b:2).match([{a:1}, {b:2}, {c:3}])
+      .eql [
+        {value: {b:2}, path: [1]}
+      ]
       expect(
         query(b:2).match([1,2,3])
       ).eql null
@@ -168,21 +195,38 @@ describe 'query', ->
       it 'from regex', ->
         expect(query(/first|Marc/).match data).eql [
           {value:{first:'Marc'}, path:['mvh']}
-          {value:'Marc', path:['mvh', 'first']}
+          {value:'Marc', path:['mvh', 'first', 0]}
           {value:{first:'John'}, path:['jdoe']}
         ]
 
       it 'from object with regex', ->
         expect(query(first:/arc/).match data).eql [
-          {value:{first:'arc'}, path:['mvh']}
+          {value:{first:'arc'}, path:['mvh', 1]}
         ]
+        # TODO: problem above?  if path.length > nodes then it mean sindex
+        # expect(query(first:/arc/).match data).eql [
+        #   {value:{first:'arc'}, path:['mvh'], index: 1}
+        # ]
 
+
+      # TODO: doesn't work because mvh is top level
+      it.skip 'from array', ->
+        # joins each matches
+        expect query([/a./,/.b/]).match ['a', 'b', 'ab']
+        .eql [
+          value: 'ab', path: [2]
+        ]
 
       it 'from array', ->
         # joins each matches
-        expect(query(['mvh', 'address']).match data).property(0).eql
+        expect(query([
+          'mvh'
+          'address'
+        ]).match data)
+        .eql [
           value: {address: data.mvh.address}
           path: ['mvh']
+        ]
 
       # array = [data.mvh, data.jdoe]
       # expect(query('marc').match array).eql ['marc']

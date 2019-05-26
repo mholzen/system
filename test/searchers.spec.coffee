@@ -10,10 +10,11 @@ describe 'searchers', ->
 
   it 'should find an html graph template', ->
     r = query(/DOCTYPE/).match system.mappers.templates
-    expect(r).property(0).property('path').eql ['graph', 'template']
+    path = r[0].path.slice(0,2)
+    expect(path).eql ['graph', 'template']
 
     r = query(/DOCTYPE/).match system.mappers
-    expect(r).property(0).property('path').eql ['templates', 'graph', 'template']
+    expect(r).property(0).property('path').eql ['templates', 'graph', 'template', 2]
 
     r = query('graph').match system.mappers
     expect(r).property(0).property('path').eql []   # matches graph mapper

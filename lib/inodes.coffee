@@ -13,6 +13,9 @@ stream = require 'highland'
 fs = require 'fs'
 statAsync = promisify fs.stat
 
+# TODO: create a generator that watches a subdirectory
+# use it to update symlinks targets
+
 class Stat
   constructor: (path, options)->
     @path = path ? process.cwd()
