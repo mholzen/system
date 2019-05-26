@@ -86,9 +86,6 @@ describe 'query', ->
       expect(q.test({foo:'bar bing'})).be.false
       expect(q.test({foo:'bar'})).be.false
 
-      q = query [{foo:/bar.*$/}, /bar bing/]
-      expect(q.test({foo:'bar bing'})).be.true
-
   describe 'from an object', ->
     it 'should match an object', ->
       q = createQuery {a: 'foo'}

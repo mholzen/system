@@ -121,6 +121,7 @@ intersect = (a,b)->
         value = a_value[.. end - a_key - 1]
         return new Match value, a.path
       else
+        log.debug {b}
         value = b.value[.. end - b_key - 1]
         return new Match value, b.path
 
@@ -133,7 +134,7 @@ intersect = (a,b)->
 
   if (typeof a_value != 'object') and (typeof b.value != 'object')
     if a_value != b.value
-      throw new Error "different values with same path #{log.print [a, b]}"
+      throw new Error "different values with same path #{log.smallPrint [a, b]}"
     return b
 
   keys = _.intersection(_.keys(a_value), _.keys(b.value))
@@ -144,7 +145,7 @@ intersect = (a,b)->
 
   b_value = _.pick b.value, keys
   if not _.isEqual a_value, b_value
-    throw new Error "different values with same path #{log.print [a, b]}"
+    throw new Error "different values with same path #{log.smallPrint [a, b]}"
 
   return new Match a_value, b.path
 
