@@ -157,7 +157,7 @@ intersect = (a,b)->
 
   b_value = _.pick b.value, keys
   if not _.isEqual a_value, b_value
-    throw new Error "different values with same path #{log.smallPprint [a, b]}"
+    throw new Error "different values with same path #{log.smallPrint [a, b]}"
 
   return new Match a_value, b.path
 
