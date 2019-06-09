@@ -62,42 +62,8 @@ describe 'query', ->
 
       r = query({a:/a/, b:/b/}).match {a:'abc', b:'abc'}
       expect(r).eql [
-        {value:{a:'a', b:'b'}, path:[]}
+        { value:{a:'a', b:'b'}, path:[{a:[0], b:[1]}] }
       ]
-
-
-    it.skip 'matches returns matches and paths', ->
-      r = query(1).matches 1
-      expect(r.values).eql [1]
-      r = query('a').matches 'ab'
-      expect(r).eql null
-      r = query('a').matches 'a'
-      expect(r.values).eql ['a']
-      r = query('a').matches ['a', 'b', 'a']
-      expect(r).property(0).eql 'a'
-      expect(r).property(2).eql 'a'
-
-      r = query(/1/).matches 11
-      expect(r).eql [11]
-
-      r = query(/(a(b))/).matches 'abc'
-      expect(r).eql [11]
-
-      r = query(1).matches {a:1, b:2, c:1}
-      expect(r).property('a').eql 1
-      expect(r).property('c').eql 1
-
-      r = query(/[ac]/).matches {a:1, b:2, c:1}
-      expect(r).property('a').eql 1
-      expect(r).property('c').eql 1
-
-      r = query({a:1}).matches {a:1, b:2, c:1}
-      expect(r).property('a').eql 1
-
-      r = query({a:1}).matches {a:1, b:2, c:{a:1}}
-      expect(r).property('a').eql 1
-      expect(r).property('c').eql {a:1}
-
 
     it 'from:regexp', ->
       r = query(/1/).match 11
@@ -114,6 +80,30 @@ describe 'query', ->
         {value:{aa:2}, path: []}
       ]
 
+    it 'from:object', ->
+      expect(query({b:1}).match({a:1})).null
+      q = query {a:1}
+      expect(q.match({a:1})).eql [
+        {value: {a:1}, path: []}
+      ]
+
+      q = query {foo:/b/, bar:/a/}
+      expect(q.match({foo:'abc', bar: 'abc'})).eql [
+        {value: {foo:'b', bar:'a'}, path: [{foo: [1], bar: [0]}]}
+      ]
+
+
+    it 'from:object with regexp', ->
+      q = query [{a:/b/}]
+      expect(q.match({a:'abc'})).eql [
+        {value: {a:'b'}, path: [{a: [1]}]}
+      ]
+
+      q = query {foo:/b/, bar:/a/}
+      expect(q.match({foo:'abc', bar: 'abc'})).eql [
+        {value: {foo:'b', bar:'a'}, path: [{foo: [1], bar: [0]}]}
+      ]
+
     it 'from:array', ->
       r = query([]).match 'abc'
       expect(r).eql ['abc']
@@ -127,9 +117,14 @@ describe 'query', ->
       r = query([{a:1}, 2]).match {a:1}
       expect(r).null
 
-      q = query [{foo:/bar.*$/}, /bar bing/]
-      # a:{value:bar bing path:[foo,0]} b:{value:{foo:bar bing} path:[0]}
-      expect(q.match({foo:'bar bing'})).eql []
+      # r = query(['a', /b/]).match {c:{a:{e:'b'}}}
+      # expect(r).eql []
+
+      q = query [{a:/b/}, /abc/]
+      # debug intersect a:[{value:{foo:b} path:[{foo:}]}] b:[{value:abc path:[foo,0]}]
+      expect(q.match({a:'abc'})).eql [
+        {value: 'b', path: [{a:[1]}]}
+      ]
 
     it 'object match array', ->
       expect query(b:2).match([{a:1}, {b:2}, {c:3}])
@@ -201,7 +196,7 @@ describe 'query', ->
 
       it 'from object with regex', ->
         expect(query(first:/arc/).match data).eql [
-          {value:{first:'arc'}, path:['mvh', 1]}
+          {value:{first:'arc'}, path:['mvh', {first:[1]}]}
         ]
         # TODO: problem above?  if path.length > nodes then it mean sindex
         # expect(query(first:/arc/).match data).eql [
@@ -248,9 +243,8 @@ describe 'query', ->
 
       it 'urlQueries', ->
         expect(
-          query(name:'workflowy').match(system.searchers.urlQueries)
-          .map path
-        ).includes 'workflowy'
+          query('workflowy').match(system.searchers.urlQueries)
+        ).length.least 1
 
   describe.skip 'match', ->
     it 'array', ->

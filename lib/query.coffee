@@ -203,14 +203,19 @@ class Query
 
     if typeof data == 'object'
       matches = []
-      match = {}
+      match = {value:{}, path:[]}
+      path = {}
       for key, value of data
 
         if @query[key]?
           if (m = query(@query[key]).match value)
-            match.value = match.value ? {}
-            match.value[key] = m[0]?.value ? m[0]
-            match.path = m[0]?.path ? []
+            if m.length > 1
+              throw new Error "ignoring results #{m}"
+            m = m[0]
+
+            match.value[key] = m.value ? m
+            if m.path?.length > 0
+              path[key] = m.path
 
         else
           if ((typeof value == 'object') and (m = @match value))
@@ -224,7 +229,9 @@ class Query
               m1.path.unshift key
               matches.push m1
 
-      if not _.isEmpty match
+      if not _.isEmpty match.value
+        if not _.isEmpty path
+          match.path.push path
         matches.push match
 
       if _.isEmpty matches
@@ -429,8 +436,6 @@ class Query
     if not iterable data
       try
         data = items data
-        if data instanceof Promise
-          log.debug 'here', data
       catch e
         log.error 'query', {e}
         return

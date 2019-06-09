@@ -21,4 +21,4 @@ describe 'searchers', ->
     expect(r).property(1).property('path').eql ['templates']
 
     r = query(['graph', /DOCTYPE/]).match system.mappers
-    expect(r).property(0).property('path').eql ['templates', 'graph', 'template']
+    expect(r).property(0).property('path').eql ['templates', 'graph', 'template', 2]

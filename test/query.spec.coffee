@@ -153,10 +153,6 @@ describe 'query', ->
       q = fromArgs 'foo:bar'
       expect(q.test({foo:'bar'})).be.true
 
-    it 'should match an object and', ()->
-      q = fromArgs ['foo:bar', 'google']
-      expect(q.test({foo:'bar', bing:'google'})).be.true
-
     it 'should handle options', ()->
       q = fromArgs ['foo:bar', 'limit:1', 'recurse:2']
       expect(q.options.limit).equal(1)

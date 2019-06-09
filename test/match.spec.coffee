@@ -28,7 +28,7 @@ describe 'Match', ->
   it 'and objects', ->
     a = new Match data.mvh.address, ['mvh', 'address']
     b = new Match data.mvh.address.city, ['mvh', 'address', 'city']
-    expect(a.and b).eql b
+    expect(intersect a, b).eql b
 
     a = new Match {a:1}, []
     b = new Match 1, ['a']
@@ -73,6 +73,18 @@ describe 'Matches', ->
     a = new Match 1, []
     b = new Match 2, []
     expect(-> intersect a,b).throws()
+
+    a = new Match 'a', []
+    b = new Match 'a', []
+    expect(intersect a,b).a
+
+    a = new Match 'a', [0]
+    b = new Match 'a', [0]
+    expect(intersect a,b).a
+
+    a = new Match 'a', [0]
+    b = new Match 'b', [1]
+    expect(intersect a,b).null
 
     a = new Match {a:1}, []
     b = new Match {b:2}, []
@@ -155,3 +167,31 @@ describe 'Matches', ->
     b = new Match {a:'abc'}, []
     expect(intersect a, b).eql a
     expect(intersect b, a).eql a
+
+  it 'intersect path as object', ->
+    a = new Match {a:'a'}, [{a:[0]}]
+    b = new Match {a:'b'}, [{a:[1]}]
+    expect(intersect a, b).null
+    expect(intersect b, a).null
+
+    a = new Match {a:'abc'}, [{a:[0]}]
+    b = new Match {a:'b'},   [{a:[1]}]
+    expect(intersect a, b).eql b
+    expect(intersect b, a).eql b
+
+    a = new Match {a:'ab'}, [{a:[0]}]
+    b = new Match {a:'bc'},   [{a:[1]}]
+    expect(intersect a, b).eql new Match {a:'b'}, [a:[1]]
+    expect(intersect b, a).eql new Match {a:'b'}, [a:[1]]
+
+    a = new Match {a:'bc'}, [{a:[1]}]
+    b = new Match 'ab',     ['b', 0]
+    expect(intersect a, b).null
+    expect(intersect b, a).null
+
+    a = new Match {a:'bc'}, [{a:[1]}]
+    b = new Match 'ab',     ['a', 0]
+    # should it be    {a:'b'}, [a:[1]]
+    # or              'b', [a, 1]
+    expect(intersect a, b).eql new Match 'b', [a:[1]]
+    expect(intersect b, a).eql new Match 'b', [a:[1]]

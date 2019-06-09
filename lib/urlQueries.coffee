@@ -23,7 +23,6 @@ urls =
 class UrlGenerator
   constructor: (template, name)->
     @template = template
-    @name = name
     @items = _.pipeline _.map mappers.template @template
 
 urlGenerators =

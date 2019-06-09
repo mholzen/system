@@ -44,10 +44,6 @@ searchers.bookmarks.read.then ->
 
   results = stream results
   results
-  .map (match)->
-    match.input = _.get data, match.path.slice 0, -1
-    match
-
   .each (result)->
     if not ('toString' in result)
       result.toString = ()-> toJSON result

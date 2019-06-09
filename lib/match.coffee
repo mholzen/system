@@ -25,38 +25,6 @@ class Match
     @value = value
     @path = path
 
-  and: (match)->
-    if not match instanceof Match
-      throw new Error "and() with non Match argument"
-
-    if match.input != @input
-      throw new Error "and() against non matching inputs"
-
-    if typeof @input == 'string'
-      a_index = @path[0] ? 0
-      b_index = match.path[0] ? 0
-      start = Math.max a_index, b_index
-      end = Math.min a_index+@value.length, b_index+match.value.length
-      if start >= end
-        @value = null
-        return null
-
-      @value = @input[start..end]
-      @path = [start]
-      return @
-
-    if startsWith match.path, @path
-      if match.path.length > @path.length
-	       # should ensuyre
-        {@value, @path} = match
-        return @
-
-      if typeof @value = 'string' and typeof match.value == 'string'
-        return @
-
-    throw new Error 'unfinished'
-
-
 class Matches
   constructor: (data)->
     @values = data
@@ -69,7 +37,7 @@ ensureMatch = ->
       throw new Error "no path array #{log.print a} for argument #{k}"
 
 intersect = (a,b)->
-  log.debug 'intersect', {a, b}
+  log 'intersect', {a, b}
   if a instanceof Array
     return a.reduce (r, m)->
       if (m = intersect m, b) != null
@@ -96,8 +64,18 @@ intersect = (a,b)->
     if i >= a.path.length
       # no more a keys
       if typeof b_key == 'number' and typeof a_value == 'string'
-        # handle substring index
-        break
+        # TODO: DRY up with code below
+        # numeric index in a string
+        start = Math.max a_key, b_key
+        end = Math.min a_key + a_value.length, b_key + b.value.length
+        if start >= end
+          return null
+        if a_key > b_key
+          value = a_value[.. end - a_key - 1]
+          return new Match value, a.path
+        else
+          value = b.value[.. end - b_key - 1]
+          return new Match value, b.path
 
       if typeof a_value != 'object'
         throw new Error "key '#{b_key}' references non object value '#{a_value}'"
@@ -114,14 +92,48 @@ intersect = (a,b)->
       continue
 
     # key mismatch
+
+    if typeof b_key == 'object'
+      if typeof b.value != 'object'
+        throw new Error "b_key is object but '#{b.value}' is not"
+      if typeof a_value != 'object'
+        return null
+        throw new Error "b_key is object but a_value '#{a_value}' is not. #{log.print {a,b}}"
+
+      v = {}
+      p = {}
+      for key, path of b_key
+        a = new Match a_value[key], a_key[key]
+        b = new Match b.value[key], path
+        i = intersect a, b
+        if i != null
+          v[key] = i.value
+          p[key] = i.path
+      if _.isEmpty v
+        return null
+
+      return new Match v, [p]
+
+    if typeof b_key == 'string' and typeof a_key == 'object'
+      if not a_value.hasOwnProperty b_key
+        return null
+      a_value = a_value[b_key]
+      if not a_key.hasOwnProperty b_key
+        throw new Error "no '#{b_key}' in '#{a_key}'"
+      a_key = a_key[b_key]
+      b_key = b.path[i+1]   # TODO: error check
+
     if typeof b_key == 'number' and typeof a_value == 'string'
+      # TODO: DRY up with code above
       # numeric index in a string
+      start = Math.max a_key, b_key
       end = Math.min a_key + a_value.length, b_key + b.value.length
+      if start >= end
+        return null
       if a_key > b_key
         value = a_value[.. end - a_key - 1]
         return new Match value, a.path
       else
-        log.debug {b}
         value = b.value[.. end - b_key - 1]
         return new Match value, b.path
 
@@ -134,7 +146,7 @@ intersect = (a,b)->
 
   if (typeof a_value != 'object') and (typeof b.value != 'object')
     if a_value != b.value
-      throw new Error "different values with same path #{log.smallPrint [a, b]}"
+      throw new Error "different values with same path path:#{log.print a.path} a:#{log.print a} b:#{log.print b}"
     return b
 
   keys = _.intersection(_.keys(a_value), _.keys(b.value))
@@ -145,7 +157,7 @@ intersect = (a,b)->
 
   b_value = _.pick b.value, keys
   if not _.isEqual a_value, b_value
-    throw new Error "different values with same path #{log.smallPrint [a, b]}"
+    throw new Error "different values with same path #{log.smallPprint [a, b]}"
 
   return new Match a_value, b.path
 
