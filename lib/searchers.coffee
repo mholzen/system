@@ -6,8 +6,8 @@ mappers = require './mappers'
 reducers = require './reducers'
 
 searchers = {
-  bookmarks
   urlQueries
+  bookmarks
   inodes: inodes()
   templates: {name: 'templates', path:/\.hbs$/}
   mappers: {name: 'mappers', mappers, items: Object.keys mappers}
