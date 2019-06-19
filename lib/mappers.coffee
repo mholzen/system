@@ -13,6 +13,7 @@ request = require './request'
 stream = require './stream'
 summarize = require './summarize'
 table = require './table'
+template = require './map/template'
 text = require './text'
 url = require './map/url'
 
@@ -191,6 +192,8 @@ mappers =
 
       total = total + x
 
+  substitute: template.substitute
+
   summarize: summarize
 
   timestamp: ->
@@ -198,8 +201,7 @@ mappers =
 
   table: table.map
   tableString: table.mapString
-  template: require './map/template'
-
+  template: template
   templates: require './map/templates'
 
   text: -> text

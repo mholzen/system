@@ -468,7 +468,7 @@ query.fromArgs = ->
       throw new Error "typeof arg #{typeof arg} is not a string"
 
     if not value?
-      terms.push key
+      terms.push new RegExp key, 'i'
     else
       if optionNames.includes key
         if key == 'recurse' or key == 'depth'
