@@ -1,21 +1,13 @@
 log = require '@vonholzen/log'
 _ = require 'lodash'
 
-content = require './content'
 graph = require './graph'
-html = require './html'
-image = require './image'
-json = require './map/json'
 parse = require './parse'
 path = require 'path'
-pick = require './map/pick'
 request = require './request'
 stream = require './stream'
-summarize = require './summarize'
 table = require './table'
 template = require './map/template'
-text = require './text'
-url = require './map/url'
 
 mappers =
   augment: (opts)->
@@ -93,10 +85,6 @@ mappers =
       if value?.path
         path.basename value?.path
 
-  content: -> content
-
-  columns: require './map/columns'
-
   dirname: ->
     (value)->
       if value?.path
@@ -111,12 +99,6 @@ mappers =
         if value?.type == 'file'
           readable = await content value
           return parse(readable).reduce(reducer, memo)
-
-  image: image
-
-  html: html
-
-  json: json
 
   location: ->
     (value)->
@@ -134,21 +116,9 @@ mappers =
         value = value.replace /(?:\s)thumb:([^\s]+)/g, ' <a r=1 href="$1"><img src="$1"></a>'
       value
 
-  name: ->
-    (value)->
-      if value?.name?
-        value = value.name
-      if value?.path?
-        value = path.basename value?.path
-      return if typeof value == 'string'
-        value?.replace /\.[^/.]+$/, ''
-      else
-        value
-
   path: ->
     mappers.pick 'path'
 
-  pick: pick
 
   request: -> request
 
@@ -194,17 +164,29 @@ mappers =
 
   substitute: template.substitute
 
-  summarize: summarize
-
   timestamp: ->
     (value)-> Date.now()
 
   table: table.map
   tableString: table.mapString
-  template: template
-  templates: require './map/templates'
 
-  text: -> text
-  url: url
+[
+  'context'
+  'content'
+  'columns'
+  'html'
+  'image'
+  'json'
+  'name'
+  'omit'
+  'pick'
+  'templates'
+  'summarize'
+  'text'
+  'template'
+  'url'
+].forEach (r)->
+  mappers[r] = require "./map/#{r}"
+
 
 module.exports = mappers

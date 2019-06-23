@@ -1,5 +1,5 @@
 handlebars = require 'handlebars'
-{fileContentSync} = require '../../content'
+{fileContentSync} = require '../content'
 {Template} = require '../template'
 
 module.exports = {

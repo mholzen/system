@@ -1,5 +1,5 @@
 module.exports = {
-  content: require './content'
+  content: require './map/content'
   generators: require './generators'
   mappers: require './mappers'
   open: require './open'
@@ -11,8 +11,7 @@ module.exports = {
   searchers: require './searchers'
   stream: require './stream'
   strings: require './strings'
-  summarize: require './summarize'
   table: require './table'
-  text: require './text'
+  text: require './map/text'
   url: require './map/url'
 }

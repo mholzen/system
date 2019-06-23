@@ -1,7 +1,7 @@
-request = require './request'
+request = require '../request'
 fs = require 'fs'
 log = require '@vonholzen/log'
-{stream, isStream} = require './stream'
+{stream, isStream} = require '../stream'
 
 fileContent = (path)->
   # TODO: use promise-fs or async-file

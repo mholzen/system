@@ -2,7 +2,7 @@ highland = require 'highland'
 parse = require './parse'
 log = require './log'
 _ = require 'lodash'
-html = require './html'
+html = require './map/html'
 
 fit = (item, width)->
   item = if typeof item != 'string' then '' else item

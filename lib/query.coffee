@@ -2,7 +2,7 @@ _ = require 'lodash'
 log = require '@vonholzen/log'
 # log = console.log
 {stream, isStream} = require './stream'
-content = require './content'
+content = require './map/content'
 {parseValue} = require './parse'
 getContent = content
 {items} = require './generators'
@@ -42,6 +42,7 @@ class Query
 
     @options.recurse ?= false
     @options.partialMatches ?= false
+    @options.with ?= {}
 
     if options?.limit?
       @options.limit = parseInt options.limit
@@ -339,6 +340,12 @@ class Query
             value: m1
             path: []
           m1.path.unshift i
+
+          if @options.with == 'input'
+            m1.input = d
+          # if @options.with == 'context'
+          #   m1.context = _.get d, m1.path.slice(1,-2)
+
           results.push m1
 
       if results.length == 0
@@ -450,7 +457,7 @@ query.query = query
 query.Query = Query
 query.createQuery = query
 
-optionNames = [ 'duration', 'depth', 'limit', 'recurse' ]
+optionNames = [ 'duration', 'depth', 'limit', 'recurse', 'with' ]
 query.optionNames = optionNames
 
 
