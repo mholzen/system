@@ -1,6 +1,5 @@
 urlQueries = require '../lib/urlQueries'
 mappers = require '../lib/mappers'
-content = require '../lib/content'
 stream = require '../lib/stream'
 
 describe 'urlQueries', ->
@@ -13,6 +12,6 @@ describe 'urlQueries', ->
 
   it 'should get content', ->
     google = urlQueries.google
-    result = await content google, stream [query: 'foo']
+    result = await mappers.content google, stream [query: 'foo']
     result.toArray (r)->
       expect(r[0]).eql 'http://google.com/search?q=foo'

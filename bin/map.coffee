@@ -4,7 +4,6 @@ log = require '@vonholzen/log'
 parse = require '../lib/parse'
 Promise = require 'bluebird'
 isPromise = require 'is-promise'
-content = require '../lib/content'
 mappers = require '../lib/mappers'
 
 name = process.argv[2]
