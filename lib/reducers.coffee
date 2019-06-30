@@ -46,9 +46,6 @@ reducers =
         memo
     ]
 
-
-  graph: require './graph'
-
   join: (options)->
     delimeter = options.delimeter ? ', '
     [
@@ -109,5 +106,11 @@ reducers =
         table
       (table)->table.toHTML()
     ]
+
+[
+  'graph'
+  'summarize'
+].forEach (r)->
+  reducers[r] = require "./reducers/#{r}"
 
 module.exports = reducers

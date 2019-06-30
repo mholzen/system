@@ -1,7 +1,7 @@
 log = require '@vonholzen/log'
 _ = require 'lodash'
 
-graph = require './graph'
+graph = require './reducers/graph'
 parse = require './parse'
 path = require 'path'
 request = require './request'
@@ -174,6 +174,7 @@ mappers =
   'context'
   'content'
   'columns'
+  'escape'
   'html'
   'image'
   'json'
