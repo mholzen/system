@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.coffee",
   "scripts": {
-    "mocha": "fswatch . | xargs -n1 -I{} mocha -b -g",
+    "mocha": "mocha-watch",
     "test": "mocha",
     "start": "forever -a -c coffee start server/start.coffee",
     "stop": "forever -a stop server/start.coffee",

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+pattern=${1:-.}
+
+mocha="mocha -b -g $pattern"
+
+$mocha
+
+fswatch . -e .git -o | xargs -n1 -I{} $mocha
