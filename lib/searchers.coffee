@@ -16,6 +16,10 @@ searchers = {
 
 searchers.all = Object.values searchers
 
+searchers.read =
+  Promise.all [ bookmarks.read ]
+  .then -> searchers.all
+
 searchers.search = (args...)->
   query(args).searchIn searchers.all
 

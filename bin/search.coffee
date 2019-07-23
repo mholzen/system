@@ -30,11 +30,7 @@ query = query.fromArgs args
 
 count = 0
 
-data = searchers.all
-
-# TODO: should be searchers.read.then
-searchers.bookmarks.read.then ->
-
+searchers.read.then (data)->
   # results = query.searchIn data
   results = query.match data
 
