@@ -19,9 +19,8 @@ stream = (data)->
 stream.strings = (data)->
   stream(data).split().filter (line) -> line.length > 0
 
-stream.highland = highland
-stream.nil = highland.nil
-stream.isStream = highland.isStream
-stream.stream = stream
-
-module.exports = stream
+module.exports = Object.assign stream,
+  highland: highland
+  nil: highland.nil
+  isStream: highland.isStream
+  stream: stream
