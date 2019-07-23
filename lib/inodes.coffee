@@ -24,7 +24,7 @@ class Stat
     @options = options ? {}
     @options.recurse = @options.recurse ? false
     log 'inodes.Stat', {path:@path}
-    @stat = statAsync(@path)
+    @stat = statAsync @path
     @items = stream @walker()
 
   # toJSON: ->
