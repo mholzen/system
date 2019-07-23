@@ -3,11 +3,6 @@ query = require '../lib/query'
 
 describe 'searchers', ->
 
-  it 'should returns list of mappers', ->
-    r = search 'mappers'
-    r.toArray (r)->
-      # should it contain sub group of mappers?  like all templates?
-
   it 'should find an html graph template', ->
     r = query(/DOCTYPE/).match system.mappers.templates
     path = r[0].path.slice(0,2)
