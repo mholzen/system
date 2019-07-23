@@ -76,3 +76,16 @@ describe 'inodes', ->
       file.push 'resource'
       inodes('/').get(file).then (f)->
         expect(file).eql ['resource']
+
+    it 'should stream files in a directory', ->
+      dir = tempy.directory()
+      file = await post 'abc', dir
+      items = await inodes(dir).items.collect().toPromise(Promise)
+      expect(items).property(0).property 'path', file
+
+    it 'match', ->
+      dir = tempy.directory()
+      file = await post 'abc', dir
+      match = query(file).match inodes(dir).items
+      match = await match.collect().toPromise(Promise)
+      expect(match).property(0).property 'path', file
