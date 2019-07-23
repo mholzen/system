@@ -28,4 +28,6 @@ log.filter = (data)->
   # _.pickBy data, (v,k) ->
   return result
 
+log.defaultLength = 600
+
 module.exports = log
