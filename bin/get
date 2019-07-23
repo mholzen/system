@@ -13,4 +13,10 @@ if [ "$type" == 'file' ]; then    # executable
   exit
 fi
 
+# only works if the alias is defined in non-interactive mode (which many aren't)
+if [ "$type" == 'alias' ]; then
+  alias "$arg"
+  exit
+fi
+
 file "$@" | map content
