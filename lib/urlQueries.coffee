@@ -1,7 +1,4 @@
-{createQuery, Query} = require './query'
-log = require '@vonholzen/log'
-mappers = require './mappers'
-_ = require 'highland'
+{Template} = require './map/template'
 
 urls =
   google: 'http://google.com/search?q=#{query}'
@@ -19,18 +16,12 @@ urls =
   vcal: 'http://www.google.com/calendar/hosted/vonholzen.org/'
   vdrive: 'https://drive.google.com/a/vonholzen.org/#search?q=#{query}'
 
-
-class UrlGenerator
-  constructor: (template, name)->
-    @template = template
-    @items = _.pipeline _.map mappers.template @template
-
 urlGenerators =
   name: 'urlGenerators'
   items: []
 
 for key, value of urls
-  u = new UrlGenerator value, key
+  u = new Template value
   urlGenerators[key] = u
   urlGenerators.items.push u
 
