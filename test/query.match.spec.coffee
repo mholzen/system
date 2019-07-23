@@ -236,14 +236,14 @@ describe 'query', ->
       path = (match)->match.path.join '.'
       it 'templates', ->
         expect(
-          query('graph').match(system.searchers)
+          query('graph').match system.searchers
           .map path
         )
         .includes 'mappers.mappers.templates'
 
       it 'urlQueries', ->
         expect(
-          query('workflowy').match(system.searchers.urlQueries)
+          query('workflowy').match system.searchers.urlQueries
         ).length.least 1
 
   describe.skip 'match', ->
