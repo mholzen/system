@@ -1,12 +1,15 @@
 _ = require 'lodash'
 
+
+root = require '../searchers'
+
 module.exports = (options)->
 
   (data)->
     if typeof data != 'object'
       return data
 
-    if data.path? and data.input?
-      return _.get data.input, data.path.slice(1,-2)
+    if data?.path?
+      return _.get root, data.path.slice 0,-2
 
-    throw new Error "cannot get context #{typeof data}"
+    throw new Error "no path in data of type #{typeof data}"
