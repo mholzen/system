@@ -13,7 +13,7 @@ mapper = mappers[name]
 
 if not mapper?
   console.error 'cannot find mapper ' + name
-  console.log "Available mappers:\n" + Object.keys(mappers).join "\n"
+  console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
   process.exit()
 
 options = process.argv[3..] ? {}
