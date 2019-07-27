@@ -178,6 +178,7 @@ mappers =
   'html'
   'image'
   'json'
+  'keys'
   'name'
   'omit'
   'pick'
