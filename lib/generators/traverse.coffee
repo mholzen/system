@@ -18,7 +18,7 @@ value = (data) ->
 
 traverse = (data, options)->
   options ?= {}
-  v = value(data)
+  v = value data
   if v != null
     if options.path
       v = {value: v, path: []}
