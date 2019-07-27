@@ -16,6 +16,8 @@ urls =
   vcal: 'http://www.google.com/calendar/hosted/vonholzen.org/'
   vdrive: 'https://drive.google.com/a/vonholzen.org/#search?q=#{query}'
 
+  bookmarks: 'chrome://bookmarks/?id=#{id}'
+
 urlGenerators =
   name: 'urlGenerators'
   items: []
