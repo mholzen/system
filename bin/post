@@ -7,7 +7,8 @@ coffee=$root/node_modules/.bin/coffee
 $coffee $root/bin/post.coffee "$@"
 
 
-# echo "post <collection> <content>"
+# echo "echo data | post | get # eql 'data' "
+# echo "post data ... | get # eql 'data' "
 # echo "  <content> can be of the form a:c b:c"
 # echo "   eg.  log with:laurie when:last night content:had a good time"
 # echo "echo content | post <resource>"
