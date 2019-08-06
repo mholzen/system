@@ -1,7 +1,6 @@
 query = require '../lib/query'
 {createQuery, fromArgs, Query} = query
 {post} = require '../lib'
-require './query.match.spec'
 
 describe 'query', ->
   describe 'from null', ->
@@ -149,6 +148,14 @@ describe 'query', ->
       expect(q.options.limit).equal(1)
 
   describe 'fromArgs', ()->
+    it 'nothing',->
+      q = fromArgs()
+      expect(q.query).be.null
+
+    it 'empty array',->
+      q = fromArgs []
+      expect(q.query).be.null
+
     it 'should match a key and value',->
       q = fromArgs 'foo:bar'
       expect(q.test({foo:'bar'})).be.true

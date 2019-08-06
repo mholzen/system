@@ -1,4 +1,3 @@
-{search} = require '../lib/searchers'
 query = require '../lib/query'
 
 describe 'searchers', ->

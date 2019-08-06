@@ -79,11 +79,11 @@ class Parser
 parse.Parser = Parser
 
 parse.parseValue = (data)->
-  if data == 'true' or data == 'false'
-    return (data == 'true')
+  if /true|false/i.test data
+    return /true/i.test data
 
   number = parseInt data
-  if number != NaN
+  if not isNaN number
     return number
 
   data

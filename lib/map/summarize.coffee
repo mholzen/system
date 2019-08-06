@@ -1,21 +1,30 @@
 query = require '../query'
+log = require '../log'
 
-module.exports = ->
-  (data, context)->
-    if typeof data == 'object'
-      result = {}
-      for key, value of data
-        switch key
-          when 'date_added', 'date', 'date_modified', 'name', 'url', 'path'
-            Object.assign result, "#{key}": value
-        if value instanceof Array
+module.exports = (options)->
+  options ?= {}
+  log 'summarize', {options}
+  summarize = (data)->
+    log 'summarize', {data}
+    if typeof data != 'object'
+      return data
 
-          if value[0].Amount?
-            sum = (m, v)-> m + parseFloat v.Amount
-            average = (m, v)-> (m + parseFloat v.Amount) / value.length
-            Object.assign result, "#{key}":
-              Amount:
-                sum: value.reduce(sum, 0)
-                average: value.reduce(average, 0)
+    length = options.length ? 3
+    if data instanceof Array
+      if data.length > length
+        extra = "...(#{data.length - length} more)"
+        data = data.slice 0, length
+        data.push extra
+      return data.map summarize
 
-      result
+    keys = Object.keys data
+    log 'summarize', {keys, length}
+    if keys.length > length
+      extra = "#{keys.length - length} more"
+      keys = keys.slice 0, length
+      data['...'] = extra
+      keys.push '...'
+      log 'summarize', {keys, data, d: ("#{k}":summarize data[k] for k in keys)}
+    return Object.assign {}, ...("#{k}":summarize(data[k]) for k in keys)
+
+  summarize

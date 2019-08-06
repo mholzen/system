@@ -1,24 +1,25 @@
 _ = require 'lodash'
 log = require '../log'
+{parseValue} = require '../parse'
 
-module.exports = (opts)->
-  ->
-    args = Array.from _.flattenDeep arguments
-    if not (args instanceof Array)
-      args = [ args ]
 
-    terms = []
-    for arg in args
-      if typeof arg == 'string'
-        [key, value] = arg.split ':'
-      else
-        throw new Error "typeof arg #{typeof arg} is not a string"
+module.exports = ->
+  (data)->
+    if not (data instanceof Array)
+      throw new Error "expecting array"
+
+    result = {}
+    for arg, i in data
+      if typeof arg != 'string'
+        result[i] = arg
+        continue
+
+      [key, value] = arg.split ':'
 
       if not value?
-        terms.push key
-      else
-        arg = {}
-        arg[key] = value
-        terms.push arg
+        value = key
+        key = i
 
-    terms
+      result[key] = parseValue value
+
+    result

@@ -5,6 +5,8 @@ parse = require '../lib/parse'
 Promise = require 'bluebird'
 isPromise = require 'is-promise'
 mappers = require '../lib/mappers'
+searchers = require '../lib/searchers'
+{args} = require '../lib/mappers'
 
 name = process.argv[2]
 
@@ -16,10 +18,12 @@ if not mapper?
   console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
   process.exit()
 
-options = process.argv[3..] ? {}
+parseArgs = args()
+options = parseArgs process.argv[3..]
 if name == 'tableString'
   options.width = process.stdout.columns
 
+options.root = searchers
 log 'options', {options}
 map = mapper options
 

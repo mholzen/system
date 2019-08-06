@@ -11,8 +11,9 @@ iterable = require './map/iterable'
 
 class Query
   setQuery: (query) ->
-    @query = query
+    @query = query ? null
     @path = true
+    @streams = new Set()
     switch
       when query instanceof Query
         _.assign(this, query)
@@ -126,29 +127,7 @@ class Query
       return null
 
     if typeof data == 'object'
-      matches = []
-      for key, value of data
-        if @query == key
-          matches.push
-            value:
-              [key]: value
-            path: []
-
-        if (m = @stringMatch value)
-          if not (m instanceof Array)
-            m = [m]
-
-          for m1 in m
-            m1 =
-              value: m1?.value ? m1
-              path: m1?.path ? []
-            m1.path.unshift key
-            matches.push m1
-
-      if _.isEmpty matches
-        return null
-
-      return matches
+      return @_objectMatch data
 
     throw new Error "string query against '#{typeof data}' data"
 
@@ -169,30 +148,7 @@ class Query
       return [new Match r[0], [r.index]]
 
     if typeof data == 'object'
-      matches = []
-      for key, value of data
-
-        keyQuery = @query
-        if keyQuery.test key
-          matches.push
-            value:
-              [key]: value
-            path: []
-
-        if (m = @match value)
-          if not (m instanceof Array)
-            m = [m]
-
-          for m1 in m
-            m1 =
-              value: m1?.value ? m1
-              path: m1?.path ? []
-            m1.path.unshift key
-            matches.push m1
-
-      if _.isEmpty matches
-        return null
-      return matches
+      return @_objectMatch data
 
     throw new Error "regexp query against '#{typeof data}' data"
 
@@ -286,7 +242,7 @@ class Query
 
   arrayMatch: (data)->
     if @query.length == 0
-      return [data]
+      return [{value: data, path:[]}]
 
     matches = null
     nullSeen = false
@@ -322,9 +278,13 @@ class Query
       return null
 
     if @query == null
-      return [ data ]
+      return [{value: data, path: []}]
 
-    if (data instanceof Array) #or stream.isStream data
+    if (stream.isStream data) and (not @streams.has(data))
+      @streams.add data
+      return data.filter (item) => @match item
+
+    if data instanceof Array
       results = []
       data.forEach (d, i) =>
 
@@ -351,9 +311,6 @@ class Query
       if results.length == 0
         return null
       return results
-
-    # if stream.isStream data
-    #   return data.filter @_match data
 
     match = @_match data
     if match == null
@@ -463,8 +420,11 @@ query.optionNames = optionNames
 
 query.fromArgs = ->
   args = Array.from _.flattenDeep arguments
-  if not (args instanceof Array)
-    args = [ args ]
+  # if not (args instanceof Array)
+  #   args = [ args ]
+
+  if args.length == 0
+    return new Query()
 
   terms = []
   options = {}

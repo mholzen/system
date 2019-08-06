@@ -1,4 +1,5 @@
 # search
+- write tests for querying streams
 - how to express `search ... where ...`
 - search within content (file or response)
   - filter results from context queries (eg file = search context.source file "$@") to replace defining recursion level
@@ -15,6 +16,7 @@
 - store search results in temporary files to be able to access the content again
 
 # transform
+- extract rows from html table to scrape from web page
 - head/tail, for x milliseconds, for n items
 - order by last modified
 - order by most used
@@ -36,3 +38,6 @@ perhaps relates to the concept of type hierarchy (starting to take form in searc
 - use "reduce one" to display a selector and let the user pick on
 - "reduce join, sort, unique" while retaining context so that you can get a list of unique items, while retaining where they came from. eg: "files duration:1000 data/people | map content  | sort  -u" replaced with "... | map augment content | parse content | reduce join sort unique"
 - join streams, so that I can merge two resources together, so that I can merge remote resources
+- replace .value with .match
+- build mapper to replace (.match, .path) with .value
+- integrate todo into software engineering process

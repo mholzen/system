@@ -39,14 +39,15 @@ template = (options)->
 
 template.Template = Template
 
-template.substitute = ->
-  opts = args() arguments
+template.substitute = (substitutions...)->
+  substitutions = args() substitutions
+
   (data)->
-    matches = query('template').match(data)
+    matches = query('template').match data
     if not matches?
       return
-    log.debug {template: matches[0].value.template}
+
     t = new Template matches[0].value.template
-    t.substitute opts
+    t.substitute substitutions
 
 module.exports = template

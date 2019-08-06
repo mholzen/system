@@ -1,7 +1,7 @@
 {edges, value, traverse} = require '../lib/generators'
 
-describe 'iterator', ->
-  it 'object and array', ->
+describe 'generators', ->
+  it 'edges, value, traverse', ->
     object =
       a: 1
       b: {b1: 1}
@@ -34,7 +34,7 @@ describe 'iterator', ->
     result = Array.from it
     expect(result).eql [{val: 1}, {val: 2}, {val:3}]
 
-describe 'iterator.paths', ->
+describe 'generators', ->
   it 'object and array', ->
     object =
       a: 1
@@ -80,6 +80,6 @@ describe 'iterator.paths', ->
       {value: {val:3}, path: ['children', '1']}
     ]
 
-  it 'mappers', ->
+  it 'traverse searchers', ->
     graph = m for m from traverse system.searchers, path:true when m.path.includes 'graph'
     expect(graph).property('value').property('template').includes 'graph.links'

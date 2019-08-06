@@ -1,12 +1,13 @@
 query = require '../lib/query'
 {createQuery, fromArgs, Query} = query
 {post} = require '../lib'
+require './query.spec'
 
 describe 'query', ->
   describe 'match', ->
     it 'from:empty', ->
       r = query().match 'abc'
-      expect(r).eql ['abc']
+      expect(r).eql [{value:'abc', path:[]}]
 
     it 'match fundamentals', ->
       r = query(1).match 1
@@ -106,7 +107,7 @@ describe 'query', ->
 
     it 'from:array', ->
       r = query([]).match 'abc'
-      expect(r).eql ['abc']
+      expect(r).eql [{value:'abc', path:[]}]
       r = query([/a.c/, /.b./]).match 'abc'
       expect(r).eql [
         {value:'abc', path:[0]}

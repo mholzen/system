@@ -10,38 +10,6 @@ table = require './table'
 template = require './map/template'
 
 mappers =
-  augment: (opts)->
-    opts.name = opts.name ? opts[0]
-    if typeof opts.name != 'string'
-      throw new Error 'cannot find name for augment'
-
-    if typeof opts.mapper != 'function'
-      opts.mapper = mappers[opts.name]()
-      if not opts.mapper
-        throw new Error "cannot find '#{opts.name}' in '#{Object.keys(mappers)}'"
-    opts.addSource = opts.addSource ? true
-
-    if opts.addSource
-      source = mappers.source()
-
-    (value)->
-      if typeof value != 'object'
-        value =
-          value: value
-        # throw new Error 'cannot agument a non-object type'
-
-      output = await opts.mapper(value)
-
-      log 'augment', {type: typeof output, value, output}
-      value[opts.name] = output
-
-      if opts.addSource
-        if not value?.source?
-          value.source = source(value)
-        value.source = "/map/#{opts.name}#{value.source}"
-
-      value
-
   append: (opts)->
     if typeof opts.value == 'undefined'
       value = opts
@@ -171,6 +139,8 @@ mappers =
   tableString: table.mapString
 
 [
+  'args'
+  'augment'
   'context'
   'content'
   'columns'
