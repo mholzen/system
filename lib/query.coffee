@@ -70,19 +70,16 @@ class Query
 
       keyQuery = @query[key] ? @query
       if query(keyQuery).test key
-        matches.push
-          value:
-            [key]: value
-          path: []
+        matches.push new Match {[key]: value}
 
       if (m = @match value)
         if not (m instanceof Array)
           m = [m]
 
         for m1 in m
-          m1 =
-            value: m1?.value ? m1
-            path: m1?.path ? []
+          m1 = Match.toMatch m1
+          if not m1.path?
+            throw Error "no path from '#{(@_match).name}'"
           m1.path.unshift key
           matches.push m1
     if _.isEmpty matches
@@ -160,7 +157,7 @@ class Query
 
     if typeof data == 'object'
       matches = []
-      match = {value:{}, path:[]}
+      match = new Match {}
       path = {}
       for key, value of data
 
@@ -169,7 +166,6 @@ class Query
             if m.length > 1
               throw new Error "ignoring results #{m}"
             m = m[0]
-
             match.value[key] = m.value ? m
             if m.path?.length > 0
               path[key] = m.path
@@ -180,9 +176,7 @@ class Query
               m = [m]
 
             for m1 in m
-              m1 =
-                value: m1?.value ? m1
-                path: m1?.path ? []
+              m1 = new Match m1?.value ? m1, m1?.path
               m1.path.unshift key
               matches.push m1
 
@@ -242,7 +236,7 @@ class Query
 
   arrayMatch: (data)->
     if @query.length == 0
-      return [{value: data, path:[]}]
+      return [new Match data]
 
     matches = null
     nullSeen = false
@@ -278,7 +272,7 @@ class Query
       return null
 
     if @query == null
-      return [{value: data, path: []}]
+      return [new Match data]
 
     if (stream.isStream data) and (not @streams.has(data))
       @streams.add data
@@ -293,18 +287,11 @@ class Query
           return null
 
         for m1 in m
-          m1 = if m1.value? and m1.path?
-            value: m1.value
-            path: m1.path
-          else
-            value: m1
-            path: []
+          m1 = new Match m1.value ? m1, m1.path
           m1.path.unshift i
 
           if @options.with == 'input'
             m1.input = d
-          # if @options.with == 'context'
-          #   m1.context = _.get d, m1.path.slice(1,-2)
 
           results.push m1
 

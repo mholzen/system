@@ -9,10 +9,10 @@ url = (data)->
     if data.match /\w+\.\w+/
       return "http://#{data}/"
 
-  if data.url?
+  if data?.url?
     return data.url
 
-  if data.path?
+  if data?.path?
     return 'file://' + data.path
 
   throw new Error "cannot get url from #{data}"

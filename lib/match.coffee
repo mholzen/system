@@ -23,7 +23,9 @@ isRegeExpAnswer = (a)->
 class Match
   constructor: (value, path)->
     @value = value
-    @path = path
+    @path = path ? []
+    
+  @toMatch: (d)-> return if d instanceof Match then d else new Match d
 
 class Matches
   constructor: (data)->

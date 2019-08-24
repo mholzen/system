@@ -1,4 +1,5 @@
 _ = require 'lodash'
+log = require '../log'
 
 module.exports = (options)->
   options.name = options.name ? options[0]
@@ -10,14 +11,14 @@ module.exports = (options)->
 
   if typeof options.mapper != 'function'
     mapperOptions = _.omit options, ['name', 'addSource']
-    console.log options.root.mappers
-    mapper = options.root.mappers[options.name] mapperOptions
-    if not mapper?
-      throw new Error "cannot find '#{options.name}' in '#{Object.keys(mappers)}'"
-  options.addSource = options.addSource ? true
+    mapperCreator = options.root.mappers.mappers[options.name]
+    if not mapperCreator?
+      throw new Error "cannot find '#{options.name}' in '#{Object.keys(options.root.mappers)}'"
+    mapper = mapperCreator mapperOptions
+  options.addSource ?= false
 
   if options.addSource
-    source = mappers.source()
+    source = options.root.mappers.mappers.source()
 
   (value)->
     if typeof value != 'object'

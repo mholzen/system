@@ -1,4 +1,5 @@
 _ = require 'lodash'
+log = require '../log'
 
 module.exports = (options)->
   root = options?.root
