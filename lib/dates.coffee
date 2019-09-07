@@ -25,11 +25,8 @@ class Dates
 
     @items = stream (push, next)->
       push null, date
-      log 'dates', {date}
-      date.setDate(date.getDate()+1)
-      setTimeout (-> next() ), 10   # TODO: WRONK
-      # next()
-
+      date.setDate date.getDate()+1
+      process.nextTick next
 
   toString: -> 'name: dates'
 

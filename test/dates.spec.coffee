@@ -7,6 +7,12 @@ describe 'dates', ->
       expect(items[0] instanceof Date).true
       done()
 
+  it 'iterator', (done)->
+    dates().items.take(100).toArray (items)->
+      expect(items).length 100
+      done()
+
+
   it.skip 'partial match', (done)->
     q = query [{name:'dates'}, 'GMT']
     expect(q.test dates).false
