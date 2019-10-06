@@ -1,27 +1,28 @@
 post = require '../lib/post'
 tempy = require 'tempy'
 
-{statAsync} = require '../lib/inodes'
+{stat} = require '../lib/inodes'
 
-it 'should post', ->
-  response = await post 'foo'
-  expect(response.startsWith '/').true
+describe 'post', ->
+  it 'data', ->
+    response = await post 'data'
+    expect(response.startsWith '/').true
 
-it 'should post to a file', ->
-  file = tempy.file()
-  response = await post 'foo', file
-  expect(response).equal file
+  it 'data to file', ->
+    file = tempy.file()
+    response = await post 'data', file
+    expect(response).equal file
 
-it 'should post to a directory', ->
-  directory = tempy.directory()
-  file = await post 'foo', directory
-  stat = await statAsync file
-  expect stat.isFile()
-  .true
+  it 'data to directory', ->
+    directory = tempy.directory()
+    file = await post 'data', directory
+    s = await stat file
+    expect s.isFile()
+    .true
 
-it 'should post to a file in a directory', ->
-  directory = tempy.directory()
-  file = await post 'foo', directory + '/file'
-  stat = await statAsync file
-  expect stat.isFile()
-  .true
+it 'directory', ->
+    container = tempy.directory()
+    directory = await post null, container + '/directory/'
+    s = await stat directory
+    expect s.isDirectory()
+    .true

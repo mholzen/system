@@ -1,6 +1,9 @@
 module.exports = {
   content: require './map/content'
+  comparators: require './compare'
   generators: require './generators'
+  inodes: require './inodes'
+  log: require './log'
   mappers: require './mappers'
   open: require './open'
   parse: require './parse'

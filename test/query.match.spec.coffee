@@ -233,20 +233,6 @@ describe 'query', ->
       # expect(query('marc').match data).eql ['marc']
       # expect(query('mvh').match data).eql [{mvh: data.mvh}]
 
-    describe 'matches searchers', ->
-      path = (match)->match.path.join '.'
-      it 'templates', ->
-        expect(
-          query('graph').match system.searchers
-          .map path
-        )
-        .includes 'mappers.mappers.templates'
-
-      it 'urlQueries', ->
-        expect(
-          query('workflowy').match system.searchers.urlQueries
-        ).length.least 1
-
   describe.skip 'match', ->
     it 'array', ->
       r = query(1).match [1, 2, 1]

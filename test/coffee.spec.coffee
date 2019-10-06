@@ -10,8 +10,11 @@ describe 'coffee', ()->
 
   it 'for over non object', ->
     a = 1
+    c = 0
     for k, v of a
-      console.log k, v
+      c++
+    # can be 0 or greater
+    expect(c).above -1
 
   foo = ->
     throw new Error()

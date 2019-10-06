@@ -15,10 +15,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@vonholzen/log": "^1.0.0",
+    "@vonholzen/log": "^1.0.1",
     "coffeescript": "^2.3.0",
     "command-line-args": "^5.0.2",
     "csv-parse": "^2.5.0",
+    "datejs": "^1.0.0-rc3",
     "expand-tilde": "^2.0.2",
     "expect": "^1.20.2",
     "express": "^4.16.4",
@@ -43,6 +44,7 @@
     "mocha": "^3.2.0",
     "request-promise": "^4.2.2",
     "stream-array": "^1.1.2",
+    "supertest": "^4.0.2",
     "tmp": "0.0.33"
   }
 }

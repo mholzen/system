@@ -15,14 +15,14 @@ describe 'inodes', ->
     inodes().isDirectory().then (r)->
       expect(r).true
 
-  it 'should return items of cwd', (done)->
-    inodes().items.head().toArray (r)->
+  it 'should return entries() of cwd', (done)->
+    inodes().entries().head().toArray (r)->
       expect(r[0]).property('path').startsWith '/'
       done()
 
-  it 'should return items of empty directory', (done)->
+  it 'should return entries() of empty directory', (done)->
     directory = tempy.directory()
-    inodes(directory).items.toArray (r)->
+    inodes(directory).entries().toArray (r)->
       expect(r.length).equal 0
       done()
 
@@ -30,7 +30,7 @@ describe 'inodes', ->
     directory = tempy.directory()
     resource = await post 'foo', directory
     new Promise (resolve)->
-      i = inodes(directory).items.toArray (r)->
+      i = inodes(directory).entries().toArray (r)->
         expect(r.length).equal 1
         resolve true
 
@@ -80,12 +80,12 @@ describe 'inodes', ->
     it 'should stream files in a directory', ->
       dir = tempy.directory()
       file = await post 'abc', dir
-      items = await inodes(dir).items.collect().toPromise(Promise)
-      expect(items).property(0).property 'path', file
+      entries = await inodes(dir).entries().collect().toPromise(Promise)
+      expect(entries).property(0).property 'path', file
 
     it 'match', ->
       dir = tempy.directory()
       file = await post 'abc', dir
-      match = query(file).match inodes(dir).items
+      match = query(file).match inodes(dir).entries()
       match = await match.collect().toPromise(Promise)
       expect(match).property(0).property 'path', file

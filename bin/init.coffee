@@ -1,2 +1,3 @@
-global.system = require '../index.coffee'
-# Object.assign global, system
+system = require '../index.coffee'
+# global.system = system
+Object.assign global, system

@@ -1,4 +1,3 @@
-log = require '@vonholzen/log'
 stream = require 'highland'
 
 class ForwardDays
@@ -14,18 +13,11 @@ class ForwardDays
 class Dates
   constructor: ->
     @name = 'dates'
-
-    # @items = stream()
-    # date = new Date()
-    # @items.write date
-    # @items.end()
     date = new Date()
-
-    # @items = stream new ForwardDays()
-
     @items = stream (push, next)->
-      push null, date
       date.setDate date.getDate()+1
+      push null, new Date date    # send a new object every time
+      # TODO: This class should probably be an iterator, not a stream
       process.nextTick next
 
   toString: -> 'name: dates'

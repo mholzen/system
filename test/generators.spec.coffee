@@ -80,6 +80,6 @@ describe 'generators', ->
       {value: {val:3}, path: ['children', '1']}
     ]
 
-  it 'traverse searchers', ->
-    graph = m for m from traverse system.searchers, path:true when m.path.includes 'graph'
+  it 'traverse mappers', ->
+    graph = m for m from traverse system.mappers, path:true when m.path.includes 'graph'
     expect(graph).property('value').property('template').includes 'graph.links'

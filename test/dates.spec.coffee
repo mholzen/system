@@ -3,15 +3,15 @@ query = require '../lib/query'
 
 describe 'dates', ->
   it 'iterator', (done)->
-    dates().items.take(1).toArray (items)->
+    dates().items.take(2).toArray (items)->
       expect(items[0] instanceof Date).true
+      expect(items[1]).above items[0]
       done()
 
-  it 'iterator', (done)->
-    dates().items.take(100).toArray (items)->
-      expect(items).length 100
+  it.skip 'back pressure', (done)->
+    dates().items.each (d)->
+      console.log 'received'
       done()
-
 
   it.skip 'partial match', (done)->
     q = query [{name:'dates'}, 'GMT']
