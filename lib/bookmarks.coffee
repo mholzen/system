@@ -1,6 +1,6 @@
 fs = require 'fs'
 _ = require 'lodash'
-log = require '@vonholzen/log'
+log = require '../lib/log'
 stream = require 'highland'
 {promisify} = require 'util'
 readFile = promisify fs.readFile
@@ -13,13 +13,18 @@ class JsonFile
     @filename = filename
     @path = path
     @generator = generator
-    @items = stream()
     @name = 'bookmarks'
-    @count = 0
     @read = readFile(@filename, 'utf8').then (data)=>
       data = JSON.parse data
       @items = jsonpath.query data, @path
       return @
+
+  entries: ->
+    stream (push, next)=>
+      await @read
+      for item in @items
+        push null, item
+      push null, stream.nil
 
   toString: ->
     JSON.stringify
@@ -29,7 +34,6 @@ class JsonFile
 bookmarksFile = process.env.HOME + '/Library/Application Support/Google/Chrome/Default/Bookmarks'
 
 bookmarks = new JsonFile bookmarksFile, '$..[?(@.url)]', (i)->
-  log 'bookmarks read bookmark', {i}
   i.toString = -> i.name + ' ' + i.url
   i
 

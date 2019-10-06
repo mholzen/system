@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+require('coffeescript/register')
+system = require ('../lib')
+
+system.searchers.bookmarks.entries()
+.sortBy( system.comparators.recent )
+.take( 10 )
+.toArray( console.log )
