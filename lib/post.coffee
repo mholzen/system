@@ -4,12 +4,14 @@ request = require 'request-promise'
 {promisify} = require 'util'
 appendFile = promisify fs.appendFile
 url = require './map/url'
-{Stream} = require 'stream'
-highland = require 'highland'
-log = require '@vonholzen/log'
+{stream, isStream} = require './stream'
+
+log = require './log'
 tempy = require 'tempy'
 uuidv1 = require 'uuid/v1'
 path = require 'path'
+
+mkdir = promisify fs.mkdir
 
 post = (content, resource)->
   if not resource?
@@ -21,8 +23,12 @@ post = (content, resource)->
         method: 'POST'
         body: content
     catch
+      # to filesystem
+      if resource.endsWith '/'
+        await mkdir resource
 
-      # to file
+      if content == null
+        return resource
 
       # from string
       if typeof content == 'string'
@@ -37,11 +43,13 @@ post = (content, resource)->
           return appendFile(resource, content).then -> resource
 
       # from Stream
-      if content instanceof Stream
-        return highland(content).each (chunk)->
-          await appendFile(resource, chunk)
-        .toPromise(Promise).then ->
-          resource
+      if isStream content
+        stream content
+        .map (chunk)->appendFile(resource, chunk)
+        .collect()
+        .toPromise Promise
+        .then (all)->Promise.all all
+        .then -> resource
 
 
 module.exports = post
