@@ -2,7 +2,7 @@ a = 1
 f = ->
   a = a + 1
 
-describe 'coffee', ()->
+describe.skip 'coffee', ()->
   it 'inner variable', ->
     expect a == 1
     f()
@@ -30,3 +30,12 @@ describe 'coffee', ()->
     catch e
       expect.fail()
     return # dont return a promise
+
+  it 'finally', ->
+    count = 0
+    f = ->
+      try
+      finally
+        count++
+    f()
+    expect(count).eql 1

@@ -8,7 +8,7 @@ edges = (data) ->
   Object.keys(data).filter (k) -> typeof data[k] == 'object'
 
 value = (data) ->
-  if ['string', 'number'].includes typeof data
+  if ['string', 'number', 'function'].includes typeof data
     return data
   if typeof data == 'object'
     e = edges data

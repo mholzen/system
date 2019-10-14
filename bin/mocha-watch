@@ -2,8 +2,17 @@
 
 pattern=${1:-.}
 
-mocha="mocha -b -g $pattern"
+function test {
+  echo "started"
+  mocha -b -g $pattern
+  istanbul report
+}
 
-$mocha
+test
 
-fswatch . -e .git -o | xargs -n1 -I{} $mocha
+fswatch . -e .git -e coverage -o |
+while IFS='$\n' read -r line; do
+
+    test
+
+done
