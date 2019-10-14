@@ -1,8 +1,16 @@
+isPromise = require 'is-promise'
+{isStream} = require '../stream'
+
+defaultReplacer = (key, value)->
+  if isStream value
+    return '[Stream]'
+  if isPromise value
+    return '[Promise]'
+
+  value
+
 module.exports = (opts)->
+  opts ?= {}
+  replacer = opts.replacer ? defaultReplacer
   (data)->
-    # TODO: use augment?
-    # if opts?
-    #   output = {}
-    #   output[opts] = value
-    # output = data
-    JSON.stringify data, opts?.replacer
+    JSON.stringify data, replacer
