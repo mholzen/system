@@ -6,6 +6,9 @@ log.filter = (data)->
   if isStream data
     return '<stream>'
 
+  if typeof data?.then == 'function'
+    return '<Promise>'
+
   if data instanceof Error
     return data
 
@@ -25,7 +28,7 @@ log.filter = (data)->
 
     if typeof v != 'function'
       result[k] = v
-  # _.pickBy data, (v,k) ->
+
   return result
 
 log.defaultLength = 600
