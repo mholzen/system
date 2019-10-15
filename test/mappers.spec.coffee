@@ -5,7 +5,7 @@
   }
 } = require '../lib'
 
-describe.only 'mappers', ->
+describe 'mappers', ->
 
   it 'string', ->
     map = string()
