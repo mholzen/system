@@ -1,8 +1,11 @@
 fs = require 'fs'
+st = require 'stream'
 request = require 'request-promise'
 
 {promisify} = require 'util'
 appendFile = promisify fs.appendFile
+pipeline = promisify st.pipeline
+
 url = require './map/url'
 {stream, isStream} = require './stream'
 
@@ -44,11 +47,10 @@ post = (content, resource)->
 
       # from Stream
       if isStream content
-        stream content
-        .map (chunk)->appendFile(resource, chunk)
-        .collect()
-        .toPromise Promise
-        .then (all)->Promise.all all
+        read = stream(content).toNodeStream()
+        write = fs.createWriteStream resource
+
+        pipeline read, write
         .then -> resource
 
 
