@@ -1,5 +1,4 @@
 stream = require './stream'
-log = require '@vonholzen/log'
 
 strings = (data)->
   new Promise (resolve, reject)->
