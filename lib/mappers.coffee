@@ -108,15 +108,6 @@ mappers =
       if value?.path?
         return "/files#{value.path}"
 
-  string: ->
-    (value)->
-      if typeof value == 'object'
-        if typeof value?.toJSON == 'function'
-          value = value.toJSON()
-        if value instanceof Set
-          value = value.values()
-        value = JSON.stringify value
-
   sum: (opts)->
     opts = opts ? []
     total = opts.initial ? 0
@@ -154,6 +145,7 @@ mappers =
   'pick'
   'templates'
   'summarize'
+  'string'
   'text'
   'template'
   'url'
