@@ -22,12 +22,6 @@ delimiter = (value)->
   r.char
 
 parse = (value, context)->
-  # console.log value instanceof Request
-
-  # if value instanceof Request
-  #   value = await value
-  # throw new Error "cannot parse #{log.toPrettyString value}"
-
   if value instanceof Buffer
     value = value.toString()
 
@@ -50,15 +44,12 @@ parse = (value, context)->
 
   if value instanceof Readable
     log 'parse readable'
-    highland(value)
-    .split()
-    # .filter (line) -> line.length > 0
-    # .map parse
+    return highland(value)
+      .split()
+      .filter (line) -> line.length > 0
+      .map parse
 
-  if value instanceof Promise
-    throw new Error "cannot parse promise"
-
-  throw new Error "cannot parse #{log.toPrettyString value}"
+  throw new Error "cannot parse #{log.print value}"
 
 class Parser
   constructor: (options)->
@@ -87,6 +78,5 @@ parse.parseValue = (data)->
     return number
 
   data
-
 
 module.exports = parse
