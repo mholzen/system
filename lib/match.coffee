@@ -24,7 +24,13 @@ class Match
   constructor: (value, path)->
     @value = value
     @path = path ? []
-    
+
+  prepend: (path)->
+    if not (path instanceof Array)
+      path = Array.from path
+    @path = path.concat @path
+    @
+
   @toMatch: (d)-> return if d instanceof Match then d else new Match d
 
 class Matches

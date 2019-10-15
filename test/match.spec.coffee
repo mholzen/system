@@ -19,6 +19,11 @@ data =
       city: 'Seattle'
 
 describe 'Match', ->
+  it 'prepend', ->
+    a = new Match {a:1}, []
+    a.prepend('a').prepend('b').prepend(['c', 'd'])
+    expect(a.path).eql ['c', 'd', 'b', 'a']
+
   it 'startswith', ->
     a = ['mvh', 'address']
     b = ['mvh', 'address', 'city']
