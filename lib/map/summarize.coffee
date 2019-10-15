@@ -24,7 +24,6 @@ module.exports = (options)->
       keys = keys.slice 0, length
       data['...'] = extra
       keys.push '...'
-      log 'summarize', {keys, data, d: ("#{k}":summarize data[k] for k in keys)}
     return Object.assign {}, ...("#{k}":summarize(data[k]) for k in keys)
 
   summarize
