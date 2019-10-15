@@ -86,6 +86,6 @@ describe 'inodes', ->
     it 'match', ->
       dir = tempy.directory()
       file = await post 'abc', dir
-      match = query(file).match inodes(dir).entries()
-      match = await match.collect().toPromise(Promise)
-      expect(match).property(0).property 'path', file
+      matches = query(file).match inodes(dir).entries()
+      results = await matches[0].value.collect().toPromise Promise
+      expect(results).property(0).property 'path', file

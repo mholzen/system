@@ -2,7 +2,7 @@ a = 1
 f = ->
   a = a + 1
 
-describe.skip 'coffee', ()->
+describe 'coffee', ()->
   it 'inner variable', ->
     expect a == 1
     f()
