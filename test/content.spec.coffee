@@ -4,11 +4,11 @@
 require './searchers.spec.coffee'
 
 describe 'content', ->
-  it 'should get a file', ->
+  it 'from:file', ->
     filename = await post 'foo'
     c = await content filename
     expect(c).equal 'foo'
 
-  it.skip 'from:path', ->
-    c = content {path:[1]}, searchers()
+  it 'from:path', ->
+    c = content {path:['a', 'b']}, {a:{b:1}}
     expect(c).eql 1

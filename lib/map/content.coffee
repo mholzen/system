@@ -44,8 +44,7 @@ content = (from, context)->
 
   if from?.path?
     if from.path instanceof Array
-      log.debug 'get', {path: from.path, context}
-      return _.get from.path, context
+      return _.get context, from.path
 
     return fileContent(from.path).then (content)->
       return if content instanceof Buffer
