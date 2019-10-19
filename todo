@@ -1,5 +1,16 @@
 # search
-- write tests for querying streams
+- interface for searchers
+  - file/network searcher is a stream
+  - in-memory data can be searched too
+    - why return a stream when we can return the entire object in memory
+  - an in-memory object is data, a Map, has entries
+  - a value of a map can be a searcher
+  - when a value is a stream, match stream could return a stream as the match.value
+
+  - query.match stream
+    - what if the data is a stream
+    - a match can be a stream
+
 - how to express `search ... where ...`
 - search within content (file or response)
   - filter results from context queries (eg file = search context.source file "$@") to replace defining recursion level

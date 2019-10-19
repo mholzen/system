@@ -69,6 +69,12 @@ describe 'Match', ->
     #
     # expect(intersect(a,b)).eql b
 
+  it 'value:match', ->
+    m1 = new Match 1, ['a']
+    m2 = new Match m1, ['b']
+    expect(m2.value).eql 1
+    expect(m2.path).eql ['b', 'a']
+
 describe 'Matches', ->
   it 'intersect value', ->
     a = new Match 1, []

@@ -6,6 +6,12 @@ defaultReplacer = (key, value)->
     return '[Stream]'
   if isPromise value
     return '[Promise]'
+  if value instanceof Array
+    return value
+
+  if typeof value?[Symbol.iterator] == 'function'
+    if typeof value?.entries == 'function'
+      return Object.fromEntries value.entries()
 
   value
 

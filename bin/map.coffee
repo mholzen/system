@@ -23,7 +23,8 @@ options = parseArgs process.argv[3..]
 if name == 'tableString'
   options.width = process.stdout.columns
 
-options.root = searchers
+options.root = searchers()
+
 log 'options', {options}
 map = mapper options
 

@@ -43,6 +43,10 @@ content = (from, context)->
       from = path: from
 
   if from?.path?
+    if from.path instanceof Array
+      log.debug 'get', {path: from.path, context}
+      return _.get from.path, context
+
     return fileContent(from.path).then (content)->
       return if content instanceof Buffer
         content.toString()

@@ -8,6 +8,7 @@ getContent = content
 {items} = require './generators'
 iterable = require './map/iterable'
 {startsWith, intersect, Match, Matches} = require './match'
+isPromise = require 'is-promise'
 
 class Query
   setQuery: (query) ->
@@ -276,7 +277,12 @@ class Query
 
     if (stream.isStream data) and (not @streams.has(data))
       @streams.add data
-      return data.filter (item) => @match item
+      matches = data.filter (item) => @match item
+      return [new Match matches]
+
+    if isPromise data
+      matches = data.then (d) => @match d
+      return [new Match matches]
 
     if data instanceof Array
       results = []
@@ -298,6 +304,9 @@ class Query
       if results.length == 0
         return null
       return results
+
+    if (typeof data[Symbol.iterator] == 'function') and (typeof data != 'string')
+      return @match Array.from data
 
     match = @_match data
     if match == null

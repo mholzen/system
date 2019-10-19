@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@vonholzen/log": "^1.0.1",
+    "@vonholzen/log": "^1.0.3",
     "coffeescript": "^2.3.0",
     "command-line-args": "^5.0.2",
     "csv-parse": "^2.5.0",

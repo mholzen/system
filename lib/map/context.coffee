@@ -11,8 +11,9 @@ module.exports = (options)->
       return data
 
     if data?.path instanceof Array
-      if data.path.length == 0
+      path = data.path.slice 0,-2
+      if path.length == 0
         return root
-      return _.get root, data.path.slice 0,-2
+      return _.get root, path
 
     throw new Error "no path in '#{typeof data}'"

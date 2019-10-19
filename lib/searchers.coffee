@@ -4,19 +4,23 @@ urlQueries = require './urlQueries'
 mappers = require './mappers'
 reducers = require './reducers'
 log = require './log'
+_ = require 'lodash'
 
-log.debug 'foo', Object.keys mappers
 searchers = {
-  urlQueries
-  bookmarks
-  inodes: inodes().items
-  templates: {name: 'templates', path:/\.hbs$/}
-  mappers: {name: 'mappers', mappers, items: Object.keys mappers}
-  reducers: {name: 'reducers', reducers, items: Object.keys reducers }
+  inodes: (options)-> inodes(options?.start).entries()
+  bookmarks: (options)-> await bookmarks.read
 }
 
-searchers.read =
-  Promise.all [ bookmarks.read ]
-  .then -> searchers
+entries = -> Object.entries searchers
 
-module.exports = searchers
+instantiate = (data, options)->
+  if typeof data != 'function'
+    return data
+  data options
+
+get = (options)->
+  new Map entries().map (entry)-> [entry[0], instantiate entry[1], options]
+  #_.mapValues searchers, (searcher)-> searcher options
+
+get.entries = entries
+module.exports = Object.assign get, searchers

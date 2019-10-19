@@ -6,12 +6,13 @@ _ = require 'lodash'
 strings = require './strings'
 {join, sep} = require 'path'
 {sortAs} = require './util'
-p = require 'path'
+{dirname} = require 'path'
 stream = require 'highland'
 
 {promisify} = require 'util'
 fs = require 'fs'
 statAsync = promisify fs.stat
+stat = statAsync
 
 # TODO: create a generator that watches a subdirectory
 # use it to update symlinks targets
@@ -25,10 +26,20 @@ class Stat
     @options.recurse = @options.recurse ? false
     log 'inodes.Stat', {path:@path}
     @stat = statAsync @path
-    @items = stream @walker()
 
-  # toJSON: ->
-  #   name: 'inodes'
+  entries: -> stream @walker()
+
+  # for a file: parent directory
+  # for a directory: children and parent directoruy
+  #   if root directory, empty
+  adjascent: ->
+    result = stream()
+    parent = dirname @path
+    if @path != parent
+      result.push parent
+
+    await @stat
+    readdir @path
 
   isDirectory: ->
     stat = await @stat
@@ -68,7 +79,6 @@ class Stat
       catch error
         log 'inodes.get', {error}
         throw error
-
 
   walker: ->
     root = @path
@@ -136,10 +146,9 @@ class Stat
         log 'file.order sorted', dirStatsArray.map (d)->d.name
         next()
 
-stat = (args...)->
-  new Stat args...
+inodes = (path, options)->
+  new Stat path, options
 
-stat.Stat = Stat
-stat.statAsync = statAsync
+inode = inodes
 
-module.exports = stat
+module.exports = Object.assign inodes, {Stat, statAsync, stat, inode}

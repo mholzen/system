@@ -22,6 +22,11 @@ isRegeExpAnswer = (a)->
 
 class Match
   constructor: (value, path)->
+    if value instanceof Match
+      @value = value.value
+      @path = path.concat value.path ? []
+      return
+
     @value = value
     @path = path ? []
 

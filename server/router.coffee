@@ -17,6 +17,14 @@ streamResponse = (req, res)->
 
   log 'router.streamResponse', {data: req.data}
   req.data = await req.data
+  if typeof req.data == 'number'
+    req.data = req.data.toString()
+
+  if typeof req.data == 'object'
+    if not stream.isStream req.data
+      req.data = JSON.stringify req.data
+      res.type 'application/json'
+
   if typeof req.data == 'string'
     return res.send req.data
 
@@ -76,7 +84,7 @@ class TreeRouter
       if not handler?
         return res.status(404).send("cannot find '#{first}' in #{Object.keys req.data}")
 
-      if typeof handler == 'object'
+      if ['object', 'number', 'string'].includes typeof handler
         req.data = handler
         req.remainder = remainder
         continue
@@ -91,7 +99,7 @@ class TreeRouter
     await streamResponse req, res
     next()
 
-rootInode = searchers.inodes
+rootInode = searchers.inodes()
 
 fileHandler = (req, res) ->
   path = req.remainder ? ''
@@ -109,11 +117,14 @@ fileHandler = (req, res) ->
   await req.data
 
 root =
-  mappers: mappers
-  searchers: searchers
-  reducers: reducers
   generators: generators
-  files: fileHandler
+  searchers: searchers
+  html: (req, res, next)->
+    req.remainder
+    mappers.html()
+  # mappers: mappers
+  # reducers: reducers
+  # files: fileHandler
 
 router = ->
   r = new express.Router()

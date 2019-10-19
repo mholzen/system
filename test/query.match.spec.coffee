@@ -1,6 +1,8 @@
 query = require '../lib/query'
 {createQuery, fromArgs, Query} = query
-{post} = require '../lib'
+{post, stream} = require '../lib'
+isPromise = require 'is-promise'
+
 require './query.spec'
 
 describe 'query', ->
@@ -93,7 +95,6 @@ describe 'query', ->
         {value: {foo:'b', bar:'a'}, path: [{foo: [1], bar: [0]}]}
       ]
 
-
     it 'from:object with regexp', ->
       q = query [{a:/b/}]
       expect(q.match({a:'abc'})).eql [
@@ -135,6 +136,29 @@ describe 'query', ->
       expect(
         query(b:2).match([1,2,3])
       ).eql null
+
+    it 'data:Stream', ->
+      matches = query('b').match stream(['a', 'b', 'c'])
+      expect(matches).property('0').property('value').satisfy stream.isStream
+      results = await matches[0].value.toPromise Promise
+      expect(results).eql 'b'
+
+    it 'data:Promise', ->
+      data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
+      expect(data).satisfy isPromise
+      expect(data).property('then').a 'function'
+
+      matches = query('b').match data
+      expect(matches).property('0').property('value').respondTo 'then'
+      results = await matches[0].value
+      expect(results).eql [
+        {value: 'b', path:[1]}
+      ]
+
+    it 'data:Map', ->
+      data = new Map [['a', 1]]
+      matches = query('a').match data
+      expect(matches).property('0').eql {value:'a', path: [0,0]}
 
 
   describe 'high level', ->
@@ -232,75 +256,3 @@ describe 'query', ->
 
       # expect(query('marc').match data).eql ['marc']
       # expect(query('mvh').match data).eql [{mvh: data.mvh}]
-
-  describe.skip 'match', ->
-    it 'array', ->
-      r = query(1).match [1, 2, 1]
-      expect(r).eql [1,1]
-
-    it 'object key', ->
-      r = await query('a').match {a:1, b:2}
-      expect(r).includes a:1
-
-    it 'object value', ->
-      r = await query(['john', 'doe']).match {first:'john', last:'doe'}
-      expect(r).property(0).includes first:'john'
-      expect(r).property(0).includes last:'doe'
-      expect(r).property(1).includes first:'john'
-      expect(r).property(2).includes last:'doe'
-
-      r = await query(1).match {a:1, b:2}
-      expect(r).property(0).eql {a:1}
-
-    it 'query object with multiple keys must match all keys', ->
-      r = await query({a:1, b:1}).match {a:1, b:1, c:1}
-      expect(r).not.null
-
-    it 'object query does not match anywhere in an object graph', ->
-      r = await query(a:1).match b:{a:1}
-      expect(r).null
-
-    it 'an object query with recurse match anywhere in an object graph?', ->
-      r = await query({a:1}, recurse:true).match b:{a:1}
-      expect(r).not.null
-      expect(r[0]).property('data').eql {a:1}
-      expect(r[0]).property('path').eql ['b']
-
-    it 'an object query with recurse should match multiple places in an object graph', ->
-      q = query({a:1}, recurse:true)
-      r = await q.match {b:{a:1}, c:{a:1}}
-      expect(r).not.null
-
-    it 'query object matches object in object graph', ->
-      r = await query(['john', 'doe'], recurse:true).match {john:{first:'john', last:'doe'}}
-      log r
-      expect(r).property(0).includes first:'john'
-      expect(r).property(0).includes last:'doe'
-      expect(r).property(1).includes first:'john'
-      expect(r).property(2).includes last:'doe'
-
-      it 'test: query object with multiple key matches different objects in graph', ->
-        r = await query({b:1, c:1}, recurse:true).match {a:{b:1}, c:1}
-        # no: because it can be expressed with an array
-        expect(r).null
-
-        it 'no', ->
-          r = await query([b:1, c:1], recurse:true).match {a:{b:1}, c:1}
-          expect(r).not.null
-
-    # it 'object with object', ->
-    #   r = await query({a:1}).match {a:1, b:2}
-    #   expect(r).property(0).eql 1
-    #   expect(r).property('path').eql ['a']
-
-    it.skip '-string on object key', ->
-      # TODO: -a matches the value :1
-      r = await query('-a').match {a:1, b:2}
-      expect(r).eql b:2
-
-    it.skip '-string on object value', ->
-      # key 'a' matches '-1' so it returns it too
-      r = await query('-1').match {a:'1', b:2}
-      expect(r).eql b:2
-
-# TODO: match against streams
