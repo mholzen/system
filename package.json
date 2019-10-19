@@ -10,7 +10,9 @@
     "stop": "forever -a stop server/start.coffee",
     "watch": "forever --debug -v -a -w --watchIgnore 'files/**' -c coffee server/start.coffee | bunyan",
     "log": "forever logs -f start.coffee",
-    "open": "open http://localhost:3000"
+    "open": "open http://localhost:3000",
+    "open-coverage": "open-http coverage/lcov-report/index.html"
+
   },
   "author": "",
   "license": "ISC",
