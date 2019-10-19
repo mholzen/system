@@ -109,6 +109,7 @@ reducers =
 
 [
   'graph'
+  'sum'
   'summarize'
 ].forEach (r)->
   reducers[r] = require "./reducers/#{r}"

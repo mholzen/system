@@ -1,19 +1,20 @@
-stream = require '../lib/stream'
+{stream} = require '../lib'
 
-{sum} = require '../lib/mappers'
+{sum} = require '../lib/reducers'
 
-it 'should sum numbers', ->
-  total = 0
-  stream([1,2,3]).map sum()
+describe 'sum', ->
+  it 'from:numbers', ->
+    r = await stream [1,2,3]
+    .reduce1 sum()
+    .toPromise Promise
 
-  .toArray (a)->
-    expect(a.length).equal 3
-    expect(a[2]).equal 6
+    expect r
+    .eql 6
 
-it 'should sum numbers as strings', ->
-  total = 0
-  stream(['1','2','3']).map sum()
+  it 'from:strings', ->
+    r = await stream ['1','2','3']
+    .reduce1 sum()
+    .toPromise Promise
 
-  .toArray (a)->
-    expect(a.length).equal 3
-    expect(a[2]).equal 6
+    expect r
+    .eql 6
