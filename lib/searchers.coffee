@@ -19,8 +19,8 @@ instantiate = (data, options)->
   data options
 
 get = (options)->
-  new Map entries().map (entry)-> [entry[0], instantiate entry[1], options]
-  #_.mapValues searchers, (searcher)-> searcher options
+  # new Map entries().map (entry)-> [entry[0], instantiate entry[1], options]
+  _.mapValues searchers, (searcher)-> searcher options
 
 get.entries = entries
 module.exports = Object.assign get, searchers

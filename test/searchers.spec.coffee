@@ -13,9 +13,9 @@ describe 'searchers', ->
     expect(searchers.entries()).length.above 1
 
   it '()', ->
-    expect(searchers()).itself.respondTo 'entries'
-    expect(Array.from searchers().entries()).length.above 1
-    # expect(Object.keys searchers()).length.above 1
+    # expect(searchers()).itself.respondTo 'entries'
+    # expect(Array.from searchers().entries()).length.above 1
+    expect(Object.keys searchers()).length.above 1
 
   it 'inodes, bookmarks', ->
     expect(searchers).property 'inodes'

@@ -18,8 +18,7 @@ if not mapper?
   console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
   process.exit()
 
-parseArgs = args()
-options = parseArgs process.argv[3..]
+options = args process.argv[3..]
 if name == 'tableString'
   options.width = process.stdout.columns
 

@@ -1,19 +1,18 @@
 _ = require 'lodash'
 log = require '../log'
 
-module.exports = (options)->
+module.exports = (data, options)->
   root = options?.root
   if not root?
     throw new Error 'undefined root'
 
-  (data)->
-    if typeof data != 'object'
-      return data
+  if typeof data != 'object'
+    return data
 
-    if data?.path instanceof Array
-      path = data.path.slice 0,-2
-      if path.length == 0
-        return root
-      return _.get root, path
+  if data?.path instanceof Array
+    path = data.path.slice 0,-2
+    if path.length == 0
+      return root
+    return _.get root, path
 
-    throw new Error "no path in '#{typeof data}'"
+  throw new Error "no path in '#{typeof data}'"

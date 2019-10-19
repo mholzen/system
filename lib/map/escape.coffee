@@ -1,7 +1,6 @@
-module.exports = (options)->
-  (data)->
-    if typeof data == 'string'
-      re = / /gi
-      return data.replace re, '\\ '
+module.exports = (data)->
+  if typeof data == 'string'
+    re = / /gi
+    return data.replace re, '\\ '
 
-    data
+  data

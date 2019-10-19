@@ -3,6 +3,5 @@
 describe 'search', ->
 
   it '()', ->
-    output = search 'google'
-    log.debug {output}
+    output = search 'foo'
     expect(output).not.null

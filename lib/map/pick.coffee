@@ -1,8 +1,7 @@
 _ = require 'lodash'
 
-module.exports = (fields)->
-  (data)->
-    if fields instanceof Array
-      _.pick data, fields
-    else
-      data[fields]
+module.exports = (data, fields)->
+  if fields instanceof Array
+    _.pick data, fields
+  else
+    data[fields]

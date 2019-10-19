@@ -1,14 +1,10 @@
-log = require '@vonholzen/log'
-_ = require 'lodash'
 name = require '../map/name'
-
-names = name()
 
 summarize = (options)->
   reducer = (summary, data)->
     summary.count = (summary.count ? 0) + 1
 
-    if n = names data
+    if n = name data
       n = n
       .map (x)->x.value.name
       .slice 0, 10

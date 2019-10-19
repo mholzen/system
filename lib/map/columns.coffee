@@ -1,7 +1,6 @@
-module.exports = (options)->
-  separator = /\s+/g
-  (data)->
-    if typeof data == 'string'
-      return data.split separator
+module.exports = (data, options)->
+  separator = options?.separator ? /\s+/g
+  if typeof data == 'string'
+    return data.split separator
 
-    throw new Error "cannot split #{typeof data}"
+  throw new Error "cannot split #{typeof data}"

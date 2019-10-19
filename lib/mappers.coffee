@@ -32,70 +32,58 @@ mappers =
       return append c, opts.value
 
 
-  basename: ->
-    (value)->
-      if value?.path
-        path.basename value?.path
+  basename: (value)->
+    if value?.path
+      path.basename value?.path
 
-  dirname: ->
-    (value)->
-      if value?.path
-        path.dirname value?.path
+  dirname: (value)->
+    if value?.path
+      path.dirname value?.path
 
-  graph: (opts)->
-    [memo,reducer] = graph(opts)
-    (value)->
-      if typeof value == 'object'
-        if value.nodes? and value.edges?
-          return value
-        if value?.type == 'file'
-          readable = await content value
-          return parse(readable).reduce(reducer, memo)
-
-  location: ->
-    (value)->
-      if typeof value == 'string'
+  graph: (value, opts)->
+    if typeof value == 'object'
+      if value.nodes? and value.edges?
         return value
-      if value?.path?
-        return value.path
-      if value?.url?
-        return value.url
+      if value?.type == 'file'
+        readable = await content value
+        [memo,reducer] = graph opts
+        return parse(readable).reduce(reducer, memo)
 
-  markdown: ->
-    (value)->
-      if typeof value == 'string'
-        value = value.replace /\siframe:([^\s]+)\s/g, '<iframe frameBorder="0" src="$1"></iframe>'
-        value = value.replace /(?:\s)thumb:([^\s]+)/g, ' <a r=1 href="$1"><img src="$1"></a>'
-      value
+  location: (value)->
+    if typeof value == 'string'
+      return value
+    if value?.path?
+      return value.path
+    if value?.url?
+      return value.url
 
-  path: ->
-    mappers.pick 'path'
+  markdown: (value)->
+    if typeof value == 'string'
+      value = value.replace /\siframe:([^\s]+)\s/g, '<iframe frameBorder="0" src="$1"></iframe>'
+      value = value.replace /(?:\s)thumb:([^\s]+)/g, ' <a r=1 href="$1"><img src="$1"></a>'
+    value
 
+  request: request
 
-  request: -> request
+  response: request
 
-  response: -> request
+  post: (resource, opts)->
+    r = request(resource)
+    r.method = 'POST'
+    r.payload = opts.payload
+    await r.send()
 
-  post: (opts)->
-    (resource)->
-      r = request(resource)
-      r.method = 'POST'
-      r.payload = opts.payload
-      await r.send()
-
-  source: ->
-    (value)->
-      if value?.source?
-        return value.source
-      if value?.url?
-        return value.url
-      if value?.path?
-        return "/files#{value.path}"
+  source: (value)->
+    if value?.source?
+      return value.source
+    if value?.url?
+      return value.url
+    if value?.path?
+      return "/files#{value.path}"
 
   substitute: template.substitute
 
-  timestamp: ->
-    (value)-> Date.now()
+  timestamp: (value)-> Date.now()
 
   table: table.map
   tableString: table.mapString
@@ -123,6 +111,5 @@ mappers =
   'url'
 ].forEach (r)->
   mappers[r] = require "./map/#{r}"
-
 
 module.exports = mappers

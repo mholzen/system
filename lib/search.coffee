@@ -57,7 +57,7 @@ search = (args, output)->
     if not (x instanceof Array)
       x = [ x ]
     stream x
-  .map json()
+  .map json
   .each (data)->
     if output?
       output.write data + '\n'

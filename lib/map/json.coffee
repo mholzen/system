@@ -15,8 +15,6 @@ defaultReplacer = (key, value)->
 
   value
 
-module.exports = (opts)->
-  opts ?= {}
-  replacer = opts.replacer ? defaultReplacer
-  (data)->
-    JSON.stringify data, replacer
+module.exports = (data, options)->
+  replacer = options?.replacer ? defaultReplacer
+  JSON.stringify data, replacer

@@ -1,8 +1,10 @@
 {
   mappers: {
-    string
-    json
     amount
+    columns
+    escape
+    json
+    string
   }
 } = require '../lib'
 
@@ -15,16 +17,23 @@ describe 'mappers', ->
     expect(amount amount:'1').eql 1
     expect(-> amount foo:'1').throws()
 
+  it 'columns', ->
+    expect(columns 'a  b      c').eql ['a', 'b', 'c']
+
+  it 'escape', ->
+    expect(escape 'a b').eql 'a\\ b'
+
   it 'json', ->
-    map = json()
-    expect(map('a')).eql '"a"'
-    expect(map({a:1})).eql '{"a":1}'
-    expect(map ['a',1]).eql '["a",1]'
+    expect(json 'a').eql '"a"'
+    expect(json a:1).eql '{"a":1}'
+    expect(json ['a',1]).eql '["a",1]'
 
     x = new Map [['a',1]]
-    expect(map x).eql '{"a":1}'
+    expect(json x).eql '{"a":1}'
+
+    x = new Map [['a',1]]
+    expect(json x).eql '{"a":1}'
 
   it 'string', ->
-    map = string()
-    expect(map 'a').eql 'a'
-    expect(map a:1).eql '{"a":1}'
+    expect(string 'a').eql 'a'
+    expect(string a:1).eql '{"a":1}'

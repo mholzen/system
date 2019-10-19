@@ -1,7 +1,7 @@
 _ = require 'lodash'
 log = require '../log'
 
-module.exports = (options)->
+module.exports = (value, options)->
   options.name = options.name ? options[0]
   if typeof options.name != 'string'
     throw new Error 'cannot find name for augment'
@@ -20,20 +20,19 @@ module.exports = (options)->
   if options.addSource
     source = options.root.mappers.mappers.source()
 
-  (value)->
-    if typeof value != 'object'
-      value =
-        value: value
-      # throw new Error 'cannot agument a non-object type'
+  if typeof value != 'object'
+    value =
+      value: value
+    # throw new Error 'cannot agument a non-object type'
 
-    output = await mapper value
+  output = await mapper value
 
-    log 'augment', {type: typeof output, value, output}
-    value[options.name] = output
+  log 'augment', {type: typeof output, value, output}
+  value[options.name] = output
 
-    if options.addSource
-      if not value?.source?
-        value.source = source(value)
-      value.source = "/map/#{options.name}#{value.source}"
+  if options.addSource
+    if not value?.source?
+      value.source = source(value)
+    value.source = "/map/#{options.name}#{value.source}"
 
-    value
+  value

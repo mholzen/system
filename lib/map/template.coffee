@@ -20,18 +20,17 @@ class Template
         result = result.replace '#{'+key+'}', value
     result
 
-template = (options)->
-  if options instanceof Array
-    if typeof options?[0] == 'string'
+template = (data, options)->
+    if options instanceof Array
+      if typeof options?[0] == 'string'
+        options =
+          template: options[0]
+    if typeof options == 'string'
       options =
-        template: options[0]
-  if typeof options == 'string'
-    options =
-      template: options
+        template: options
 
-  pattern = options.template ? ''
+    pattern = options.template ? ''
 
-  (data)->
     result = pattern
     for key, value of data
       result = result.replace '#{'+key+'}', value
@@ -40,7 +39,7 @@ template = (options)->
 template.Template = Template
 
 template.substitute = (substitutions...)->
-  substitutions = args() substitutions
+  substitutions = args substitutions
 
   (data)->
     matches = query('template').match data
