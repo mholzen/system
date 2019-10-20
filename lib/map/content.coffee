@@ -58,6 +58,9 @@ content = (from, options)->
       log 'content file'
       from = path: from
 
+  if from instanceof Array
+    from = {path: from}
+
   if from?.path?
     if from.path instanceof Array
       return get options?.root, from.path
