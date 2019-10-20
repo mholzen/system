@@ -2,7 +2,7 @@ _ = require 'lodash'
 log = require '../log'
 {parseValue} = require '../parse'
 
-module.exports = (data)->
+args = (data)->
   if not (data instanceof Array)
     throw new Error "expecting array"
 
@@ -21,3 +21,12 @@ module.exports = (data)->
     result[key] = parseValue value
 
   result
+
+args.numeric = (data)->
+  r = []
+  for k, v of data
+    if not isNaN (i = parseInt k)
+      r[i] = v
+  r.sort()
+
+module.exports = args
