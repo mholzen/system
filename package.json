@@ -12,13 +12,12 @@
     "log": "forever logs -f start.coffee",
     "open": "open http://localhost:3000",
     "open-coverage": "open-http coverage/lcov-report/index.html"
-
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@vonholzen/log": "^1.0.3",
-    "coffeescript": "^2.3.0",
+    "coffeescript": "^2.4.1",
     "command-line-args": "^5.0.2",
     "csv-parse": "^2.5.0",
     "datejs": "^1.0.0-rc3",

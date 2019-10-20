@@ -1,0 +1,4 @@
+
+$ s foo | map context | map content | map pick url name
+
+- pick doesn't accept multiple arguments
