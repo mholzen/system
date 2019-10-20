@@ -25,7 +25,6 @@ if name == 'tableString'
 options.root = searchers()
 
 log 'options', {options}
-map = mapper options
 
 parser = new parse.Parser()
 
@@ -33,7 +32,7 @@ highland(process.stdin)
 .split()
 .filter (line) -> line.length > 0
 .map (item)-> parser.parse item
-.map map
+.map (x)->mapper x, options
 .map (item)->
   if not isPromise item
     item = Promise.resolve item

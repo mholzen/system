@@ -3,6 +3,13 @@
 
 require './searchers.spec.coffee'
 
+{get} = content
+describe 'content.get', ->
+  it '', ->
+    expect(get 1, []).eql 1
+    a = await get {a:1}, ['a']
+    expect(a).eql 1
+
 describe 'content', ->
   it 'from:file', ->
     filename = await post 'foo'
@@ -10,5 +17,5 @@ describe 'content', ->
     expect(c).equal 'foo'
 
   it 'from:path', ->
-    c = content {path:['a', 'b']}, {a:{b:1}}
+    c = await content {path:['a', 'b']}, root: {a:{b:1}}
     expect(c).eql 1
