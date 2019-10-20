@@ -1,7 +1,9 @@
 _ = require 'lodash'
+{numeric} = require './args'
 
-module.exports = (data, fields)->
-  if fields instanceof Array
-    _.pick data, fields
-  else
-    data[fields]
+module.exports = (data, options)->
+  fields = numeric options
+  if fields.length == 1
+    return data[fields]
+
+  _.pick data, fields

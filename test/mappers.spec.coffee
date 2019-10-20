@@ -5,6 +5,7 @@
     context
     escape
     json
+    pick
     string
   }
 } = require '../lib'
@@ -37,6 +38,10 @@ describe 'mappers', ->
 
     x = new Map [['a',1]]
     expect(json x).eql '{"a":1}'
+
+  it 'pick', ->
+    expect(pick {a:1, b:2, c:3}, {0:'a'} ).eql 1
+    expect(pick {a:1, b:2, c:3}, {0:'a', 1  :'b'} ).eql {a:1, b:2}
 
   it 'string', ->
     expect(string 'a').eql 'a'
