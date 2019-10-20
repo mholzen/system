@@ -2,6 +2,7 @@
   mappers: {
     amount
     columns
+    context
     escape
     json
     string
@@ -19,6 +20,9 @@ describe 'mappers', ->
 
   it 'columns', ->
     expect(columns 'a  b      c').eql ['a', 'b', 'c']
+
+  it 'context', ->
+    expect(context {path: [1,2,3]}).eql {path:[1]}
 
   it 'escape', ->
     expect(escape 'a b').eql 'a\\ b'
