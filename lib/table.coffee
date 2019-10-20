@@ -82,10 +82,10 @@ table.Table = Table
 
 table.map = (options)->
   result = new Table(options)
-  (item) -> result.map item
+  result.map item
 
-table.mapString = (options)->
+table.mapString = (item, options)->
   result = new Table(options)
-  (item) -> result.mapString item
+  result.mapString item
 
 module.exports = table
