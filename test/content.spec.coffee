@@ -19,3 +19,7 @@ describe 'content', ->
   it 'from:path', ->
     c = await content {path:['a', 'b']}, root: {a:{b:1}}
     expect(c).eql 1
+
+  it 'from:array', ->
+    c = await content ['a', 'b'], root: {a:{b:1}}
+    expect(c).eql 1
