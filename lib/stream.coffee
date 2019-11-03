@@ -1,6 +1,4 @@
 highland = require 'highland'
-fs = require 'fs'
-log = require '@vonholzen/log'
 
 stream = highland
 

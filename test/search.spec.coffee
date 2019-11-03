@@ -2,6 +2,6 @@
 
 describe 'search', ->
 
-  it '()', ->
+  it '', ->
     output = search 'foo'
     expect(output).not.null
