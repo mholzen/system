@@ -8,6 +8,6 @@ module.exports = (data, options)->
     return data
 
   if data?.path instanceof Array
-    return data.path.slice 0,-2
+    return {path: data.path.slice 0,-2}
 
   throw new Error "no path in '#{typeof data}'"
