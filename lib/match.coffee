@@ -1,5 +1,5 @@
 _ = require 'lodash'
-log = require '@vonholzen/log'
+log = require './log'
 
 ensureArray = (a)->
   if not (a instanceof Array)
@@ -45,12 +45,12 @@ class Matches
 ensureMatch = ->
   for k, a of arguments
     if not a?.value?
-      throw new Error "no value #{log.print a} for argument #{k}"
+      throw new Error "no value in '#{log.print a}' for argument #{k}"
     if not a?.path? instanceof Array
-      throw new Error "no path array #{log.print a} for argument #{k}"
+      throw new Error "no path array in '#{log.print a}' for argument #{k}"
 
 intersect = (a,b)->
-  log 'intersect', {a, b}
+  log.debug 'intersect', {a, b}
   if a instanceof Array
     return a.reduce (r, m)->
       if (m = intersect m, b) != null
