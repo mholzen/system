@@ -275,9 +275,8 @@ class Query
     if @query == null
       return [new Match data]
 
-    if (stream.isStream data) and (not @streams.has(data))
-      @streams.add data
-      matches = data.filter (item) => @match item
+    if stream.isStream data
+      matches = data.fork().filter (item) => @match item
       return [new Match matches]
 
     if isPromise data

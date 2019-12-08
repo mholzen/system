@@ -67,6 +67,11 @@ intersect = (a,b)->
 
   ensureMatch a, b
 
+  if _.isEqual a.path, b.path
+    if not _.isEqual a.value, b.value
+      throw new Error "different values with same path (path:#{log.print a.path} a:#{log.print a.value} b:#{log.print b.value})"
+    return a
+
   if a.path.length > b.path.length
     [a, b] = [b, a]
 
