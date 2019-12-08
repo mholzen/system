@@ -1,5 +1,7 @@
 _ = require 'lodash'
 log = require './log'
+{isStream} = require './stream'
+isPromise = require 'is-promise'
 
 ensureArray = (a)->
   if not (a instanceof Array)
@@ -158,7 +160,26 @@ intersect = (a,b)->
     # different keys
     return null
 
-  # intersect a_value and b.value
+  log.debug "intersect", {a_value, b_value: b.value}
+  # if isStream a_value and isStream b.value
+  # need special handling so that it creates a single stream
+  if isStream a_value
+    value = a_value.map (v)->
+      m = new Match v, a.path
+      intersect m, b
+    return new Match value, b.path
+  if isStream b.value
+    value = b.value.map (v)->
+      intersect a, v
+    return new Match value, b.path
+
+  if isPromise a_value
+    value = a_value.then (a)-> intersect a, b.value
+    return new Match value, b.path
+  if isPromise b.value
+    value = b.value.then (b)-> intersect a_value, b
+    return intersect value, b.path
+
   if typeof a_value != typeof b.value
     return null
 
@@ -174,8 +195,8 @@ intersect = (a,b)->
   a_value = _.pick a_value, keys
 
   b_value = _.pick b.value, keys
-  if not _.isEqual a_value, b_value
-    throw new Error "different values with same path #{log.smallPrint [a, b]}"
+  if not (_.isEqual a_value, b_value)
+    throw new Error "different values with same path #{log.print [a, b]}"
 
   return new Match a_value, b.path
 

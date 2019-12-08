@@ -71,17 +71,24 @@ describe 'query', ->
     it 'from:regexp', ->
       r = query(/1/).match 11
       expect(r).eql [11]
+
       r = query(/a/).match 'abc'
       expect(r).eql [value:'a', path:[0]]
+
       r = query(/a/).match ['a', 'b']
       expect(r).eql [
         {value:'a', path: [0,0]}
       ]
+
       r = query(/a/).match {a:1, aa:2, b:1}
       expect(r).eql [
         {value:{a:1}, path: []}
         {value:{aa:2}, path: []}
       ]
+
+    it.skip 'regexp global', ->
+      r = query(/a/g).match 'abca'
+      expect(r).eql [{value:'a', path:[0]}, {value:'a', path:[3]}]
 
     it 'from:object', ->
       expect(query({b:1}).match({a:1})).null
@@ -137,11 +144,16 @@ describe 'query', ->
         query(b:2).match([1,2,3])
       ).eql null
 
+    it 'data:Match', ->
+      matches = query(1).match [1]
+      matches = query(1).match matches
+      expect(matches).property('0').eql value: 1, path:[1,1]
+
     it 'data:Stream', ->
       matches = query('b').match stream(['a', 'b', 'c'])
       expect(matches).property('0').property('value').satisfy stream.isStream
       results = await matches[0].value.toPromise Promise
-      expect(results).eql 'b'
+      expect(results).eql value: 'b', path: [1]
 
     it 'data:Promise', ->
       data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
@@ -227,15 +239,6 @@ describe 'query', ->
         # expect(query(first:/arc/).match data).eql [
         #   {value:{first:'arc'}, path:['mvh'], index: 1}
         # ]
-
-
-      # TODO: doesn't work because mvh is top level
-      it.skip 'from array', ->
-        # joins each matches
-        expect query([/a./,/.b/]).match ['a', 'b', 'ab']
-        .eql [
-          value: 'ab', path: [2]
-        ]
 
       it 'from array', ->
         # joins each matches

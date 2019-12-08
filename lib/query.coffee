@@ -239,6 +239,17 @@ class Query
     if @query.length == 0
       return [new Match data]
 
+    if 0
+      @query.reduce (matches, subquery)->
+        if matches == undefined
+          matches = subquery.query data
+        else
+          matches.map (match)->
+            m = subquery.query match.value
+            if m == null
+              return null
+            m.prepend match.path
+
     matches = null
     nullSeen = false
     for subquery in @query
@@ -274,6 +285,14 @@ class Query
 
     if @query == null
       return [new Match data]
+
+    if 0
+      if data instanceof Match
+        matches = @match data.value
+        if matches == null
+          return null
+        matches.map (m)->
+          m.prepend data.path
 
     if stream.isStream data
       matches = data.fork().filter (item) => @match item

@@ -1,4 +1,21 @@
+- `$ s jira project`  throws
+    search.spec.coffee:9
 
-$ s foo | map context | map content | map pick url name
+    `query(array).match(data)` uses intersect
 
-- pick doesn't accept multiple arguments
+        alternative: could query the matches of the first array
+        could: query([a,b]).match(data) := query(b).match( query(a).match(data) )
+
+            what should `query(1).match(query(1).match [1,2,1])` return?
+
+
+        `intersect(streamA, streamB)` fail
+
+        - two values with the same path should be identical so the two streams should be identical
+
+- two uses for matches from an array [x,y]
+    1 - x and y
+        eg: s jira project
+
+    2 - x then y
+        eg: s vmail john

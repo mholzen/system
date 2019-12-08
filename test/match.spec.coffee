@@ -1,5 +1,6 @@
 {query} = require '../lib/query'
 {Match, intersect, startsWith} = require '../lib/match'
+{stream} = require '../lib'
 
 data =
   mvh:
@@ -75,8 +76,9 @@ describe 'Match', ->
     expect(m2.value).eql 1
     expect(m2.path).eql ['b', 'a']
 
-describe 'Matches', ->
-  it 'intersect value', ->
+
+describe 'intersect', ->
+  it 'value', ->
     a = new Match 1, []
     b = new Match 1, []
     expect(intersect a,b).eql a
@@ -96,14 +98,6 @@ describe 'Matches', ->
     a = new Match 'a', [0]
     b = new Match 'b', [1]
     expect(intersect a,b).null
-
-    a = new Match {a:1}, []
-    b = new Match {b:2}, []
-    expect(intersect a,b).eql null
-
-    a = new Match {a:1, c:3}, []
-    b = new Match {b:2, c:3}, []
-    expect(intersect a,b).eql new Match {c:3}, []
 
     a = new Match 1, ['a']
     b = new Match 2, ['b']
@@ -132,7 +126,16 @@ describe 'Matches', ->
     expect(intersect a,b).eql null
     expect(intersect b,a).eql null
 
-  it 'intersect array and value', ->
+  it.skip 'same path', ->
+    a = new Match {a:1}, []
+    b = new Match {b:2}, []
+    expect(intersect a,b).eql null
+
+    a = new Match {a:1, c:3}, []
+    b = new Match {b:2, c:3}, []
+    expect(intersect a,b).eql new Match {c:3}, []
+
+  it 'array and value', ->
     a = [new Match 1, ['a']]
     b = new Match 2, ['b']
     expect(intersect a, b).eql null
@@ -146,7 +149,7 @@ describe 'Matches', ->
     expect(intersect a, b).eql b
     expect(intersect b, a).eql b
 
-  it 'intersect array and array', ->
+  it 'array and array', ->
     a = [new Match 1, ['a']]
     b = [new Match 1, ['a']]
     expect(intersect a, b).eql a
@@ -167,19 +170,19 @@ describe 'Matches', ->
     # expect(intersect a, b).eql r
     # expect(intersect b, a).eql r
 
-  it 'intersect value and object', ->
+  it 'value and object', ->
     a = new Match {a:1}, []
     b = new Match 1, ['a']
     expect(intersect a, b).eql b
     expect(intersect b, a).eql b
 
-  it 'intersect sub string', ->
+  it 'sub string', ->
     a = new Match 'abc', ['a', 0]
     b = new Match {a:'abc'}, []
     expect(intersect a, b).eql a
     expect(intersect b, a).eql a
 
-  it 'intersect path as object', ->
+  it 'path as object', ->
     a = new Match {a:'a'}, [{a:[0]}]
     b = new Match {a:'b'}, [{a:[1]}]
     expect(intersect a, b).null
@@ -206,3 +209,15 @@ describe 'Matches', ->
     # or              'b', [a, 1]
     expect(intersect a, b).eql new Match 'b', [a:[1]]
     expect(intersect b, a).eql new Match 'b', [a:[1]]
+
+  it.skip 'streams', ->
+    a = new Match stream([1]), [1]
+    b = new Match stream([1]), [1]
+    r = intersect a, b
+
+    expect(r.path).eql [1]
+    expect(r.value).satisfy stream.isStream
+    r = await r.value.toPromise Promise
+    expect r
+    .property 'value'
+    .eql [1]
