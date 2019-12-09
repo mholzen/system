@@ -44,7 +44,6 @@ class Query
 
     @options.recurse ?= false
     @options.partialMatches ?= false
-    @options.with ?= {}
 
     if options?.limit?
       @options.limit = parseInt options.limit
@@ -313,9 +312,6 @@ class Query
         for m1 in m
           m1 = new Match m1.value ? m1, m1.path
           m1.path.unshift i
-
-          if @options.with == 'input'
-            m1.input = d
 
           results.push m1
 
