@@ -424,7 +424,7 @@ query.query = query
 query.Query = Query
 query.createQuery = query
 
-optionNames = [ 'duration', 'depth', 'limit', 'recurse', 'with' ]
+optionNames = [ 'duration', 'depth', 'limit', 'recurse' ]
 query.optionNames = optionNames
 
 
