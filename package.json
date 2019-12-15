@@ -5,7 +5,7 @@
   "main": "index.coffee",
   "scripts": {
     "mocha": "mocha-watch",
-    "test": "mocha",
+    "test": "mocha-watch",
     "start": "forever -a -c coffee start server/start.coffee",
     "stop": "forever -a stop server/start.coffee",
     "watch": "forever --debug -v -a -w --watchIgnore 'files/**' -c coffee server/start.coffee | bunyan",
@@ -45,7 +45,7 @@
     "chai-string": "^1.4.0",
     "coffee-coverage": "^3.0.1",
     "istanbul": "^0.4.5",
-    "mocha": "^3.2.0",
+    "mocha": "^6.2.2",
     "request-promise": "^4.2.2",
     "stream-array": "^1.1.2",
     "supertest": "^4.0.2",

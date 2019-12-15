@@ -1,4 +1,0 @@
---compilers coffee:coffeescript/register
---require coffee-coverage/register-istanbul
---reporter list
---require test/init
