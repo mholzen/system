@@ -1,0 +1,8 @@
+bail: true
+spec: test/**.spec.coffee
+recursive: true
+require:
+  - coffeescript/register
+  # - coffee-coverage/register-istanbul
+  - test/init.coffee
+reporter: list
