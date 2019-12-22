@@ -5,7 +5,7 @@ pattern=${1:-.}
 function test {
   echo "started"
   mocha --config test/mocha.yml -g $pattern
-  istanbul report
+#  istanbul report
 }
 
 test

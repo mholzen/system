@@ -3,6 +3,7 @@
 process.env.NODE_CONFIG_DIR = __dirname + '../config'
 
 search = require '../lib/search'
+{json} = require '../lib/mappers'
 
 # silently exit if stdout is closed
 process.stdout.on 'error', (event)->
@@ -13,7 +14,10 @@ process.stdout.on 'error', (event)->
 # MAIN
 #
 args = process.argv[2..-1]
-search args, process.stdout
+search args
+.map json
+.each (line)->
+  process.stdout.write line + '\n'
 
 # TODO
 # if query.options.duration?

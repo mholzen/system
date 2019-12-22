@@ -1,6 +1,7 @@
 bail: true
 spec: test/**.spec.coffee
 recursive: true
+#inspect-brk: true
 require:
   - coffeescript/register
   # - coffee-coverage/register-istanbul

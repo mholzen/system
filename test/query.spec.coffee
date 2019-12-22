@@ -4,31 +4,70 @@ query = require '../lib/query'
 {post} = require '../lib'
 isPromise = require 'is-promise'
 
+require './results.spec'
+
 describe 'query', ->
   describe '.match', ->
     it 'from:empty', ->
       r = query().match 'abc'
       expect(r).eql [{value:'abc', path:[]}]
 
-    it 'match fundamentals', ->
+    it 'data:Map', ->
+      r = query('a')._objectMatchMap new Map Object.entries {k: 'a'}
+      expect(r).eql [
+        {value: 'a', path: ['k']}
+      ]
+
+      r = query('k')._objectMatchMap new Map Object.entries {k: 'a'}
+      expect(r).eql [
+        {value: ['k', 'a'], path: []}
+      ]
+
+      r = query('a').match new Map Object.entries {k: 'a'}
+      expect(r).eql [
+        {value: 'a', path: ['k']}
+      ]
+
+      r = query('k').match new Map Object.entries {k: 'a'}
+      expect(r).eql [
+        {value: ['k', 'a'], path: []}
+      ]
+
+
+    it 'fundamentals', ->
       r = query(1).match 1
       expect(r).eql [1]
+
+      r = query(1).match 2
+      expect(r).eql null
+
       r = query('1').match 1
       expect(r).eql [1]
       r = query('a').match 'ab'
       expect(r).eql null
       r = query('a').match 'a'
       expect(r).eql ['a']
+      
+      expect query(1).test []
+      .eql false
+
       expect query(1).match [1, 2, 1]
       .eql [
         {value: 1, path: [0]}
         {value: 1, path: [2]}
       ]
+      expect(query(null).match(null)).eql [value: null, path:[]]
+      expect(query(1).match(null)).eql null
 
       expect query(/./).match 'abc'
       .eql [ value:'a', path: [0] ]
 
       # each key is a separate match
+      r = query(1).match {d:{a:1}}
+      expect(r).eql [
+        {value: 1, path:['d', 'a']}
+      ]
+
       r = query(1).match {a:1, b:2, c:1, d:{a:1}}
       expect(r).eql [
         {value: 1, path:['a']}
@@ -46,10 +85,10 @@ describe 'query', ->
         {value: {c:1}, path:[]}
       ]
 
-      r = query(/[ac]/).match {i:[{a:1}, {b:2}, {c:1}]}
+      r = query(/[ac]/).match {k:[{a:1}, {b:2}, {c:1}]}
       expect(r).eql [
-        {value: {a:1}, path:['i', 0]}
-        {value: {c:1}, path:['i', 2]}
+        {value: {a:1}, path:['k', 0]}
+        {value: {c:1}, path:['k', 2]}
       ]
 
       r = query({a:1}).match {a:1, b:2, c:1}
@@ -103,7 +142,8 @@ describe 'query', ->
 
     it 'from:object with regexp', ->
       q = query [{a:/b/}]
-      expect(q.match({a:'abc'})).eql [
+      r = q.match {a:'abc'}
+      expect(r).eql [
         {value: {a:'b'}, path: [{a: [1]}]}
       ]
 
@@ -115,9 +155,15 @@ describe 'query', ->
     it 'from:array', ->
       r = query([]).match 'abc'
       expect(r).eql [{value:'abc', path:[]}]
+
+      r = query([1, 1]).match 1
+      expect(r).eql [
+        {value: 1, path:[]}
+      ]
+
       r = query([/a.c/, /.b./]).match 'abc'
       expect(r).eql [
-        {value:'abc', path:[0]}
+        {value:'abc', path:[0,0]}
       ]
 
       r = query([/a/, /d/]).match 'abc'
@@ -128,10 +174,12 @@ describe 'query', ->
       # r = query(['a', /b/]).match {c:{a:{e:'b'}}}
       # expect(r).eql []
 
-      q = query [{a:/b/}, /abc/]
+      q = query [{a:/abc/}, /b/]
       # debug intersect a:[{value:{foo:b} path:[{foo:}]}] b:[{value:abc path:[foo,0]}]
-      expect(q.match({a:'abc'})).eql [
-        {value: 'b', path: [{a:[1]}]}
+
+      r = q.match {a:'abc'}
+      expect(r).eql [
+        {value: 'b', path: [{a:[0]}, 'a', 1]}
       ]
 
     it 'object match array', ->
@@ -154,7 +202,7 @@ describe 'query', ->
       results = await matches[0].value.toPromise Promise
       expect(results).eql value: 'b', path: [1]
 
-    it 'data:Promise', ->
+    it.skip 'data:Promise', ->
       data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
       expect(data).satisfy isPromise
       expect(data).property('then').a 'function'
@@ -162,14 +210,23 @@ describe 'query', ->
       matches = query('b').match data
       expect(matches).property('0').property('value').respondTo 'then'
       results = await matches[0].value
-      expect(results).eql [
+      expect(Array.from(results.entries())).eql [
         {value: 'b', path:[1]}
       ]
+
+    it 'data:{k:Promise}', ->
+      data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
+      r = query('b').match {k: data}
+      r = await Promise.all r
+      r = r.flat()
+
+      expect(r).property('0').property('path').eql ['k']
+      expect(r).property('0').property('value').respondTo 'then'
 
     it 'data:Map', ->
       data = new Map [['a', 1]]
       matches = query('a').match data
-      expect(matches).property('0').eql {value:'a', path: [0,0]}
+      expect(matches).property('0').eql {value: ['a',1], path: []}
 
 
     describe 'high level', ->

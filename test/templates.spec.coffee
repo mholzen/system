@@ -14,5 +14,5 @@ describe 'graph', ->
     expect(r).property(0).property('path').eql []   # matches graph mapper
     expect(r).property(1).property('path').eql ['templates']
 
-    r = query(['graph', /DOCTYPE/]).match mappers
-    expect(r).property(0).property('path').eql ['templates', 'graph', 'template', 2]
+    r = query(['graph', /DOCTYPE/]).test mappers
+    expect(r).true

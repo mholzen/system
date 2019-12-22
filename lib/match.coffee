@@ -35,10 +35,19 @@ class Match
   prepend: (path)->
     if not (path instanceof Array)
       path = Array.from path
+      if path.length == 0
+        throw new Error "could not make array out of path"
     @path = path.concat @path
     @
 
-  @toMatch: (d)-> return if d instanceof Match then d else new Match d
+  @toMatch: (d)-> if d instanceof Match then d else new Match d
+
+  @simplify: (d)->
+    if not (d instanceof Match)
+      return d
+    if d.path.length == 0
+      return d.value
+    return d
 
 class Matches
   constructor: (data)->
@@ -52,7 +61,6 @@ ensureMatch = ->
       throw new Error "no path array in '#{log.print a}' for argument #{k}"
 
 intersect = (a,b)->
-  log.debug 'intersect', {a, b}
   if a instanceof Array
     return a.reduce (r, m)->
       if (m = intersect m, b) != null
@@ -160,7 +168,6 @@ intersect = (a,b)->
     # different keys
     return null
 
-  log.debug "intersect", {a_value, b_value: b.value}
   # if isStream a_value and isStream b.value
   # need special handling so that it creates a single stream
   if isStream a_value

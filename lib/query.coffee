@@ -1,14 +1,16 @@
 _ = require 'lodash'
 log = require '@vonholzen/log'
-# log = console.log
 {stream, isStream} = require './stream'
 content = require './map/content'
 {parseValue} = require './parse'
-getContent = content
 {items} = require './generators'
 iterable = require './map/iterable'
 {startsWith, intersect, Match, Matches} = require './match'
+{Results} = require './results'
 isPromise = require 'is-promise'
+
+isLiteral = (x)->
+  ['number', 'boolean', 'symbol'].includes typeof x
 
 class Query
   setQuery: (query) ->
@@ -31,6 +33,7 @@ class Query
       when query instanceof RegExp
         @_match = @regexpMatch
       when query instanceof Array
+        @query = query.map (x)->new Query x
         @_match = @arrayMatch
       when typeof query == 'object'
         @_match = @objectMatch
@@ -64,6 +67,23 @@ class Query
     else
       (typeof data != 'undefined') == @query
 
+  _objectMatchMap: (data)->
+    f = (matches, entry) =>
+      [key, value] = entry
+
+      # match key?
+      keyQuery = @query[key] ? @query
+      if query(keyQuery).test key
+        matches.push new Match [key, value]
+
+      # match value?
+      if not (results = @match value, results:true)
+        return matches
+      results.prepend key
+      return matches.concat results.toArray()
+
+    Array.from(data).reduce f, []
+
   _objectMatch: (data)->
     matches = []
     for key, value of data
@@ -72,21 +92,26 @@ class Query
       if query(keyQuery).test key
         matches.push new Match {[key]: value}
 
-      if (m = @match value)
-        if not (m instanceof Array)
-          m = [m]
+      if (m = @match value, results:true)
+        m.prepend [key]
+        matches = matches.concat m.toArray()
+        # if isPromise m
+        #   matches.push new Match m, [key]
+        #   continue
 
-        for m1 in m
-          m1 = Match.toMatch m1
-          if not m1.path?
-            throw Error "no path from '#{(@_match).name}'"
-          m1.path.unshift key
-          matches.push m1
+        # if not (m instanceof Array)
+        #   m = [m]
+
+        # for m1 in m
+        #   m1 = Match.toMatch m1
+        #   if not m1.path?
+        #     throw Error "no path from '#{(@_match).name}'"
+        #   m1.path.unshift key
+          # matches.push m1
     if _.isEmpty matches
       return null
 
     return matches
-
 
   numberMatch: (data)->
     if typeof data == 'string'
@@ -149,8 +174,6 @@ class Query
 
     throw new Error "regexp query against '#{typeof data}' data"
 
-
-
   objectMatch: (data)->
     if ['string', 'number', 'boolean', 'symbol'].includes typeof data
       return null
@@ -195,7 +218,6 @@ class Query
 
     throw new Error "cannot query object against '#{typeof data}' data #{data}"
 
-
   _joinMatches: (matches)->
     isRegeExpAnswer = (a)->
       typeof a?[0] == 'string' and
@@ -238,99 +260,167 @@ class Query
     if @query.length == 0
       return [new Match data]
 
-    if 0
-      @query.reduce (matches, subquery)->
-        if matches == undefined
-          matches = subquery.query data
-        else
-          matches.map (match)->
-            m = subquery.query match.value
-            if m == null
-              return null
-            m.prepend match.path
+    f = (matches, query, i) ->
+      query.match matches, results:true
 
-    matches = null
-    nullSeen = false
-    for subquery in @query
-      match = query(subquery).match data
-      nullSeen = (match == null) or nullSeen
-      if nullSeen
-        break
-      if matches == null
-        matches = match
-        continue
+    s = @query.reduce f, data
+    if s == null 
+      return null
 
-      matches = intersect matches, match
+    s = s.toArray()
 
-    if not @options.partialMatches
-      if nullSeen
-        return null
+    if s?.length == 0
+      return null
+    return s
 
-    matches
+    # matches = null
+    # nullSeen = false
+    # for subquery in @query
+    #   match = query(subquery).match data
+    #   nullSeen = (match == null) or nullSeen
+    #   if nullSeen
+    #     break
+    #   if matches == null
+    #     matches = match
+    #     continue
+
+    #   matches = intersect matches, match
+
+    # if not @options.partialMatches
+    #   if nullSeen
+    #     return null
+
+    # matches
 
   test: (data)->
     return true if @query == null
-    match = @_match data
+    match = @match data
     log 'query', {match}
     if match == null or match[0] == null
       return false
     true
 
-  match: (data)->
-    log 'query.match', {query: @query, data}
+  match: (data, options)->
+    # if isPromise data
+    #   r = data.then (d) => @match d, options
+    #   if options?.results
+    #     return new Results r
+    #   else
+    #     return r
 
+
+    log 'query.match', {query: @query, data}
+    r = @matchReturnsArray data, options
+    log 'query.match returns', {r}
+
+    if not r?
+      return null
+
+    if r?.length == 0
+      return null
+
+    if isLiteral r
+      return r
+
+    if options?.results
+      if isPromise r
+        return new Results r
+
+      if r instanceof Results
+        return r
+
+      if r instanceof Array
+        r = r.map (x) -> Match.toMatch x
+      return new Results r.map (x)->[x.path, x.value]
+    else
+
+      # r = r.map Match.simplify
+      return r
+
+  matchReturnsArray: (data, options)->
     if typeof data == 'undefined'
       return null
+
+    if data == null
+      if @query == null
+        return [new Match data]
+      else
+        return null
 
     if @query == null
       return [new Match data]
 
-    if 0
-      if data instanceof Match
-        matches = @match data.value
-        if matches == null
-          return null
-        matches.map (m)->
-          m.prepend data.path
+    if data instanceof Results
+      return @match data.values
+
+    if data instanceof Match
+      matches = @match data.value
+      if matches == null
+        return null
+      if isPromise matches
+        return matches.then (x)->
+          x.map (m)->m.prepend data.path
+
+      return matches.map (m)->
+        m.prepend data.path
 
     if stream.isStream data
       matches = data.fork().filter (item) => @match item
       return [new Match matches]
 
     if isPromise data
-      matches = data.then (d) => @match d
-      return [new Match matches]
+      return data.then (d) => @match d, options
 
     if data instanceof Array
-      results = []
-      data.forEach (d, i) =>
-
-        m = @match d
-        if m == null
-          return null
-
-        for m1 in m
-          m1 = new Match m1.value ? m1, m1.path
-          m1.path.unshift i
-
-          results.push m1
+      return data.map (item, i) =>
+        m = @match(item, results:true)
+        m?.prepend [i]
+      .filter (matches) -> matches?
+      .map (r) -> r.toArray()
+      .flat()
+      # if results instanceof Map
+      #   return new Map Array.from results, ([key, value], i)-> 
+      #     key.unshift i
+      #     [key, value]
+      # if results instanceof Array
+      #   return results.map (matches, i) =>
+      #     matches?.map (match)->
+      #       Match.toMatch match
+      #       .prepend [i]
+      #     .filter (matches) -> matches != undefined
+      #     .flat()
 
       if results.length == 0
         return null
       return results
 
+      # results = []
+      # data.forEach (d, i) =>
+      #   m = @match d
+      #   if m == null
+      #     return null
+
+      #   for m1 in m
+      #     m1 = new Match m1.value ? m1, m1.path
+      #     m1.prepend  if d instanceof Match then d.path else [i]
+      #     results.push m1
+
+      # if results.length == 0
+      #   return null
+      # return results
+
     if (typeof data[Symbol.iterator] == 'function') and (typeof data != 'string')
-      return @match Array.from data
+      return @_objectMatchMap data
+      # return @match Array.from data
 
     match = @_match data
     if match == null
       return null
 
-    if not [@stringMatch, @numberMatch, @arrayMatch, @regexpMatch, @objectMatch].includes @_match
+    if not ([@stringMatch, @arrayMatch, @numberMatch, @regexpMatch, @objectMatch].includes @_match)
       match = [ match ]
 
     return match
-
 
   partialMatch: (data)->
     pre = @options.partialMatch
@@ -405,7 +495,6 @@ class Query
 
     return mergedResults
 
-
   searchIn: (data, options)->
     if not iterable data
       try
@@ -415,7 +504,6 @@ class Query
         return
 
     @search data, options
-
 
 query = (terms, options)->
   new Query terms, options

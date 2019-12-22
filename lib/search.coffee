@@ -1,15 +1,17 @@
 {fromArgs} = require './query'
 searchers = require './searchers'
 {stream, isStream} = require './stream'
-{json} = require './mappers'
 {Match} = require './match'
 isPromise = require 'is-promise'
 log = require './log'
 
 isMatch = (x)->
-  (x.path instanceof Array) and ('value' of x)
+  (x?.path instanceof Array) and ('value' of x)
 
 flatten = (match)->
+  if isPromise match
+    return stream match
+
   if isStream match.value
     return match.value.map (match)->match.prepend match.path
 
@@ -51,15 +53,14 @@ search = (args, output)->
     return null
 
   stream results
+  .map (x)->
+    log.debug {x}
+    x
   .flatMap flatten
-  .flatMap (x)->
-    x = flatten2 x
-    if not (x instanceof Array)
-      x = [ x ]
-    stream x
-  .map json
-  .each (data)->
-    if output?
-      output.write data + '\n'
+  # .flatMap (x)->
+  #   x = flatten2 x
+  #   if not (x instanceof Array)
+  #     x = [ x ]
+  #   stream x
 
 module.exports = search
