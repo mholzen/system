@@ -5,7 +5,7 @@ _ = require 'lodash'
 
 log.filter = (data)->
   if isStream data
-    return '[Stream]'
+    return '<Stream>'
   return data
 
 log.defaultLength = 600
