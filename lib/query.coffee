@@ -95,19 +95,7 @@ class Query
       if (m = @match value, results:true)
         m.prepend [key]
         matches = matches.concat m.toArray()
-        # if isPromise m
-        #   matches.push new Match m, [key]
-        #   continue
 
-        # if not (m instanceof Array)
-        #   m = [m]
-
-        # for m1 in m
-        #   m1 = Match.toMatch m1
-        #   if not m1.path?
-        #     throw Error "no path from '#{(@_match).name}'"
-        #   m1.path.unshift key
-          # matches.push m1
     if _.isEmpty matches
       return null
 
@@ -273,25 +261,6 @@ class Query
       return null
     return s
 
-    # matches = null
-    # nullSeen = false
-    # for subquery in @query
-    #   match = query(subquery).match data
-    #   nullSeen = (match == null) or nullSeen
-    #   if nullSeen
-    #     break
-    #   if matches == null
-    #     matches = match
-    #     continue
-
-    #   matches = intersect matches, match
-
-    # if not @options.partialMatches
-    #   if nullSeen
-    #     return null
-
-    # matches
-
   test: (data)->
     return true if @query == null
     match = @match data
@@ -301,14 +270,6 @@ class Query
     true
 
   match: (data, options)->
-    # if isPromise data
-    #   r = data.then (d) => @match d, options
-    #   if options?.results
-    #     return new Results r
-    #   else
-    #     return r
-
-
     log 'query.match', {query: @query, data}
     r = @matchReturnsArray data, options
     log 'query.match returns', {r}
@@ -333,8 +294,6 @@ class Query
         r = r.map (x) -> Match.toMatch x
       return new Results r.map (x)->[x.path, x.value]
     else
-
-      # r = r.map Match.simplify
       return r
 
   matchReturnsArray: (data, options)->
@@ -378,40 +337,13 @@ class Query
       .filter (matches) -> matches?
       .map (r) -> r.toArray()
       .flat()
-      # if results instanceof Map
-      #   return new Map Array.from results, ([key, value], i)-> 
-      #     key.unshift i
-      #     [key, value]
-      # if results instanceof Array
-      #   return results.map (matches, i) =>
-      #     matches?.map (match)->
-      #       Match.toMatch match
-      #       .prepend [i]
-      #     .filter (matches) -> matches != undefined
-      #     .flat()
 
       if results.length == 0
         return null
       return results
 
-      # results = []
-      # data.forEach (d, i) =>
-      #   m = @match d
-      #   if m == null
-      #     return null
-
-      #   for m1 in m
-      #     m1 = new Match m1.value ? m1, m1.path
-      #     m1.prepend  if d instanceof Match then d.path else [i]
-      #     results.push m1
-
-      # if results.length == 0
-      #   return null
-      # return results
-
     if (typeof data[Symbol.iterator] == 'function') and (typeof data != 'string')
       return @_objectMatchMap data
-      # return @match Array.from data
 
     match = @_match data
     if match == null
