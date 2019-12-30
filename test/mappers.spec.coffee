@@ -27,6 +27,8 @@ describe 'mappers', ->
 
   it 'escape', ->
     expect(escape 'a b').eql 'a\\ b'
+    expect(escape "a'b").eql "a\\'b"
+    expect(escape 'a"b').eql 'a\\"b'
 
   it 'json', ->
     expect(json 'a').eql '"a"'
