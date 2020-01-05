@@ -4,6 +4,7 @@
     columns
     context
     escape
+    get
     json
     pick
     string
@@ -42,8 +43,14 @@ describe 'mappers', ->
     expect(json x).eql '{"a":1}'
 
   it 'pick', ->
-    expect(pick {a:1, b:2, c:3}, {0:'a'} ).eql 1
-    expect(pick {a:1, b:2, c:3}, {0:'a', 1  :'b'} ).eql {a:1, b:2}
+    expect(pick {a:1, b:2}, {0:'a'} ).eql {a:1}
+    expect(pick {a:1, b:2, c:3}, {0:'a', 1:'b'} ).eql {a:1, b:2}
+    expect(pick {a:{b:1}}, {0:'a.b'} ).eql {a:{b:1}}
+
+  it 'get', ->
+    expect(get {a:1, b:2}, {0:'a'} ).eql 1
+    expect(get {a:1, b:2}, {0:'a', 1:'default'} ).eql 1
+    expect(get {a:1, b:2}, {0:'c', 1:'default'} ).eql 'default'
 
   it 'string', ->
     expect(string 'a').eql 'a'

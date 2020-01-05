@@ -89,13 +89,14 @@ mappers =
   tableString: table.mapString
 
 [
-  'args'
   'amount'
+  'args'
   'augment'
-  'context'
-  'content'
   'columns'
+  'content'
+  'context'
   'escape'
+  'get'
   'html'
   'image'
   'json'
@@ -103,11 +104,12 @@ mappers =
   'name'
   'omit'
   'pick'
-  'templates'
-  'summarize'
   'string'
-  'text'
+  'summarize'
   'template'
+  'templates'
+  'text'
+  'traverse'
   'url'
 ].forEach (r)->
   mappers[r] = require "./map/#{r}"
