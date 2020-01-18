@@ -111,6 +111,7 @@ mappers =
   'text'
   'traverse'
   'url'
+  'yaml'
 ].forEach (r)->
   mappers[r] = require "./map/#{r}"
 

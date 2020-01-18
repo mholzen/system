@@ -21,7 +21,6 @@ class Stat
   constructor: (path, options)->
     @path = path ? process.cwd()
     @path = expandTilde @path
-    @name = 'inodes'
     @options = options ? {}
     @options.recurse = @options.recurse ? false
     log 'inodes.Stat', {path:@path}

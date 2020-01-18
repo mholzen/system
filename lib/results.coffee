@@ -44,6 +44,9 @@ class Results
 
     Array.from @values, ([key, value]) -> new Match value, key
 
+  toJSON: ->
+    @toArray()
+
 
 module.exports = {
   Results

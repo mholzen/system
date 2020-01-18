@@ -4,4 +4,3 @@ _ = require 'lodash'
 module.exports = (data, options)->
   fields = numeric options
   _.pick data, fields
-
