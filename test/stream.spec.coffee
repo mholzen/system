@@ -8,4 +8,5 @@ describe 'stream', ->
   it 'promise', ->
     p = new Promise (resolve, reject)-> resolve 1
     s = stream p
-    console.log await s.collect().toPromise Promise
+    r = await s.collect().toPromise Promise
+    expect(r).eql [1]

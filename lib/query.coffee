@@ -4,7 +4,7 @@ log = require '@vonholzen/log'
 content = require './map/content'
 {parseValue} = require './parse'
 {items} = require './generators'
-iterable = require './map/iterable'
+isIterable = require './map/isIterable'
 {startsWith, intersect, Match, Matches} = require './match'
 {Results} = require './results'
 isPromise = require 'is-promise'
@@ -387,7 +387,7 @@ class Query
 
   search: (data, options)->
     log 'search', {data}
-    if not iterable data
+    if not isIterable data
       data = [ data ]
 
     if not isStream data
@@ -428,7 +428,7 @@ class Query
     return mergedResults
 
   searchIn: (data, options)->
-    if not iterable data
+    if not isIterable data
       try
         data = items data
       catch e

@@ -1,7 +1,7 @@
 {stream, isStream} = require './stream'
 log = require '@vonholzen/log'
 dates = require './dates'
-iterable = require './map/iterable'
+isIterable = require './map/isIterable'
 request = require './request'
 parse = require './parse'
 {edges, value, traverse} = require './generators/traverse'
@@ -29,7 +29,7 @@ items = (data)->
   if typeof data == 'undefined'
     return stream []
 
-  if iterable data
+  if isIterable data
     return stream data
 
   if data?.items?
