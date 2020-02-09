@@ -1,6 +1,9 @@
+capitalize = require 'capitalize'
+
 person = (value)->
   if typeof value == 'string'
-    name = value
+    value = value.replace /\./g, ' '
+    value = capitalize.words value
     
   value
 

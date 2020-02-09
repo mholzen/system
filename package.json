@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@vonholzen/log": "^1.0.3",
+    "capitalize": "^2.0.1",
     "coffeescript": "^2.4.1",
     "command-line-args": "^5.0.2",
     "csv-parse": "^2.5.0",
@@ -35,6 +36,7 @@
     "marked": "^0.4.0",
     "moment": "^2.22.2",
     "request": "^2.87.0",
+    "require-dir": "^1.2.0",
     "table-layout": "^0.4.4",
     "tempy": "^0.2.1",
     "walk": "^2.3.9"
