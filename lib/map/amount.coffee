@@ -1,3 +1,5 @@
+_ = require 'lodash'
+
 field = (x)->
   ['amount', 'Amount'].find (f)-> f of x
 

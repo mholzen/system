@@ -1,9 +1,16 @@
 _ = require 'lodash'
-{numeric} = require './args'
+log = require '../log'
+{toArray} = require './args'
 
-module.exports = (data, options)->
-  fields = numeric options
-  if not (fields?.length >= 1)
-    throw new Error 'get: at least one argument required'
-  _.get data, fields[0], fields[1]
+getter = (paths, options)->
+  # fields = toArray options
+  # if fields?.length != 1
+  #   throw new Error 'expecting exactly one argument'
+  # (data)->_.get data, fields[0], def
+  (data)->_.get data, paths, options?.default
 
+get = (data, paths, options)->(getter paths, options) data
+
+get.getter = getter
+
+module.exports = get

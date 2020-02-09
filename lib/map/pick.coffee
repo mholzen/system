@@ -1,6 +1,6 @@
 _ = require 'lodash'
 {numeric} = require './args'
 
-module.exports = (data, options)->
-  fields = numeric options
-  _.pick data, fields
+module.exports = (data, paths)->
+  # fields = numeric options
+  _.pick data, paths

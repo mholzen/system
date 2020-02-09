@@ -8,12 +8,15 @@ _ = require 'lodash'
 
 # warning: async function
 get = (data, path)->
+  log.debug {data}
   if not (path instanceof Array)
     path = path.split '.'
 
   path.reduce (memo, element)->
     if isPromise memo
+      log.debug 'get.resolving'
       memo = await memo
+      log.debug 'get.resolved', {memo}
 
     if typeof memo == 'string'
       if typeof element != 'number'
@@ -42,39 +45,39 @@ fileContent = (path)->
 fileContentSync = (path)->
   fs.readFileSync path
 
-content = (from, options)->
-  log 'content', {from}
-  if typeof from == 'undefined'
+content = (data, options)->
+  log.debug 'content', {data}
+  if typeof data == 'undefined'
     return null
 
-  if stream.isStream from?.items
+  if stream.isStream data?.items
     log 'content items stream'
 
-  if typeof from == 'string'
-    if from.startsWith 'http'
+  if typeof data == 'string'
+    if data.startsWith 'http'
       log 'content url'
-      from = url: from
+      data = url: data
     else
       log 'content file'
-      from = path: from
+      data = path: data
 
-  if from instanceof Array
-    from = {path: from}
+  if data instanceof Array
+    data = {path: data}
 
-  if from?.path?
-    if from.path instanceof Array
-      return get options?.root, from.path
+  if data?.path?
+    if data.path instanceof Array
+      return get options?.root, data.path
 
-    return fileContent(from.path).then (content)->
+    return fileContent(data.path).then (content)->
       return if content instanceof Buffer
         content.toString()
       content
 
-  if from?.url?
-    return request(from).then (response)->response.body
+  if data?.url?
+    return request(data).then (response)->response.body
 
-  log 'cannot get content', {from}
-  throw new Error "cannot get content from #{log.print from}"
+  log 'cannot get content', {data}
+  throw new Error "cannot get content from #{log.print data}"
 
 content.fileContentSync = fileContentSync
 content.get = get

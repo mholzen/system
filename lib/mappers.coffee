@@ -5,7 +5,6 @@ graph = require './reducers/graph'
 parse = require './parse'
 path = require 'path'
 request = require './request'
-stream = require './stream'
 table = require './table'
 template = require './map/template'
 
@@ -88,31 +87,10 @@ mappers =
   table: table.map
   tableString: table.mapString
 
-[
-  'amount'
-  'args'
-  'augment'
-  'columns'
-  'content'
-  'context'
-  'escape'
-  'get'
-  'html'
-  'image'
-  'json'
-  'keys'
-  'name'
-  'omit'
-  'pick'
-  'string'
-  'summarize'
-  'template'
-  'templates'
-  'text'
-  'traverse'
-  'url'
-  'yaml'
-].forEach (r)->
-  mappers[r] = require "./map/#{r}"
 
-module.exports = mappers
+glob = require 'glob'
+path = require 'path'
+
+requireDir = require 'require-dir'
+mappers.templates = require './map/templates'
+module.exports = Object.assign mappers, requireDir './map'

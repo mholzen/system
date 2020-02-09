@@ -1,5 +1,4 @@
 log = require '../log'
-_ = require 'lodash'
 
 amount = require '../map/amount'
 
