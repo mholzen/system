@@ -18,15 +18,23 @@ args = (data)->
       value = key
       key = i
 
+    if key.length == 0
+      key = i
+      if value.length == 0
+        value = ':'
+
     result[key] = parseValue value
 
   result
 
 args.numeric = (data)->
+  if typeof data == 'string'
+    return [data]
   r = []
   for k, v of data
     if not isNaN (i = parseInt k)
       r[i] = v
   r.sort()
+args.positional = args.numeric
 
 module.exports = args

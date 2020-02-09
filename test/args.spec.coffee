@@ -7,11 +7,17 @@ it 'args', ->
   expect args ['a', 'b', 'c']
   .eql {0:'a', 1:'b', 2:'c'}
 
-  expect args ['a:1', 'b:b', 'c']
-  .eql {a:1, b:'b', 2:'c'}
+  expect args ['a:1', 'b:b', 'c', ':']
+  .eql {a:1, b:'b', 2:'c', 3:':'}
 
   expect args [{a:1}]
   .eql {'0':{a:1}}
 
   expect args.numeric args ['a:1', 'b:b', 'c']  
   .eql ['c']
+
+  expect args.positional args ['a:1', 'b:b', 'c']  
+  .eql ['c']
+
+  expect args.positional args ['a', 'b', 'c:x', 'd:y']
+  .eql ['a', 'b']
