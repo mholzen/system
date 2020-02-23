@@ -3,9 +3,9 @@ isPromise = require 'is-promise'
 
 defaultReplacer = (key, value)->
   if isStream value
-    return '[Stream]'
+    return '<Stream>'
   if isPromise value
-    return '[Promise]'
+    return '<Promise>'
   if value instanceof Array
     return value
 
