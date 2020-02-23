@@ -4,6 +4,9 @@ isPromise = require 'is-promise'
 _ = require 'lodash'
 
 log.filter = (data)->
+  if isPromise data
+    return '<Promise>'
+
   if isStream data
     return '<Stream>'
   return data
