@@ -43,14 +43,15 @@ describe 'mappers', ->
     expect(json x).eql '{"a":1}'
 
   it 'pick', ->
-    expect(pick {a:1, b:2}, {0:'a'} ).eql {a:1}
-    expect(pick {a:1, b:2, c:3}, {0:'a', 1:'b'} ).eql {a:1, b:2}
-    expect(pick {a:{b:1}}, {0:'a.b'} ).eql {a:{b:1}}
+    expect(pick {a:1, b:2}, ['a'] ).eql {a:1}
+    expect(pick {a:1, b:2, c:3}, ['a', 'b'] ).eql {a:1, b:2}
+    expect(pick {a:{b:1}}, ['a.b'] ).eql {a:{b:1}}
 
   it 'get', ->
-    expect(get {a:1, b:2}, {0:'a'} ).eql 1
-    expect(get {a:1, b:2}, {0:'a', 1:'default'} ).eql 1
-    expect(get {a:1, b:2}, {0:'c', 1:'default'} ).eql 'default'
+    expect(get {a:1, b:2}, 'a' ).eql 1
+    expect(get {a:1, b:2}, 'a', default:0 ).eql 1
+    expect(get {a:1, b:2}, 'c', default:0 ).eql 0
+    expect(get (new Map [['a', 1]]), 0). eql ['a',1]
 
   it 'string', ->
     expect(string 'a').eql 'a'
