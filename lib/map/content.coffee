@@ -8,11 +8,16 @@ _ = require 'lodash'
 
 # warning: async function
 get = (data, path)->
-  log.debug {data}
+  log.debug 'get', {data, path}
   if not (path instanceof Array)
     path = path.split '.'
 
   path.reduce (memo, element)->
+    if isStream memo
+      log.debug 'get.stream.toPromise'
+      memo = await memo.toPromise Promise
+      log.debug 'get.stream.resolved', {memo}
+
     if isPromise memo
       log.debug 'get.resolving'
       memo = await memo
@@ -51,9 +56,13 @@ content = (data, options)->
     return null
 
   if stream.isStream data?.items
-    log 'content items stream'
+    log.debug 'content items stream'
 
   if typeof data == 'string'
+    # TODO: should use `get`
+    if options?.root? and data of options.root
+      return options.root[data]
+
     if data.startsWith 'http'
       log 'content url'
       data = url: data
