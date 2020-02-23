@@ -19,4 +19,5 @@ if [ "$type" == 'alias' ]; then
   exit
 fi
 
-file "$@" | map content
+get.coffee "$@"
+# file "$@" | map content
