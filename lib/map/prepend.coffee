@@ -1,5 +1,5 @@
 module.exports = (data, prefix, options)->
-  if options.length < 1
+  if not prefix?
     throw new Error 'nothing to augment with'
   data.unshift prefix
   data

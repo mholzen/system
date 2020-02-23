@@ -3,11 +3,12 @@ log = require '../log'
 {toArray} = require './args'
 
 getter = (paths, options)->
-  # fields = toArray options
-  # if fields?.length != 1
-  #   throw new Error 'expecting exactly one argument'
-  # (data)->_.get data, fields[0], def
-  (data)->_.get data, paths, options?.default
+  if not paths?
+    throw new Error 'no path to get'
+  (data)->
+    if data instanceof Map
+      data = Array.from data
+    _.get data, paths, options?.default
 
 get = (data, paths, options)->(getter paths, options) data
 
