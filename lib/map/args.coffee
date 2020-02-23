@@ -27,14 +27,15 @@ args = (data)->
 
   result
 
-args.numeric = (data)->
+args.positional = (data)->
   if typeof data == 'string'
     return [data]
   r = []
   for k, v of data
     if not isNaN (i = parseInt k)
       r[i] = v
+  if r.length == 0
+    return null
   r.sort()
-args.positional = args.numeric
 
 module.exports = args

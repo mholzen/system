@@ -13,11 +13,15 @@ it 'args', ->
   expect args [{a:1}]
   .eql {'0':{a:1}}
 
-  expect args.numeric args ['a:1', 'b:b', 'c']  
+  expect args.positional args ['a:1', 'b:b']
+  .eql null
+
+  expect args.positional args ['a:1', 'b:b', 'c']
   .eql ['c']
 
-  expect args.positional args ['a:1', 'b:b', 'c']  
+  expect args.positional args ['a:1', 'b:b', 'c']
   .eql ['c']
 
   expect args.positional args ['a', 'b', 'c:x', 'd:y']
   .eql ['a', 'b']
+
