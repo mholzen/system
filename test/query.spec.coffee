@@ -1,4 +1,4 @@
-query = require '../lib/query'
+{query, stream} = require '../lib/'
 {Match} = require '../lib/match'
 {createQuery, fromArgs, Query} = query
 {post} = require '../lib'
@@ -32,7 +32,6 @@ describe 'query', ->
       expect(r).eql [
         {value: ['k', 'a'], path: []}
       ]
-
 
     it 'fundamentals', ->
       r = query(1).match 1
@@ -77,6 +76,10 @@ describe 'query', ->
 
       expect(query('foo').match({a:{b:'foo', c:'bar'}})).eql [
         {value: 'foo', path: ['a', 'b']}
+      ]
+
+      expect(query('foo').match({foo:1})).eql [
+        {value: {foo:1}, path: []}
       ]
 
       r = query(/[ac]/).match {a:1, b:2, c:1}
@@ -196,11 +199,11 @@ describe 'query', ->
       matches = query(/a/).match data
       expect(matches).property('0').eql value: 'a', path:['b', 0]
 
-    it.skip 'data:Stream', ->
+    it 'data:Stream', ->
       matches = query('b').match stream(['a', 'b', 'c'])
       expect(matches).property('0').property('value').satisfy stream.isStream
-      results = await matches[0].value.toPromise Promise
-      expect(results).eql value: 'b', path: [1]
+      results = await matches[0].value.collect().toPromise Promise
+      expect(results).eql ['b']
 
     it.skip 'data:Promise', ->
       data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
@@ -228,7 +231,6 @@ describe 'query', ->
       matches = query('a').match data
       expect(matches).property('0').eql {value: ['a',1], path: []}
 
-
     describe 'high level', ->
       describe 'matches object', ->
         data =
@@ -248,7 +250,7 @@ describe 'query', ->
               street: 'Avenue A'
               city: 'Seattle'
 
-        it 'from string', ->
+        it 'from:string', ->
           expect(query('mvh').match data).eql [
             {value:{mvh:data.mvh}, path:[]}
           ]
@@ -264,7 +266,7 @@ describe 'query', ->
             {value:{wellsfargo: 123}, path:['mvh', 'accounts', 'checking']}
           ]
 
-        it 'from object', ->
+        it 'from:object', ->
           q = query first: 'Marc'
           expect(q.match(data.mvh)).eql [
             value:{first:'Marc'}, path: []
@@ -280,14 +282,14 @@ describe 'query', ->
             # TODO: order is not guaranteed
           ]
 
-        it 'from regex', ->
+        it 'from:regex', ->
           expect(query(/first|Marc/).match data).eql [
             {value:{first:'Marc'}, path:['mvh']}
             {value:'Marc', path:['mvh', 'first', 0]}
             {value:{first:'John'}, path:['jdoe']}
           ]
 
-        it 'from object with regex', ->
+        it 'from:object with regex', ->
           expect(query(first:/arc/).match data).eql [
             {value:{first:'arc'}, path:['mvh', {first:[1]}]}
           ]
