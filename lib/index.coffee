@@ -10,6 +10,7 @@ exports = [
   'query'
   'reducers'
   'request'
+  'resolve'
   'search'
   'searchers'
   'stream'
