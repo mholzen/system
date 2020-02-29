@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "bunyan": "^1.8.12",
-    "chai": "^3.5.0",
+    "chai": "^4.2.0",
     "chai-arrays": "^2.0.0",
     "chai-string": "^1.4.0",
     "coffee-coverage": "^3.0.1",
