@@ -16,6 +16,8 @@ process.stdout.on 'error', (event)->
 args = process.argv[2..-1]
 search args
 .map json
+.errors (err)->
+  process.stderr.write err.toString() + '\n' + err.stack + '\n'
 .each (line)->
   process.stdout.write line + '\n'
 

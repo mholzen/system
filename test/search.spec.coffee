@@ -11,8 +11,5 @@ describe 'search', ->
     output = await output.collect().toPromise Promise
     output = output.flat()
     expect(output).property('length').above(0)
-    expect(output[0]).property('path').eql ["bookmarks"]
-
-    output = await output[0].value
-    output = output.toArray()
-    expect(output[0]).property('path').eql [62,"name",0,0]
+    r = output.find (result)->result.path.includes 'bookmarks'
+    expect(r).property('value').property('values').a('map').include 'jira projects'

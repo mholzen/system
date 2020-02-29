@@ -4,6 +4,7 @@ searchers = require './searchers'
 {Match} = require './match'
 isPromise = require 'is-promise'
 log = require './log'
+resolve = require '../lib/resolve'
 
 isMatch = (x)->
   (x?.path instanceof Array) and ('value' of x)
@@ -43,20 +44,22 @@ flatten2 = (x)->
   return m.prepend x.path
 
 
-search = (args, output)->
+search = (args)->
   query = fromArgs args
 
   results = query.match searchers()
-  log 'search', {results}
+  log.debug 'search', {results}
 
   if not results?
     return null
 
   stream results
-  .map (x)->
-    log.debug {x}
-    x
-  .flatMap flatten
+  .doto (x)->log.debug {x}
+  # TODO: consider a search argument for resolving
+  .map (x)-> stream resolve.deep x
+  .parallel 10
+
+  # .flatMap flatten
   # .flatMap (x)->
   #   x = flatten2 x
   #   if not (x instanceof Array)
