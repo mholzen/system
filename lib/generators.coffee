@@ -1,10 +1,8 @@
 {stream, isStream} = require './stream'
-log = require '@vonholzen/log'
-dates = require './dates'
+log = require './log'
 isIterable = require './map/isIterable'
 request = require './request'
 parse = require './parse'
-{edges, value, traverse} = require './generators/traverse'
 
 keys = (x)->
   if stream.isStream x
@@ -57,9 +55,5 @@ items = (data)->
 
 module.exports = {
   keys
-  dates
   items
-  edges
-  value
-  traverse
 }
