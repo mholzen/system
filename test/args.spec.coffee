@@ -16,8 +16,8 @@ it 'args', ->
   expect args.positional args ['a:1', 'b:b']
   .eql null
 
-  expect args.positional args ['a:1', 'b:b', 'c']
-  .eql ['c']
+  expect args.positional args ['a:1', 'b:b', 'c', 'd:1', 'b']
+  .eql ['c', 'b']
 
   expect args.positional args ['a:1', 'b:b', 'c']
   .eql ['c']

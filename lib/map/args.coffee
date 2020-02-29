@@ -36,6 +36,6 @@ args.positional = (data)->
       r[i] = v
   if r.length == 0
     return null
-  r.sort()
+  r.filter (x)->x?
 
 module.exports = args
