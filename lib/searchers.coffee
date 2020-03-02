@@ -9,6 +9,8 @@ _ = require 'lodash'
 searchers = {
   inodes: (options)-> inodes(options?.start).entries()
   bookmarks: (options)-> await bookmarks.read
+  # applications: directories /Applications/*.app/
+  # workflowy: file '~/Dropbox/Apps/Workflowy/Data/(marc@vonholzen.org).#{date()}.workflowy.backup'
 }
 
 entries = -> Object.entries searchers
