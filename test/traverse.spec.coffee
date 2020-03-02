@@ -1,4 +1,4 @@
-{edges, value, traverse} = require '../lib/generators/traverse'
+{edges, value, traverse} = require '../lib/traverse'
 
 inodes = require '../lib/inodes'
 

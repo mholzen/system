@@ -1,6 +1,6 @@
 {isStream} = require './stream'
 isPromise = require 'is-promise'
-{traverse} = require '../lib/generators/traverse'
+{traverse} = require '../lib/traverse'
 log = require './log'
 _ = require 'lodash'
 
@@ -17,7 +17,7 @@ resolve = (data)->
         return data[key].then (value)->data[key] = value
     .then ->
       data
-  data
+  new Promise (resolve)-> resolve data
 
 resolve.deep = (data)->
   nodes = Array.from traverse data, path: true

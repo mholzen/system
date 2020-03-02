@@ -1,7 +1,7 @@
 _ = require 'lodash'
-log = require '../log'
+log = require './log'
 isPromise = require 'is-promise'
-{isStream} = require '../stream'
+{isStream} = require './stream'
 
 isNode = (data)->
   return true if ['string', 'number', 'function'].includes typeof data

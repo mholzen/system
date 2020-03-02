@@ -11,4 +11,3 @@ toStream = (data)->
 module.exports = Object.assign stream,
   highland: highland
   stream: stream
-

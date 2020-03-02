@@ -1,6 +1,5 @@
-_ = require 'lodash'
-{traverse} = require '../generators'
-{stream} = require '../'
+{stream} = require '../stream'
+{traverse} = require '../traverse'
 
 module.exports = (data, options)->
   stream traverse data
