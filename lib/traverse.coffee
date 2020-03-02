@@ -11,7 +11,7 @@ isNode = (data)->
   false
 
 edges = (data) ->
-  if (data == null) or (isNode data)
+  if (not data?) or (isNode data)
     return []
 
   if data instanceof Array
@@ -22,6 +22,9 @@ edges = (data) ->
     typeof data[k] == 'object'
 
 value = (data) ->
+  if not data?
+    return null
+ 
   if isNode data
     return data
 

@@ -5,6 +5,14 @@ inodes = require '../lib/inodes'
 {stream, post, inodes: {inode}} = require '../lib'
 
 describe 'edges, value, traverse', ->
+  it 'null', ->
+    expect Array.from traverse null
+    .eql []
+
+  it 'undefined', ->
+    expect Array.from traverse()
+    .eql []
+
   it 'array', ->
     a = ['a','b','c']
     r = Array.from traverse a
@@ -38,7 +46,6 @@ describe 'edges, value, traverse', ->
       {value: {val:3}, path: ['children', '1']}
     ]
 
-
   it 'array', ->
     array = [1,[21, 22],3]
     expect(edges(array)).eql ['0', '1', '2']
@@ -56,16 +63,15 @@ describe 'edges, value, traverse', ->
     graph = m for m from traverse system.mappers, path:true when m.path.includes 'graph'
     expect(graph).property('value').property('template').includes 'graph.links'
 
-
   it 'stream traverse', ->
     # a stream is considered an node, so traversing the stream simply returns that node
     s = stream [1,2,3]
     r = Array.from traverse s 
     expect(r).eql [s]
 
-describe 'adjascent', ->
+describe.skip 'adjascent', ->
 
-  describe.skip 'inodes', ->
+  describe 'inodes', ->
     it 'from root', ->
       adj = inode('/').adjascent()
       adj.toArray (inodes)->
