@@ -51,12 +51,3 @@ describe 'searchers', ->
       # complete match
       return
     q2.match content file
-
-  it.skip 'search', ->
-    files = searchers.inodes()
-    q = query 'abc'
-    files.flatMap (item)->
-      if query.test item
-        return stream [ item ]
-
-      q.search2 item, content

@@ -25,7 +25,6 @@ map = (mapper, options)->
     .filter (line) -> line.length > 0
     .map (item)-> parser.parse item
     .map (item)->
-      log.debug {item}
       if not positional?
         return mapper item, options
       if positional instanceof Array
