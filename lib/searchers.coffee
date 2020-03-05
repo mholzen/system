@@ -22,7 +22,7 @@ instantiate = (data, options)->
 
 get = (options)->
   # new Map entries().map (entry)-> [entry[0], instantiate entry[1], options]
-  _.mapValues searchers, (searcher)-> searcher options
+  _.mapValues searchers, (searcher, key)-> searcher options?[key]
 
 get.entries = entries
 module.exports = Object.assign get, searchers
