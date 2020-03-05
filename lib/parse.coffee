@@ -1,5 +1,4 @@
-#!/usr/bin/env coffee
-highland = require 'highland'
+stream = require './stream'
 {Readable} = require 'stream'
 log = require './log'
 
@@ -44,7 +43,7 @@ parse = (value, context)->
 
   if value instanceof Readable
     log 'parse readable'
-    return highland(value)
+    return stream value
       .split()
       .filter (line) -> line.length > 0
       .map parse
