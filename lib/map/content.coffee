@@ -1,6 +1,8 @@
 request = require '../request'
 log = require '../log'
 {stream, isStream} = require '../stream'
+inodes = require '../inodes'
+parse = require '../parse'
 
 fs = require 'fs'
 isPromise = require 'is-promise'
@@ -8,20 +10,16 @@ _ = require 'lodash'
 
 # warning: async function
 get = (data, path)->
-  log.debug 'get', {data, path}
+  log 'get', {data, path}
   if not (path instanceof Array)
     path = path.split '.'
 
   path.reduce (memo, element)->
     if isStream memo
-      log.debug 'get.stream.toPromise'
       memo = await memo.toPromise Promise
-      log.debug 'get.stream.resolved', {memo}
 
     if isPromise memo
-      log.debug 'get.resolving'
       memo = await memo
-      log.debug 'get.resolved', {memo}
 
     if typeof memo == 'string'
       if typeof element != 'number'
@@ -50,43 +48,48 @@ fileContent = (path)->
 fileContentSync = (path)->
   fs.readFileSync path
 
+urlRegExp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+
+toObject = (string, context)->
+  if urlRegExp.test string
+    return url: string
+  if string.startsWith '/'
+    return path: string
+  if string.startsWith '{'
+    return JSON.stringify string
+  throw new Error "cannot make object from string #{string}"
+
 content = (data, options)->
-  log.debug 'content', {data}
   if typeof data == 'undefined'
     return null
-
-  if stream.isStream data?.items
-    log.debug 'content items stream'
 
   if typeof data == 'string'
     # TODO: should use `get`
     if options?.root? and data of options.root
       return options.root[data]
 
-    if data.startsWith 'http'
-      log 'content url'
-      data = url: data
-    else
-      log 'content file'
-      data = path: data
+    data = toObject data
 
   if data instanceof Array
+    # TODO: that's clearly not always true
     data = {path: data}
 
   if data?.path?
     if data.path instanceof Array
       return get options?.root, data.path
 
+    if data?.type == 'directory'
+      return inodes(data.path).entries()
+
     return fileContent(data.path).then (content)->
-      return if content instanceof Buffer
-        content.toString()
+      if content instanceof Buffer
+        return parse content.toString()
       content
 
   if data?.url?
     return request(data).then (response)->response.body
 
-  log 'cannot get content', {data}
-  throw new Error "cannot get content from #{log.print data}"
+  throw new Error "cannot get content from '#{log.print data}'"
 
 content.fileContentSync = fileContentSync
 content.get = get
