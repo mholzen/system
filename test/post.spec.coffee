@@ -20,9 +20,15 @@ describe 'post', ->
     expect s.isFile()
     .true
 
-it 'directory', ->
+it 'directory by name', ->
     container = tempy.directory()
     directory = await post null, container + '/directory/'
+    s = await stat directory
+    expect s.isDirectory()
+    .true
+
+it 'directory by type', ->
+    directory = await post null, {type: 'directory'}
     s = await stat directory
     expect s.isDirectory()
     .true
