@@ -34,16 +34,34 @@ search.searchIn = (match, follow, data, options)->
       match.test x
 
   isNew = (x)->true
+  
+  contentCount = 0
+  inc = ->
+    contentCount++
+    log.debug 'contentCount', {contentCount}
+  dec = ->
+    contentCount--
+    log.debug 'contentCount', {contentCount}
+  close = (s)->
+    if contentCount <= 0
+      log.debug 'closing content'
+      s.end()   # Doc recommends never calling on stream that were created without a source
 
   contentStream = input.observe()
-    .filter (x)-> isNew x
+    .doto inc
     .filter (x)->
-      log.debug 'follow testing', {x}
-      follow.test x
-    .flatMap (x)->
+      test = isNew(x) and follow.test(x)
+      if not test
+        dec()
+
+      log.debug 'follow testing', {x, test}
+      test
+    .map (x)->
       try
         c = content x
+        log.debug 'content', {c}
       catch error
+        console.log error.toString()
         return stream()
 
       if isStream c
@@ -51,9 +69,16 @@ search.searchIn = (match, follow, data, options)->
       if not isIterable c
         c = [c]
       stream c
-    # .doto log.debug
-    .filter (x)-> x?
-
+    .map (x)->
+      x.observe().done ->
+        dec()
+        close contentStream
+      x
+    .flatMap (x)->x
+    .filter (x)->
+      log.debug 'filter', {x}
+      x?  # is this needed because x can contain a promise?
+  
   mergePoint.write data
   mergePoint.write contentStream
   mergePoint.end()
@@ -61,7 +86,7 @@ search.searchIn = (match, follow, data, options)->
   # TODO: figure out how to end the content stream when there is no more input
   setTimeout ->
     contentStream.end()
-  , 50
+  , 200
 
   matches
 

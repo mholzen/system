@@ -15,8 +15,9 @@ describe 'search', ->
     expect(output).property('length').above(0)
     r = output.find (result)->result.path.includes 'bookmarks'
     expect(r).property('value').property('values').a('map').include 'jira projects'
-  
-  it 'searchIn abstract', ->
+
+describe 'searchIn', ->
+  it 'searchIn basic', ->
     content = (x)-> if x == 22 then 1 else null
 
     data = stream [1,22,3]
