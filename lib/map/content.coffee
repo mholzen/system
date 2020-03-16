@@ -10,7 +10,7 @@ _ = require 'lodash'
 
 # warning: async function
 get = (data, path)->
-  log 'get', {data, path}
+  log.debug 'content.get', {data, path}
   if not (path instanceof Array)
     path = path.split '.'
 
@@ -82,6 +82,8 @@ content = (data, options)->
       return inodes(data.path).entries()
 
     return fileContent(data.path).then (content)->
+      if options?.parse == false
+        return content
       if content instanceof Buffer
         return parse content.toString()
       content

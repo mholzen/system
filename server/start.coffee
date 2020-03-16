@@ -1,10 +1,13 @@
-express = require 'express'
-log = require '@vonholzen/log'
-app = express()
-port = 3000
-router = require './router'
+#!/usr/bin/env coffee
 
-app.use router()
+server = require '../server'
+log = require '../lib/log'
 
-app.listen port, ->
-  log 'server listening', {port}
+s = new server.Server
+  port: 3001
+
+s.listen (err)->
+  if err
+    log.error err
+  else
+    log.debug 'started', {port: s.port}

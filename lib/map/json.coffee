@@ -6,6 +6,9 @@ defaultReplacer = (key, value)->
     return '<Stream>'
   if isPromise value
     return '<Promise>'
+  if typeof value == 'function'
+    return '<function>'
+
   if value instanceof Array
     return value
 

@@ -1,5 +1,5 @@
 {search, post, query, stream, inodes, mappers} = require '../lib'
-
+{outputter} = require '../lib'
 {dirname, basename} = require 'path'
 
 describe 'search', ->
@@ -39,6 +39,7 @@ describe 'searchIn', ->
     followAll = query true
   
     output = search.searchIn query('Marc'), followAll, inodes(directory).entries(), {content: mappers.content}
+    expect(stream.isStream output).true
     output = await output.collect().toPromise Promise
        
     expect(output).eql [name:'Marc']

@@ -1,7 +1,7 @@
 router = require '../server/router'
 get = router.get
 
-r = new router.TreeRouter()
+r = new router.TreeRouter({})
 
 f = (s, m1, m2)->
   m = s.match r.regexp

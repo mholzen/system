@@ -1,1 +1,4 @@
-module.exports = require './lib'
+lib = require './lib'
+server = require './server'
+
+module.exports = {lib, server}
