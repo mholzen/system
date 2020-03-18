@@ -40,9 +40,12 @@ class TreeRouter
     @regexp = new RegExp '/*([^/]*)(.*)'
 
   process: (req, res, next)->
-    await @processPath req, res, next
-    if req.data?
-      await @respond req, res
+    try
+      await @processPath req, res, next
+      if req.data?
+        await @respond req, res
+    catch err
+      res.status(500).send err.toString()
     next()
 
   respond: (req, res)->
@@ -50,13 +53,15 @@ class TreeRouter
       res.status 404
       req.data = @root
 
-    log.debug 'respond', {data: req.data}
     req.data = await req.data
+    log.debug 'respond', {data: 'typeof-' + typeof req.data}
     if typeof req.data == 'number'
       req.data = req.data.toString()
 
-    if typeof req.data == 'object'
+    if req.data instanceof Buffer
+      return res.send req.data
 
+    if typeof req.data == 'object'
       if req.data instanceof Buffer
         # streamable?
         return res.send(req.data.toString())
@@ -67,7 +72,6 @@ class TreeRouter
         res.type 'application/json'
 
     if typeof req.data == 'string'
-      log.debug 'respond sending string', {data: req.data}
       return res.send req.data
 
     if not stream.isStream req.data
@@ -76,7 +80,6 @@ class TreeRouter
     data = await reducers.reduce req.data.map(id), 'html'
     .toPromise Promise
 
-    log.debug 'router.sending', {data}
     res.send data
 
   processPath: (req, res, next)->
@@ -130,26 +133,13 @@ class TreeRouter
       if typeof handler != 'function'
         return res.status(500).send("unsupported handler type #{typeof handler}")
 
-      log.debug 'router handler', {handler: first, remainder: req.remainder}
       await handler req, res, @
-      log.debug 'router post handler', {data: req.data, remainder: req.remainder}
 
 rootInode = inodes()
 
-fileHandler = (req, res) ->
-  path = req.remainder ? []
-  log.debug {rootInode}
-  stat = await rootInode.get path
-  req.remainder = path.join sep
-
-  req.data = content stat.path, parse: false
-
-  log.debug 'fileHandler', {path: stat.path, remainder: req.remainder, data: req.data}
-
-  await req.data
-
 types =
   'css': 'text/css'
+  'jpg': 'image/jpeg'
 
 root =
   generators: generators
@@ -164,6 +154,7 @@ root =
       return res.status(404).send "'#{name}' not found"
 
     res.type type
+    # req.data = req.data.toString()
 
   literals: (req, res)->
     if not (req.remainder?.length > 0)
@@ -182,9 +173,7 @@ root =
       return res.status(404).send "'#{name}' not found"
 
     # process req.remainder as if it were root
-    log.debug 'html before recursion', {data: req.data, remainder: req.remainder}
     await router.processPath req, res
-    log.debug 'html post processPath', {data: req.data, remainder: req.remainder}
 
     if not req.data?
       return res.status(400).send 'no data'
@@ -197,11 +186,19 @@ root =
       req.data = req.data.toString()
 
     req.data = mappers[name] req.data
-    log.debug 'html processPath after', {data: req.data, remainder: req.remainder}
     req.remainder = ''
 
   reducers: reducers
-  files: fileHandler
+  files: (req, res) ->
+    path = req.remainder ? []
+    log.debug {rootInode}
+    stat = await rootInode.get path
+    req.remainder = path.join sep
+
+    req.data = content stat.path, parse: false
+
+    log.debug 'fileHandler', {path: stat.path, remainder: req.remainder, data: req.data}
+    await req.data
 
 router = ->
   r = new express.Router()
