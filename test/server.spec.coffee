@@ -67,3 +67,10 @@ describe.only 'server', ->
       .then (response)->
         expect response.text
         .includes '<h1'
+
+  it '/mappers/html/files/test/artifacts/image.jpg', ->
+      r.get '/mappers/html/files/test/artifacts/image.jpg'
+      # .expect 200
+      .then (response)->
+        expect response.text
+        .includes '<img'

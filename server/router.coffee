@@ -145,6 +145,7 @@ rootInode = inodes()
 types =
   'css': 'text/css'
   'jpg': 'image/jpeg'
+  'html': 'text/html'
 
 root =
   generators: generators
@@ -167,7 +168,6 @@ root =
 
     # get data
     req.data = router.root
-    log.debug 'mappers getting data', {remainder: req.remainder}
     await router.processPath req, res
 
     if not req.data?
@@ -181,21 +181,19 @@ root =
       throw new Error "no items in req.remainder"
 
     req.data = req.remainder.shift()
-    # req.remainder = []
-    log.debug 'literals handler', {data: req.data, remainder: req.remainder}
+    # log.debug 'literals handler', {data: req.data, remainder: req.remainder}
+
   mappers: (req, res, router)->
     name = req.remainder.shift()
     if not (name?.length > 0)
       req.data = Object.keys(mappers).sort()
       return
-      # return res.status(200).send 
 
     if not (mapper = mappers[name])
       return res.status(404).send "'#{name}' not found"
 
     # process req.remainder as if it were root
     req.data = router.root
-    log.debug 'mappers getting data', {remainder: req.remainder}
     await router.processPath req, res
 
     if not req.data?
@@ -205,9 +203,6 @@ root =
     if isPromise req.data
       req.data = await req.data
 
-    if req.data instanceof Buffer
-      req.data = req.data.toString()
-
     req.data = mappers[name] req.data
     req.remainder = ''
 
@@ -216,7 +211,6 @@ root =
     if not (name?.length > 0)
       req.data = Object.keys(mappers).sort()
       return
-      # return res.status(200).send 
 
     if not (mapper = mappers[name])
       return res.status(404).send "'#{name}' not found"
@@ -238,14 +232,12 @@ root =
 
   files: (req, res) ->
     path = req.remainder ? []
-    log.debug {rootInode}
     stat = await rootInode.get path
-    req.remainder = path
+    req.remainder = path    # path contains un-matching remaining elements
 
     req.data = content stat.path, parse: false
 
-    log.debug 'fileHandler', {path: stat.path, remainder: req.remainder, data: req.data}
-    await req.data
+    # log.debug 'files return', {path: stat.path, remainder: req.remainder, data: req.data}
 
 router = ->
   r = new express.Router()
