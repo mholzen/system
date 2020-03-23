@@ -4,7 +4,7 @@ request = require 'supertest'
 s = new server.Server()
 r = request s.app
 
-describe 'server', ->
+describe.only 'server', ->
   it 'start', ->
     r.get '/'
     .expect 200
@@ -20,6 +20,13 @@ describe 'server', ->
       .eql '123'
 
   it 'mappers', ->
+    r.get '/mappers'
+    .expect 200
+    .then (response)->
+      expect response.text
+      .length.above 0
+
+  it 'mappers/html/literals/123', ->
     r.get '/mappers/html/literals/123'
     .expect 200
     .then (response)->
@@ -32,19 +39,31 @@ describe 'server', ->
     .then (response)->
       expect response.text
       .length.above 0
-  
-  it 'mappers', ->
-    r.get '/mappers'
-    .expect 200
-    .then (response)->
-      expect response.text
-      .length.above 0
 
   it 'mappers/html', ->
     r.get '/mappers/html'
-    .expect 400
+    .expect 200 # processed the root document
 
   it '/type/css/literals/1', ->
     r.get '/type/css/literals/1'
     .expect 200
     .expect('Content-Type', /text\/css/)
+
+  it 'searchers', ->
+    r.get '/searchers'
+    .expect 200
+    # .expect('Content-Type', /text\/css/)
+
+  it '/literals/1/map/html', ->
+    r.get '/literals/1/map/html'
+    # .expect 200
+    .then (response)->
+      expect response.text
+      .includes '<p>1</p>'
+
+  it '/files/test/artifacts/blurb.md/map/html', ->
+      r.get '/files/test/artifacts/blurb.md/map/html'
+      # .expect 200
+      .then (response)->
+        expect response.text
+        .includes '<h1'

@@ -24,11 +24,13 @@ get = (data, path, context)->
     return data
 
   [, first, remainder] = matches
-
   resource = _.get data, first
+
   if not resource?
     resource = _.get context, first
 
+  log.debug 'returning', {resource, context, first}
+ 
   return resource
 
 
@@ -37,9 +39,11 @@ class TreeRouter
     if not root?
       throw new Error 'missing root data'
     @root = root
+    log.debug {root}
     @regexp = new RegExp '/*([^/]*)(.*)'
 
   process: (req, res, next)->
+    req.data = @root
     try
       await @processPath req, res, next
       if req.data?
@@ -60,6 +64,14 @@ class TreeRouter
 
     if req.data instanceof Buffer
       return res.send req.data
+
+    if typeof req.data == 'function'
+      data = req.data.apply()
+      if stream.isStream data
+        return res.send await data.collect().toPromise Promise
+
+      return res.send data
+      # return res.type('text/plain').send 'function with properties: ' + Object.getOwnPropertyNames(req.data).join(',')
 
     if typeof req.data == 'object'
       if req.data instanceof Buffer
@@ -92,20 +104,11 @@ class TreeRouter
         return
       req.remainder = req.path.substr(1).split '/'
 
-    # req.data = req.data ? @root
-
     log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
 
-      # matches = req.remainder.match @regexp
-
       log.debug 'router.process', {remainder: req.remainder, req_data: req.data}
 
-      # if not matches? or not matches[1]?
-      #   log.debug 'unknown first'
-      #   return res.status(404).send('cannot determine first path element')
-
-      # [, first, remainder] = matches
       first = req.remainder.shift()
       if not first?
         log.debug 'empty first'
@@ -115,25 +118,27 @@ class TreeRouter
         log.debug 'no more paths. about to send response', {first, remainder: req.remainder}
         break
 
-      # if typeof req.data != 'object'
-      #   return res.status(400).send("cannot lookup '#{first}' in req.data of type #{typeof req.data}")
+      target = =>
+        if (typeof req.data == 'object') and (first of req.data)
+          return req.data[first]
+        if (first of @root)
+          return @root[first]
+        # return res.status(404).send "cannot find #{first} in #{req.data} nor root"
 
-      log.debug 'router handler get', {name: first}
-      handler = await get req.data, first, @root
+      target = target()
+      if not target
+        return res.status(400).send("cannot lookup '#{first}' in req.data of type #{typeof req.data} nor in root")
 
-      if not handler?
-        return res.status(404).send("cannot find '#{first}' in #{log.print req.data}")
 
-      # req.remainder = remainder
-
-      if ['object', 'number', 'string'].includes typeof handler
-        req.data = handler
+      if typeof target == 'function'
+        log.debug 'calling handler', {name: first}
+        await target req, res, @
         continue
 
-      if typeof handler != 'function'
-        return res.status(500).send("unsupported handler type #{typeof handler}")
+      if typeof target != 'object'
+        return res.status(500).send "lookup in non-object"
 
-      await handler req, res, @
+      req.data = target
 
 rootInode = inodes()
 
@@ -143,9 +148,16 @@ types =
 
 root =
   generators: generators
-  searchers: searchers
-
-  type: (req, res)->
+  searchers: (req, res, router)->
+    name = req.remainder.shift()
+    req.data = searchers()
+    if not name?  
+      return
+    if not name in req.data
+      return res.status(404).send "'#{name}' not found in #{req.data}"
+    req.data = req.data[name]
+    
+  type: (req, res, router)->
     name = req.remainder.shift()
     if not (name?.length > 0)
       return res.status(200).send Object.keys(types).sort()
@@ -153,26 +165,37 @@ root =
     if not (type = types[name])
       return res.status(404).send "'#{name}' not found"
 
+    # get data
+    req.data = router.root
+    log.debug 'mappers getting data', {remainder: req.remainder}
+    await router.processPath req, res
+
+    if not req.data?
+      return res.status(400).send 'no data'
+
     res.type type
-    # req.data = req.data.toString()
+
 
   literals: (req, res)->
     if not (req.remainder?.length > 0)
       throw new Error "no items in req.remainder"
 
     req.data = req.remainder.shift()
-    req.remainder = []
+    # req.remainder = []
     log.debug 'literals handler', {data: req.data, remainder: req.remainder}
-
   mappers: (req, res, router)->
     name = req.remainder.shift()
     if not (name?.length > 0)
-      return res.status(200).send Object.keys(mappers).sort()
+      req.data = Object.keys(mappers).sort()
+      return
+      # return res.status(200).send 
 
     if not (mapper = mappers[name])
       return res.status(404).send "'#{name}' not found"
 
     # process req.remainder as if it were root
+    req.data = router.root
+    log.debug 'mappers getting data', {remainder: req.remainder}
     await router.processPath req, res
 
     if not req.data?
@@ -188,12 +211,36 @@ root =
     req.data = mappers[name] req.data
     req.remainder = ''
 
+  map: (req, res, router)->
+    name = req.remainder.shift()
+    if not (name?.length > 0)
+      req.data = Object.keys(mappers).sort()
+      return
+      # return res.status(200).send 
+
+    if not (mapper = mappers[name])
+      return res.status(404).send "'#{name}' not found"
+
+    if not req.data?
+      return res.status(400).send 'no data'
+
+    # perhaps mapper can handle that?
+    if isPromise req.data
+      req.data = await req.data
+
+    if req.data instanceof Buffer
+      req.data = req.data.toString()
+
+    req.data = mapper req.data
+
   reducers: reducers
+
+
   files: (req, res) ->
     path = req.remainder ? []
     log.debug {rootInode}
     stat = await rootInode.get path
-    req.remainder = path.join sep
+    req.remainder = path
 
     req.data = content stat.path, parse: false
 

@@ -10,7 +10,7 @@
     "stop": "forever -a stop server/start.coffee",
     "watch": "forever --debug -v -a -w --watchIgnore 'files/**' --watchIgnore 'test/artifacts/marchome/**' --watchIgnore 'node_modules/**' -c coffee server/start.coffee",
     "log": "forever logs -f start.coffee",
-    "open": "open http://localhost:3000",
+    "open": "open http://localhost:3001",
     "open-coverage": "open-http coverage/lcov-report/index.html"
   },
   "author": "",
