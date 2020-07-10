@@ -39,3 +39,39 @@ describe 'coffee', ()->
         count++
     f()
     expect(count).eql 1
+
+  it 'async', ->
+    count = 0
+    f = (x)->
+      try
+        if x == 1
+          return await 1
+        throw new Error()
+      catch e
+        return 2
+
+    expect(await f(1)).eql 1
+    expect(await f(2)).eql 2
+
+  it 'promise rejection happens outside of try catch', ->
+    c = 0
+    f = new Promise (resolve, reject)-> setTimeout (-> reject 1), 500
+    g = ->
+      try
+        await f
+      catch e
+        c++
+
+        try
+          await f
+        catch e
+          c++
+    g()   # no await here means it goes right through
+    expect(c).eql 0
+
+  it 'await multiple times', ->
+    f = new Promise (resolve, reject)-> resolve 1
+    r = await f
+    r = await f
+    r = await f
+    expect(r).eql 1
