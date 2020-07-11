@@ -12,3 +12,9 @@ A paragraph that describes a topic:
     with code
     in the middle:(&a)
 
+A table:
+
+| a | b |
+|---|---|
+| 1 | 2 |
+
