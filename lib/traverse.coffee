@@ -31,7 +31,7 @@ value = (data) ->
   if typeof data == 'object'
     e = edges data
     log.debug 'value.edges', {e}
-    v  =_.pickBy data, (v,k) -> not e.includes k
+    v  =_.pickBy data, (v,k) -> not (e.includes k) and data.hasOwnProperty k
     return if _.isEmpty v then null else v
   throw new Error "value not implemented for #{typeof data}"
 
@@ -48,7 +48,7 @@ traverse = (data, options)->
     yield v
 
   for e from edges data
-    log.debug 'edge', {e}
+    log.debug 'traverse.edge', {e}
     for i from traverse data[e], options
       if options.path
         i.path.unshift e
@@ -56,7 +56,7 @@ traverse = (data, options)->
       yield i
 
   # why the fuck is this needed?
-  log.debug 'returning'
+  log.debug 'traverse.returning'
 
 module.exports = {
   edges

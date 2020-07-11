@@ -4,6 +4,11 @@ inodes = require '../lib/inodes'
 
 {stream, post, inodes: {inode}} = require '../lib'
 
+describe 'value', ->
+  it 'array', ->
+    expect value [1,2,3]
+    .eql null
+
 describe 'edges, value, traverse', ->
   it 'null', ->
     expect Array.from traverse null

@@ -10,7 +10,6 @@ describe 'dates', ->
 
   it.skip 'back pressure', (done)->
     dates().items.each (d)->
-      console.log 'received'
       done()
 
   it.skip 'partial match', (done)->
