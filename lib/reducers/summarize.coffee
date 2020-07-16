@@ -1,4 +1,4 @@
-name = require '../map/name'
+name = require '../mappers/name'
 
 summarize = (options)->
   reducer = (summary, data)->

@@ -8,6 +8,11 @@
 arg="$1"
 type=$(type -t $arg)
 
+if [ "$type" == 'alias' ]; then # Doesn't work because alias are not defined for non-interactive scripts
+  alias $arg
+  exit
+fi
+
 if [ "$type" == 'file' ]; then    # executable
   cat `/usr/bin/which "$arg"`
   exit

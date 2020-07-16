@@ -1,4 +1,4 @@
-url = require './map/url'
+url = require './mappers/url'
 
 open = (value)->
   if value.url?

@@ -1,10 +1,10 @@
 _ = require 'lodash'
 log = require '@vonholzen/log'
 {stream, isStream} = require './stream'
-content = require './map/content'
+content = require './mappers/content'
 {parseValue} = require './parse'
 {items} = require './generators'
-isIterable = require './map/isIterable'
+isIterable = require './mappers/isIterable'
 {startsWith, intersect, Match, Matches} = require './match'
 {Results} = require './results'
 isPromise = require 'is-promise'
@@ -265,6 +265,10 @@ class Query
     return true if @query == null
     match = @match data
     log 'query', {match}
+    if isPromise match
+      return match.then (x) -> not (x == null or x[0] == null)
+    if isStream match
+      return match.filter (x)-> not (x == null or x[0] == null)
     if match == null or match[0] == null
       return false
     true
@@ -324,8 +328,7 @@ class Query
         m.prepend data.path
 
     if stream.isStream data
-      matches = data.fork().filter (item) => @match item
-      return [new Match matches]
+      return data.fork().filter (item) => @match item
 
     if isPromise data
       return data.then (d) => @match d, options

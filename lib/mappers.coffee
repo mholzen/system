@@ -5,8 +5,10 @@ graph = require './reducers/graph'
 parse = require './parse'
 path = require 'path'
 request = require './request'
-table = require './table'
-template = require './map/template'
+template = require './mappers/template'
+
+# Functions that take one value and return one value
+# Can be used in "obj.apply(f)" and "arr.map(f)"
 
 mappers =
   append: (opts)->
@@ -84,13 +86,13 @@ mappers =
 
   timestamp: (value)-> Date.now()
 
-  table: table.map
-  tableString: table.mapString
+  # TODO: 
+  # tableString: table.tableString
 
 
 glob = require 'glob'
 path = require 'path'
 
 requireDir = require 'require-dir'
-mappers.templates = require './map/templates'
-module.exports = Object.assign mappers, requireDir './map'
+mappers.templates = require './mappers/templates'
+module.exports = Object.assign mappers, requireDir './mappers'

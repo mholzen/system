@@ -14,7 +14,7 @@ process.stdout.on 'error', (event)->
 # MAIN
 #
 args = process.argv[2..-1]
-search args
+search.search2 args
 .through outputter process.stdout, process.stderr
 
 # TODO

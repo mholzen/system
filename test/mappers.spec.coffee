@@ -1,18 +1,16 @@
+{mappers} = require '../lib'
 {
-  mappers: {
-    amount
-    columns
-    context
-    escape
-    get
-    json
-    pick
-    string
-  }
-} = require '../lib'
+  amount
+  columns
+  context
+  escape
+  get
+  json
+  pick
+  string
+} = mappers
 
 describe 'mappers', ->
-
   it 'amount', ->
     expect(amount 1).eql 1
     expect(amount '1').eql 1
@@ -56,3 +54,4 @@ describe 'mappers', ->
   it 'string', ->
     expect(string 'a').eql 'a'
     expect(string a:1).eql '{"a":1}'
+

@@ -2,7 +2,7 @@
 _ = require 'lodash'
 
 describe 'stream', ->
-  it '', ->
+  it 'isStream', ->
     expect(stream()).satisfy stream.isStream
 
   it 'promise', ->
@@ -18,3 +18,16 @@ describe 'stream', ->
    
     r = await r.collect().toPromise Promise
     expect(r).eql [11, 1, 2, 3]
+  
+  it 'generator functions', ->
+    next = 
+    s = stream (push, next)->
+      push null, 1
+      # next()
+      push null, 2
+      # next()
+      push null, 3
+      push null, stream.nil
+      # next()
+    r = await s.collect().toPromise Promise
+    expect(r).eql [1,2,3]

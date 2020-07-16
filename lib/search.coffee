@@ -1,22 +1,45 @@
-{fromArgs} = require './query'
+{query, fromArgs} = require './query'
 searchers = require './searchers'
 {isStream, stream} = require './stream'
 log = require './log'
 resolve = require './resolve'
-{isIterable} = require './mappers'
+{isIterable, args, content} = require './mappers'
+isPromise = require 'is-promise'
+
+resolver = (s)->
+  s
+  .map (x)-> stream resolve.deep x
+  .parallel 10
+  .filter (x) -> x?.value? and (not x?.value?.length? or x?.value?.length > 0)
 
 search = (args, options)->
   query = fromArgs args
-
   results = query.match searchers options
-
   if not results?
     return null
 
   stream results
   # TODO: consider a search argument for resolving
-  .map (x)-> stream resolve.deep x
-  .parallel 10
+  .through resolver
+
+search.search2 = (data, options)->
+  a = args data
+
+  follow = query a?.follow
+  delete a.follow
+
+  searcherOptions = a?.searchers
+  delete a.searchers
+  s = searchers searcherOptions
+  log.debug {s}
+
+  q = query a
+
+  options ?= {}
+  options.content = content
+
+  results = search.searchIn q, follow, stream([s]), options
+  results.through resolver
 
 search.searchIn = (match, follow, data, options)->
   content = options?.content
@@ -49,13 +72,30 @@ search.searchIn = (match, follow, data, options)->
 
   contentStream = input.observe()
     .doto inc
-    .filter (x)->
-      test = isNew(x) and follow.test(x)
-      if not test
-        dec()
+    .flatFilter (x)->
+      test = follow.test(x)
+      if isStream test
+        return test.observe().done ->
+          if not x
+            dec()
+        
+      if not isPromise test
+        test = new Promise (resolve)->resolve test
+      
+      test = test.then (x)->
+        log.debug 'follow testing', {follow, x}
+        if not x
+          dec()
+        x
+      
+      stream test
+    # .filter (x)->
+    #   test = isNew(x) and follow.test(x)
+    #   if not test
+    #     dec()
 
-      log.debug 'follow testing', {x, test}
-      test
+    #   log.debug 'follow testing', {test, follow, x}
+    #   test
     .map (x)->
       try
         c = content x

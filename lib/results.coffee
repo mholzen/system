@@ -2,9 +2,13 @@ _ = require 'lodash'
 log = require './log'
 {Match} = require './match'
 isPromise = require 'is-promise'
+{isStream} = require './stream'
 
 class Results
   constructor: (data)->
+    if isStream data
+      # TODO: optimize
+      data = data.collect().toPromise Promise
     if isPromise data
       @values = data
       return

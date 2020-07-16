@@ -9,10 +9,10 @@ class Server
     @rewrites = options?.rewrites
     if @rewrites?
       @app.use (req, res, next)=>
-        # log.debug 'router.process pre-rewrite', {url: req.url}
+        log.debug 'router.process pre-rewrite', {url: req.url}
         if req.url of @rewrites
           req.url = @rewrites[req.url]
-        # log.debug 'router.process post-rewrite', {url: req.url}
+        log.debug 'router.process post-rewrite', {url: req.url}
         next()
     @rewriteRules = options?.rewriteRules
     if @rewriteRules?

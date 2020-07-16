@@ -42,7 +42,7 @@ fileContent = (path)->
           fs.readdir path, (err, files)->resolve files
         reject err
 
-      log 'readFile', {content: content.toString()}
+      log.debug 'readFile', {content: typeof content}
       resolve content
 
 fileContentSync = (path)->

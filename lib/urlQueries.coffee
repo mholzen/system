@@ -1,4 +1,4 @@
-{Template} = require './map/template'
+{Template} = require './mappers/template'
 
 urls =
   google: 'http://google.com/search?q=#{query}'

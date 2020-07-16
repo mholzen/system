@@ -1,4 +1,4 @@
-pop = require '../lib/map/pop'
+pop = require '../lib/mappers/pop'
 
 describe 'pop', ->
   it 'basic', ->

@@ -12,18 +12,17 @@ args = (data)->
       result[i] = arg
       continue
 
-    [key, value] = arg.split ':'
+    elements = arg.split ':'
 
-    if not value?
-      value = key
-      key = i
+    if elements.length == 1
+      elements.unshift i
 
-    if key.length == 0
-      key = i
-      if value.length == 0
-        value = ':'
+    if elements[0].length == 0
+      elements[0] = i
+      if elements[1].length == 0
+        elements[1] = ':'
 
-    result[key] = parseValue value
+    _.set result, elements[..-2], parseValue elements[elements.length-1]
 
   result
 

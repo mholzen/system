@@ -1,4 +1,5 @@
-{pug} = require '../lib/mappers'
+mappers = require '../lib/mappers'
+pug = mappers.pug
 query = require '../lib/query'
 
 describe 'tempates', ->

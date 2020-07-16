@@ -7,7 +7,7 @@ request = require 'request-promise'
 appendFile = promisify fs.appendFile
 pipeline = promisify st.pipeline
 
-url = require './map/url'
+url = require './mappers/url'
 {stream, isStream} = require './stream'
 
 log = require './log'

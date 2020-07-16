@@ -1,4 +1,7 @@
 {stream, map, mappers} = require '../lib'
+beforeEach ->
+  log.debug '=== new test ==='
+
 describe 'map', ->
 
   it 'mappers.get', ->

@@ -4,9 +4,10 @@ compile = pug.compile
 
 template = (source, options)->
   if typeof source == 'function'
-    return options.template
+    return source
 
   if typeof source == 'string'
+    log.debug 'compiling template from', {source}
     return compile source, options
 
   if typeof source == 'object'

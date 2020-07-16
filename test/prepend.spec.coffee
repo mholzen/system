@@ -1,4 +1,4 @@
-prepend = require '../lib/map/prepend'
+prepend = require '../lib/mappers/prepend'
 
 describe 'prepend', ->
   it 'basic', ->

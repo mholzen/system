@@ -32,6 +32,7 @@ value = (data) ->
     e = edges data
     log.debug 'value.edges', {e}
     v  =_.pickBy data, (v,k) -> not (e.includes k) and data.hasOwnProperty k
+    log.debug {v}
     return if _.isEmpty v then null else v
   throw new Error "value not implemented for #{typeof data}"
 

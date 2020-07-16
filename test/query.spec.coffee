@@ -200,31 +200,33 @@ describe 'query', ->
       expect(matches).property('0').eql value: 'a', path:['b', 0]
 
     it 'data:Stream', ->
-      matches = query('b').match stream(['a', 'b', 'c'])
-      expect(matches).property('0').property('value').satisfy stream.isStream
-      results = await matches[0].value.collect().toPromise Promise
+      matches = query('b').match stream ['a', 'b', 'c']
+      expect(matches).satisfy stream.isStream
+      results = await matches.collect().toPromise Promise
       expect(results).eql ['b']
 
-    it.skip 'data:Promise', ->
+    it 'data:Promise', ->
       data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
       expect(data).satisfy isPromise
       expect(data).property('then').a 'function'
 
       matches = query('b').match data
-      expect(matches).property('0').property('value').respondTo 'then'
-      results = await matches[0].value
-      expect(Array.from(results.entries())).eql [
+      log.debug {matches}
+      expect(matches).satisfy isPromise
+      results = await matches
+      expect(results).eql [
         {value: 'b', path:[1]}
       ]
 
     it 'data:{k:Promise}', ->
       data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
       r = query('b').match {k: data}
+      log.debug {r}
       r = await Promise.all r
       r = r.flat()
 
       expect(r).property('0').property('path').eql ['k']
-      expect(r).property('0').property('value').respondTo 'then'
+      expect(r).property('0').property('value').satisfy isPromise
 
     it 'data:Map', ->
       data = new Map [['a', 1]]
@@ -338,6 +340,11 @@ describe 'query', ->
         expect(q.test('foo')).be.true
         expect(q.test('bar')).be.true
         expect(q.test({a:1})).be.true
+
+      it 'a promise', ->
+        p = new Promise (resolve)->resolve 1
+        expect(await query(2).test(p))
+        .eql false
 
     describe 'from:function', ->
       it 'match', ->

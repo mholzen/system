@@ -6,6 +6,9 @@ log = require '../lib/log'
 s = new server.Server
   port: 3001
 
+process.on 'unhandledRejection', (error) =>
+  console.log 'unhandledRejection', error
+
 s.listen (err)->
   if err
     log.error err

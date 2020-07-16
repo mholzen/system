@@ -1,6 +1,6 @@
 log = require '../log'
 
-amount = require '../map/amount'
+amount = require '../mappers/amount'
 
 sum = (opts)->
   (x, y)->

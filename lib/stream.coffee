@@ -1,5 +1,5 @@
 highland = require 'highland'
-isIterable = require './map/isIterable'
+isIterable = require './mappers/isIterable'
 
 stream = highland
 

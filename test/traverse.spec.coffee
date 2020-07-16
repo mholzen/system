@@ -1,5 +1,5 @@
 {edges, value, traverse} = require '../lib/traverse'
-
+mappers = require '../lib/mappers'
 inodes = require '../lib/inodes'
 
 {stream, post, inodes: {inode}} = require '../lib'
@@ -65,7 +65,7 @@ describe 'edges, value, traverse', ->
     ]
 
   it 'traverse mappers', ->
-    graph = m for m from traverse system.lib.mappers, path:true when m.path.includes 'graph'
+    graph = m for m from traverse mappers, path:true when m.path.includes 'graph'
     expect(graph).property('value').property('template').includes 'graph.links'
 
   it 'stream traverse', ->

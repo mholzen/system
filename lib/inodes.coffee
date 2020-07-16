@@ -23,8 +23,21 @@ class Stat
     @path = expandTilde @path
     @options = options ? {}
     @options.recurse = @options.recurse ? false
-    log 'inodes.Stat', {path:@path}
     @stat = statAsync @path
+    .catch (err)=>
+      console.log err
+      @err = err
+      throw err
+    # .then (stat)=>
+    #   @stat = stat
+    #   @
+
+  # then: (success, failure)->
+  #   @stat.then success, failure
+    # console.log 'here'
+    # if typeof @stat.then != 'function'
+    #   return success @
+    # @stat
 
   entries: -> stream @walker()
 
@@ -41,12 +54,22 @@ class Stat
     readdir @path
 
   isDirectory: ->
-    stat = await @stat
+    # log.debug 'isDirectory entry', {path: @path, stat: @stat}
+    if @err?
+      throw err
+    try
+      stat = await @stat
+      # log.debug 'isDirectory post await', {stat}
+    catch err
+      # log.debug 'isDirectory caught', {err: err.toString()}
+      throw err
+    # log.debug 'isDirectory exit', {stat}
     stat.isDirectory()
 
   recurse: -> @options.recurse
 
   get: (path)->
+    log.debug 'inodes.get', {'@path': @path, path}
     if not path?
       return this
 
@@ -61,23 +84,15 @@ class Stat
       path = path.split sep
 
     if path instanceof Array
-      log 'inodes.get', {path}
       if path.length == 0
-        log 'inodes.get return this'
+        log.debug 'inodes.get empty path. returning this'
+        # it doesn't await right here if @stat does not exist
         return this
+      p = join @path, ...path
+      console.log 'new stat', p
+      return new Stat p
 
-      try
-        if await @isDirectory()
-          next = path.shift()
-          return new Stat(join @path, next).get path
-
-        # this file is the resource
-        log 'inodes.get found file', {remainder: path}
-        return this
-
-      catch error
-        log 'inodes.get', {error}
-        throw error
+    new Error "cannot get with '#{path}'"
 
   walker: ->
     root = @path
@@ -145,9 +160,61 @@ class Stat
         log 'file.order sorted', dirStatsArray.map (d)->d.name
         next()
 
+class Path
+  constructor: (path, root)->
+    @setPath path
+    @setRoot root
+    @stat = null
+    @remainder = null
+
+  setPath: (path)->
+    @path = path
+    if typeof path == 'string'
+      @segments = path.split '/'   # TODO: must ignore multiple consecutive /
+
+      if path.startsWith '/'
+        @root = '/'
+        @segments.shift() # remove first ''
+      return
+
+    if path instanceof Array
+      @segments = path
+      return
+
+    throw new Error "cannot setPath with #{path}"
+
+  setRoot: (root)->
+    if typeof root == 'string'
+      if @path.startsWith '/'
+        throw new Error 'root overspecified'
+      @root = root
+    # if root instanceof Stat
+    #   @root = root
+    #   return
+    if typeof root == 'undefined'
+      if not @root?
+        @root = process.cwd()
+      return
+    throw new Error "can't set root from #{root}"
+
+  then: (success)->
+    @remainder = Array.from @segments
+    @path = @root   # assumes root is accessible
+    while @remainder.length > 0
+      try
+        next = @remainder[0]
+        path = join @path, next
+        @stat = await statAsync path
+        @path = path
+        @remainder.shift()
+      catch e
+        log.debug 'error', {e}
+        break
+    success()
+
 inodes = (path, options)->
   new Stat path, options
 
 inode = inodes
 
-module.exports = Object.assign inodes, {Stat, statAsync, stat, inode}
+module.exports = Object.assign inodes, {Stat, statAsync, stat, inode, Path}

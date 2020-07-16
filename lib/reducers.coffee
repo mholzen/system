@@ -2,15 +2,25 @@ log = require '@vonholzen/log'
 marked = require 'marked'
 table = require './table'
 stream = require './stream'
+requireDir = require 'require-dir'
 
 reducers =
   reduce: (data, name, opts)->
     reducer = reducers[name] opts
-    stream(data).reduce reducer[0], reducer[1]
-    .map (r)->
+    if data instanceof Array
+      r = data.reduce reducer[1], reducer[0]
       if reducer[2]
         r = reducer[2] r
-      r
+      return r
+
+    if stream.isStream data
+      return data.reduce reducer[0], reducer[1]
+      .map (r)->
+        if reducer[2]
+          r = reducer[2] r
+        r
+      .toPromise Promise
+    throw new Error "can't reduce '#{typeof data}' value"
 
   count: -> [
     0,
@@ -104,14 +114,13 @@ reducers =
       (table, value)->
         table.add value
         table
-      (table)->table.toHTML()
     ]
 
-[
-  'graph'
-  'sum'
-  'summarize'
-].forEach (r)->
-  reducers[r] = require "./reducers/#{r}"
+# [
+#   'graph'
+#   'sum'
+#   'summarize'
+# ].forEach (r)->
+#   reducers[r] = require "./reducers/#{r}"
 
-module.exports = reducers
+module.exports = Object.assign reducers, requireDir './reducers'

@@ -1,5 +1,5 @@
-inodes = require '../lib/inodes'
 tempy = require 'tempy'
+inodes = require '../lib/inodes'
 post = require '../lib/post'
 _ = require 'lodash'
 query = require '../lib/query'
@@ -11,6 +11,15 @@ describe 'statAsync', ->
       expect(s.isDirectory()).true
 
 describe 'inodes', ->
+
+  it 'stat cwd', ->
+    s = inodes()
+    expect(s).property('path').eql process.cwd()
+
+  it 'stat cwd', ->
+    s = await inodes()
+    expect(s).property('path').eql process.cwd()
+
   it 'should return path of cwd', ->
     inodes().isDirectory().then (r)->
       expect(r).true
@@ -34,11 +43,10 @@ describe 'inodes', ->
         expect(r.length).equal 1
         resolve true
 
-  describe 'get', ->
+  describe.skip 'get', ->
     it 'should return self with no arguments', ->
       cwd = inodes()
-      cwd.get().then (i)->
-        expect(i).equal cwd
+      expect(cwd).property('path').eql process.cwd()
 
     it 'should return self with empty array', ->
       cwd = inodes()
@@ -62,14 +70,15 @@ describe 'inodes', ->
       inodes('/').get(file).then (f)->
         expect(file).equal f.path
 
-    it 'should get a resource path in a directory from root', ->
+    # TODO: convert to Path
+    it.skip 'should get a resource path in a directory from root', ->
       dir = tempy.directory()
       file = await post 'abc', dir
       files =
       inodes('/').get(file+'/resource').then (f)->
         expect(f.path).equal file
 
-    it 'should get a resource path in a directory from root with remainder', ->
+    it.skip 'should get a resource path in a directory from root with remainder', ->
       dir = tempy.directory()
       file = await post 'abc', dir
       file = file.split '/'
@@ -87,5 +96,81 @@ describe 'inodes', ->
       dir = tempy.directory()
       file = await post 'abc', dir
       matches = query(file).match inodes(dir).entries()
-      results = await matches[0].value.collect().toPromise Promise
+      results = await matches.collect().toPromise Promise
       expect(results).property(0).property 'path', file
+
+
+    it 'fails', ->
+      try
+        s = await inodes().get('/some-path')
+      catch err
+        expect(err.stack).include 'get with absolute path does not match'
+
+    it 'fails ENOENT', ->
+      # i = inodes('/')
+      # expect(await i.isDirectory()).true
+
+      i = inodes('/tmp/foobar')
+      i.isDirectory()
+      .then ->
+        fail()
+      .catch (err)->
+        expect(err).instanceof Error
+
+    it.skip 'with await', ->
+      path = [ 'tmp', 'foobar' ]
+      try
+        # i = await inodes('/').stat
+        # i = i.get 'tmp/foobar'
+        i = inodes('/')
+        i = await i.get path
+        fail()
+      catch err
+        expect(err).instanceof Error
+
+  describe 'Path', ->
+    it 'root', ->
+      path = new inodes.Path '/tmp/foobar'
+      expect(path.root.path, '/')
+
+    it 'no root', ->
+      path = new inodes.Path 'foo'
+      expect(path.root.path, process.cwd())
+
+    it 'root overspecified', ->
+      f = -> new inodes.Path '/foo', '/tmp'
+      expect(f).throws().property('message').contain 'overspecified'
+
+    it 'file', ->
+      # downside is that it will split all paths and tests them in sequence
+      # rather than do a single stat to the full path name
+      path = new inodes.Path '/bin/ls'
+      expect(path.root).eql '/'
+      expect(path.segments).eql [ 'bin', 'ls' ]
+      await path
+      expect(path.remainder).eql []
+      expect(path.stat.isFile())
+      expect(path.path).eql '/bin/ls'
+
+    it 'non-existing file in directory', ->
+      # downside is that it will split all paths and tests them in sequence
+      # rather than do a single stat to the full path name
+      path = new inodes.Path '/tmp/foobar'
+      expect(path.root).eql '/'
+      expect(path.segments).eql [ 'tmp', 'foobar' ]
+      await path
+      expect(path.remainder).eql ['foobar']
+      expect(path.path).eql '/tmp'
+      expect(path.stat.isDirectory())
+
+    it 'non-existing file after file', ->
+      # downside is that it will split all paths and tests them in sequence
+      # rather than do a single stat to the full path name
+      path = new inodes.Path '/bin/ls/foobar'
+      expect(path.segments).eql [ 'bin', 'ls', 'foobar' ]
+      expect(path.root).eql '/'
+      await path
+      expect(path.segments).eql [ 'bin', 'ls', 'foobar' ]
+      expect(path.segments).eql [ 'bin', 'ls', 'foobar' ]
+      expect(path.path).eql '/bin/ls'
+      expect(path.stat.isFile())

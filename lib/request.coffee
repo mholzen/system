@@ -1,7 +1,7 @@
 requestPromise = require 'request-promise'
 inodes = require './inodes'
-url = require './map/url'
-filepath = require './map/filepath'
+url = require './mappers/url'
+filepath = require './mappers/filepath'
 {isStream} = require './stream'
 
 log = require '@vonholzen/log'

@@ -8,3 +8,8 @@ describe 'table', ->
     expect(t.rows()[0][0]).equal 1
     expect(t.rows()[1][1]).equal undefined
     expect(t.rows()[1][2]).equal 3
+
+  it 'should construct from an array of arrays', ->
+    t = new table.Table [['a', 'b'], [1, 2], [3, 4]]
+    expect(t.keys()).eql ['a','b']
+    expect(t.rows()).eql [[1,2], [3,4]]

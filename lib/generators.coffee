@@ -1,8 +1,9 @@
 {stream, isStream} = require './stream'
 log = require './log'
-isIterable = require './map/isIterable'
+isIterable = require './mappers/isIterable'
 request = require './request'
 parse = require './parse'
+CSON = require 'cson'
 
 keys = (x)->
   if stream.isStream x
@@ -51,9 +52,31 @@ items = (data)->
     log.error e
     return []
 
-  throw new Error "cannot get items from #{log.toPrettyString data}"
+  throw new Error "cannot get items from #{log.print data}"
+
+lines = (data)->
+  data.split '\n'
+  .filter (line) -> line.length > 0
+
+split = (data, opts)->
+  sep = opts?[0] ? '\n'
+  data.split '\n'
+
+json = (data, opts)->
+  if true # opts?.req?.name?.endsWith '.cson'
+    return CSON.parse data
+
+  JSON.parse data
+
+array = (data, opts)->
+  Array.from data
 
 module.exports = {
   keys
   items
+  lines
+  split
+  json
+  array
+  tests: require './generators/tests'
 }

@@ -20,4 +20,8 @@ defaultReplacer = (key, value)->
 
 module.exports = (data, options)->
   replacer = options?.replacer ? defaultReplacer
-  JSON.stringify data, replacer
+  if data instanceof Buffer
+    data = data.toString()
+  JSON.stringify data, replacer, options?.space
+
+module.exports.defaultReplacer = defaultReplacer

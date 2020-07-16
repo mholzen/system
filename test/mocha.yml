@@ -1,5 +1,5 @@
 bail: true
-spec: test/**.spec.coffee
+spec: test/**/**.spec.coffee
 recursive: true
 #inspect-brk: true
 require:

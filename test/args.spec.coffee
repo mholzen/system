@@ -1,4 +1,4 @@
-args = require '../lib/map/args'
+args = require '../lib/mappers/args'
 
 describe 'args', ->
   it 'basic', ->

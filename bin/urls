@@ -1,1 +1,8 @@
-search type:url "$@"
+search bookmarks "$@" |
+map get value |
+map traverse |
+map get path |
+map prepend bookmarks |
+map pop |
+map pop |
+map content
