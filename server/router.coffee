@@ -248,7 +248,6 @@ root =
     args = [ req.data, {filename: req.filename} ] # TODO: how is the second argument defined?
     req.data = f.apply {}, args   
 
-
   map: (req, res, router)->
     name = req.remainder.shift()
     if not (name?.length > 0)
@@ -279,55 +278,6 @@ root =
     req.data = req.data.map (v)->
       f v, {filename: req.filename} # TODO: how is the second argument defined?
 
-  mappers: (req, res, router)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      req.data = Object.keys(mappers).sort()
-      return
-
-    if not (mapper = mappers[name])?
-      return res.status(404).send "'#{name}' not found"
-
-    if typeof mapper != 'function'
-      req.data = mapper
-      return
-
-    if not req.data?
-      return res.status(400).send 'no data'
-
-    # perhaps mapper can handle that?
-    if isPromise req.data
-      req.data = await req.data
-
-    if req.data instanceof Buffer
-      req.data = req.data.toString()
-
-    if req.data instanceof Array
-      req.data = stream req.data
-
-    req.data = mapper req.data, {filename: req.filename}  # TODO: how is this list defined?
-
-  reducers: (req, res, router)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      req.data = Object.keys(reducers).sort()
-      return
-
-    if not (reducer = reducers[name])
-      return res.status(404).send "'#{name}' not found"
-
-    if not req.data?
-      return res.status(400).send 'no data'
-
-    # perhaps mapper can handle that?
-    if isPromise req.data
-      req.data = await req.data
-
-    if req.data instanceof Buffer
-      req.data = req.data.toString()
-
-    req.data = reducers.reduce req.data, name
-
   reduce: (req, res, router)->
     name = req.remainder.shift()
     if not (name?.length > 0)
@@ -348,6 +298,10 @@ root =
       req.data = req.data.toString()
 
     req.data = reducers.reduce req.data, name
+
+  mappers: mappers
+
+  reducers: reducers
 
 
   files: (req, res, router) ->

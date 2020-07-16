@@ -28,7 +28,7 @@ describe 'server', ->
     r.get '/mappers'
     .then (response)->
       expect response.text
-      .startsWith '['
+      .startsWith '{'
 
   it '/literals/123/apply/html', ->
     r.get '/literals/123/apply/html'
@@ -42,8 +42,8 @@ describe 'server', ->
       expect response.text
       .contain 'index.coffee' 
 
-  it 'mappers/html', ->
-    r.get '/mappers/html'
+  it 'mappers/apply/html', ->
+    r.get '/mappers/apply/html'
     .expect 200 # processed the root document
 
   it '/literals/1/type/css', ->
@@ -56,8 +56,8 @@ describe 'server', ->
     .expect 200
     # .expect('Content-Type', /text\/css/)
 
-  it '/files/reducers/count', ->
-    r.get '/files/reducers/count'
+  it '/files/reduce/count', ->
+    r.get '/files/reduce/count'
     .then (response)->
       expect parseInt response.text
       .above 2
