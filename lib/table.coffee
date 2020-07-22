@@ -43,6 +43,12 @@ class Table
     rows
 
 
+  column: (key)->
+    index = @keys().indexOf key
+    if index < 0
+      throw new RangeError()
+    data[index] for data in @datas
+
   setHeader: (row)->
     @keys = Object.keys row
 

@@ -13,3 +13,4 @@ describe 'table', ->
     t = new table.Table [['a', 'b'], [1, 2], [3, 4]]
     expect(t.keys()).eql ['a','b']
     expect(t.rows()).eql [[1,2], [3,4]]
+    expect(t.column('a')).eql [1,3]
