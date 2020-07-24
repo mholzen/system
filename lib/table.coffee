@@ -42,8 +42,7 @@ class Table
       rows.push row
     rows
 
-
-  column: (key)->
+  column: (key)->   # TODO: can column() be defined as map pick
     index = @keys().indexOf key
     if index < 0
       throw new RangeError()
