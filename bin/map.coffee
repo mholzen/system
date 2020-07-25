@@ -1,9 +1,10 @@
 #!/usr/bin/env coffee
 
-map = require '../lib/map'
+mappers = require '../lib/mappers'
 searchers = require '../lib/searchers'
 {args} = require '../lib/mappers'
 {stream} = require '../lib/'
+{parse, map} = require '../streams/transformers'
 outputter = require '../lib/outputter'
 
 name = process.argv[2]
@@ -16,17 +17,14 @@ options.flat = true
 if name == 'tableString'  
   options.width = process.stdout.columns
 
-try
-  mapper = map name, options
-catch error
-  if error instanceof RangeError
-    console.error 'cannot find mapper ' + name
-    console.log error.toString()
-    console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
-  else
-    console.error error.stack
+if typeof mappers[name] != 'function'
+  console.error "cannot find mapper '#{name}"
+  console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
   process.exit()
-  
+
+mapper = mappers[name]
+
 stream process.stdin
-.through mapper
+.through parse()
+.through map mapper, options
 .through outputter process.stdout, process.stderr

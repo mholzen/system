@@ -27,8 +27,19 @@
   - store search results in temporary files to be able to access the content again
 
 # transform
-  - extract rows from html table to scrape from web page
+  - choose method to pass arugments
+      /object/param
+      /collect/map/param
+      /pick:param
+      /pick/param
+      /pick:first,last,address
+      /type/png
+      /type:png
+      /type/    ?== /type/default/
+    - consider .csv/map/pick/param/ because param has no default value
+  - transactions.csv/reduce/table/account-names/reduce/set
   - head/tail, for x milliseconds, for n items
+  - extract rows from html table to scrape from web page
   - order by last modified
   - order by most used
   - `get` use cat or curl or open depending on type

@@ -10,6 +10,10 @@ template = require './mappers/template'
 # Functions that take one value and return one value
 # Can be used in "obj.apply(f)" and "arr.map(f)"
 
+# TODO: some mappers are f=(data, options)
+# others are mapper constructors (append)
+
+
 mappers =
   append: (opts)->
     if typeof opts.value == 'undefined'

@@ -10,6 +10,9 @@
   string
 } = mappers
 
+beforeEach ->
+  log.debug '=== new test ==='
+
 describe 'mappers', ->
   it 'amount', ->
     expect(amount 1).eql 1

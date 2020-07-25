@@ -5,6 +5,13 @@ request = require './request'
 parse = require './parse'
 CSON = require 'cson'
 
+#
+# A generator is a function that returns an iterator, given zero or more arguments
+#
+# TODO: `traverse` is a generator and should be moved here
+# TODO: should `parse` return an iterator?
+
+
 keys = (x)->
   if stream.isStream x
     return x

@@ -1,21 +1,21 @@
-{stream, map, mappers} = require '../lib'
-beforeEach ->
-  log.debug '=== new test ==='
+{parse, map} = require '../../streams/transformers'    # units under tests
 
-describe 'map', ->
+describe 'transformers', ->
 
-  it 'mappers.get', ->
+  {stream, mappers} = require '../../lib'              # helpers (therefore depends on)
+
+  it 'map', ->
     p =
     stream ['{"a":1}\n{"a":2}']
-    .through map mappers.get.getter 'a'
+    .through parse()
     .collect().toPromise Promise
 
     p = await p
-    expect(p).eql [1,2]
+    expect(p).eql [{a:1}, {a:2}]
 
   it 'mappers.traverse', ->
     p = 
-    stream ["[1,2,3]"]
+    stream [1,2,3]
     .through map mappers.traverse, {flat: true}
     .collect().toPromise Promise
 
@@ -24,8 +24,8 @@ describe 'map', ->
 
   it 'get:string', ->
     p =
-    stream ['{"a":1}\n{"a":2}']
-    .through map 'get', 'a'
+    stream [{a:1}, {a:2}]
+    .through map mappers.get, 'a'
     .collect().toPromise Promise
 
     p = await p
