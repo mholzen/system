@@ -6,6 +6,7 @@
   escape
   get
   json
+  name
   pick
   string
 } = mappers
@@ -57,4 +58,18 @@ describe 'mappers', ->
   it 'string', ->
     expect(string 'a').eql 'a'
     expect(string a:1).eql '{"a":1}'
+
+  it 'name', ->
+    expect name 'John Doe'
+    .eql ['John', 'Doe']
+
+    expect name 'John'
+    .eql ['John']
+
+    expect name 'john.doe'
+    .eql ['John', 'Doe']
+
+  it.skip
+    expect name 'marc.von.holzen'
+    .eql ['Marc', 'von Holzen']
 
