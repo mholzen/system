@@ -69,7 +69,7 @@ describe 'mappers', ->
     expect name 'john.doe'
     .eql ['John', 'Doe']
 
-  it.skip
+  it.skip 'multiword last name', ->
     expect name 'marc.von.holzen'
     .eql ['Marc', 'von Holzen']
 
