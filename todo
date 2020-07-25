@@ -27,12 +27,23 @@
   - store search results in temporary files to be able to access the content again
 
 # transform
-  - choose method to pass arugments
-      /object/param
+  - choose method to pass arugments, or options
+    - use colon
+      collection/head:10/
+      resource/pick:param  (which incdentally is also resource/param)
+
+    - use hash mark #
+      - "collection/head#10/"
+
+      - seems we can use multiple # in an URL
+      - we use named arguments using colon
+        - "collection/map#flat:true/
+
       /collect/map/param
-      /pick:param
       /pick/param
       /pick:first,last,address
+      /pick#first
+
       /type/png
       /type:png
       /type/    ?== /type/default/

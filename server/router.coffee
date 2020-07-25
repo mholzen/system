@@ -155,13 +155,6 @@ class TreeRouter
 
       req.data = target
 
-types =
-  'css': 'text/css'
-  'jpg': 'image/jpeg'
-  'html': 'text/html'
-  'text': 'text/plain'
-  'png': 'image/png'
-
 root =
   generators: (req, res, router)->
     name = req.remainder.shift()
@@ -194,22 +187,7 @@ root =
       return res.status(404).send "'#{name}' not found in #{req.data}"
     req.data = req.data[name]
     
-  type: (req, res, router)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      return res.status(200).send Object.keys(types).sort()
-
-    if not (type = types[name])
-      return res.status(404).send "'#{name}' not found"
-
-    # # get data
-    # req.data = router.root
-    # await router.processPath req, res
-
-    # if not req.data?
-    #   return res.status(400).send 'no data'
-
-    res.type type
+  type: require './handlers/type'
 
   literals: (req, res)->
     if not (req.remainder?.length > 0)
@@ -218,7 +196,7 @@ root =
     req.data = req.remainder.shift()
     # log.debug 'literals handler', {data: req.data, remainder: req.remainder}
 
-  apply: (req, res, router)->
+  apply: (req, res)->
     name = req.remainder.shift()
     if not (name?.length > 0)
       req.data = Object.keys(mappers).sort()
@@ -248,7 +226,7 @@ root =
     args = [ req.data, {filename: req.filename} ] # TODO: how is the second argument defined?
     req.data = f.apply {}, args   
 
-  map: (req, res, router)->
+  map: (req, res)->
     name = req.remainder.shift()
     if not (name?.length > 0)
       req.data = Object.keys(mappers).sort()
@@ -303,7 +281,6 @@ root =
 
   reducers: reducers
 
-
   files: (req, res, router) ->
     path = req.remainder ? []
     log.debug 'files entry', {path}
@@ -328,6 +305,11 @@ router = ->
   treeRouter = new TreeRouter root
   r.use treeRouter.process.bind treeRouter
   r
+
+
+
+
+
 
 router.TreeRouter = TreeRouter
 router.root = root
