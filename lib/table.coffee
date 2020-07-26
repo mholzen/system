@@ -20,7 +20,11 @@ class Table
     @_keys = if datas?[0] instanceof Array then datas.shift() else null
     @datas = datas ? []
 
-  keys: ->
+  keys: (newKeys)->
+    log.debug 'table.keys', {newKeys}
+    if newKey?
+      @_keys = newKeys
+
     if @_keys
       return @_keys
 
