@@ -134,6 +134,9 @@ class TreeRouter
         log.debug 'no more paths. about to send response', {first, remainder: req.remainder}
         break
 
+      if isPromise req.data
+        req.data = await req.data
+
       target = =>
         if (typeof req.data == 'object') and (req.data.hasOwnProperty first)
           return req.data[first]
@@ -195,36 +198,6 @@ root =
 
     req.data = req.remainder.shift()
     # log.debug 'literals handler', {data: req.data, remainder: req.remainder}
-
-  apply: (req, res)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      req.data = Object.keys(mappers).sort()
-      return
-
-    if not (f = mappers[name])?
-      return res.status(404).send "'#{name}' not found"
-
-    if typeof f != 'function'
-      req.data = f
-      return
-
-    if not req.data?
-      return res.status(400).send 'no data'
-
-    # perhaps mapper can handle that?
-    if isPromise req.data
-      req.data = await req.data
-
-    # if req.data instanceof Buffer
-    #   req.data = req.data.toString()
-
-    if req.data instanceof Array
-      req.data = stream req.data
-
-    # log.debug 'apply f', {req_data: req.data, f:f}
-    args = [ req.data, {filename: req.filename} ] # TODO: how is the second argument defined?
-    req.data = f.apply {}, args   
 
   map: (req, res)->
     name = req.remainder.shift()
@@ -307,7 +280,7 @@ router = ->
   r
 
 
-
+root.apply = require './handlers/apply'
 
 
 

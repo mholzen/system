@@ -1,43 +1,22 @@
-# search
-  - interface for searchers
-    - file/network searcher is a stream
-    - in-memory data can be searched too
-      - why return a stream when we can return the entire object in memory
-    - an in-memory object is data, a Map, has entries
-    - a value of a map can be a searcher
-    - when a value is a stream, match stream could return a stream as the match.value
-
-    - query.match stream
-      - what if the data is a stream
-      - a match can be a stream
-
-  - how to express `search ... where ...`
-  - search within content (file or response)
-    - filter results from context queries (eg file = search context.source file "$@") to replace defining recursion level
-      - you care to filter results based on who generated them, not only what they contain (which could be faked)
-    - honer defaultPathQuery to avoid traversing directories (following references)
-  - search ^/<dir> should only search in that directory?
-  - order by custom order in .search.order in each directories
-  - search in . before other directories
-    - use inode map to avoid searching in . twice
-  - support case insensitive search
-  - interactively pick one of several if multiple
-  - order search results
-    - order files based on "relevance" (eg. a query "foo" should first return names matching query entirely: ["foo", "abcfoodef"])
-  - store search results in temporary files to be able to access the content again
-
 # transform
+  - apply accepts functions on req.data
+  - "collection/reduce/table/apply/keys#first,last"   ?
+  - "collection/reduce/table/keys#first,last"   ?
+
+
   - choose method to pass arugments, or options
+    - use hash mark #
+      - "collection/head#10/"
+      - "collection/reduce/table/keys#first,last"   ?
+      - seems we can use multiple # in an URL
+      - we use named arguments using colon
+        - "collection/map#flat:true/
+
     - use colon
       collection/head:10/
       resource/pick:param  (which incdentally is also resource/param)
 
-    - use hash mark #
-      - "collection/head#10/"
 
-      - seems we can use multiple # in an URL
-      - we use named arguments using colon
-        - "collection/map#flat:true/
 
       /collect/map/param
       /pick/param
@@ -74,3 +53,32 @@
   - replace .value with .match
   - build mapper to replace (.match, .path) with .value
   - integrate todo into software engineering process
+
+# search
+  - interface for searchers
+    - file/network searcher is a stream
+    - in-memory data can be searched too
+      - why return a stream when we can return the entire object in memory
+    - an in-memory object is data, a Map, has entries
+    - a value of a map can be a searcher
+    - when a value is a stream, match stream could return a stream as the match.value
+
+    - query.match stream
+      - what if the data is a stream
+      - a match can be a stream
+
+  - how to express `search ... where ...`
+  - search within content (file or response)
+    - filter results from context queries (eg file = search context.source file "$@") to replace defining recursion level
+      - you care to filter results based on who generated them, not only what they contain (which could be faked)
+    - honer defaultPathQuery to avoid traversing directories (following references)
+  - search ^/<dir> should only search in that directory?
+  - order by custom order in .search.order in each directories
+  - search in . before other directories
+    - use inode map to avoid searching in . twice
+  - support case insensitive search
+  - interactively pick one of several if multiple
+  - order search results
+    - order files based on "relevance" (eg. a query "foo" should first return names matching query entirely: ["foo", "abcfoodef"])
+  - store search results in temporary files to be able to access the content again
+
