@@ -1,11 +1,14 @@
 # transform
-  - apply accepts functions on req.data
-  - "collection/reduce/table/apply/keys#first,last"   ?
+
+  - "collection/reduce/table/keys,first,last"   ?
+  - "collection/reduce/table/apply/keys,first,last"   ?
   - "collection/reduce/table/keys#first,last"   ?
+  - collection/reduce/table#keys:first,last
 
 
   - choose method to pass arugments, or options
     - use hash mark #
+      - it has browser semantics
       - "collection/head#10/"
       - "collection/reduce/table/keys#first,last"   ?
       - seems we can use multiple # in an URL

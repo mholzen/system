@@ -47,7 +47,6 @@ class TreeRouter
 
   process: (req, res, next)->
     req.data = @root
-    # res.type = -> throw new Error()
     try
       await @processPath req, res, next
       if req.data? and (not res.headersSent)
@@ -145,12 +144,11 @@ class TreeRouter
 
       target = target()
       if not target
-        return res.status(400).send("cannot lookup '#{first}' in req.data of '#{log.print req.data}' nor in root")
+        return res.status(400).send("cannot find '#{first}' in req.data of '#{log.print req.data}' nor in root")
 
       if typeof target == 'function'
         log.debug 'calling handler', {name: first}
         await target req, res, @
-        # target req, res, @
         continue
 
       if typeof target != 'object'
