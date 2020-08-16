@@ -20,11 +20,15 @@ if name == 'tableString'
 if typeof mappers[name] != 'function'
   console.error "cannot find mapper '#{name}"
   console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
-  process.exit()
+  process.exit 1
 
 mapper = mappers[name]
 
 stream process.stdin
 .through parse()
 .through map mapper, options
+.errors (err)->
+  console.log err
+  process.exit 1
+  # TODO: any errors in outputter will not set the process exit code
 .through outputter process.stdout, process.stderr
