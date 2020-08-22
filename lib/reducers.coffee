@@ -1,5 +1,4 @@
 log = require '@vonholzen/log'
-marked = require 'marked'
 table = require './table'
 stream = require './stream'
 requireDir = require 'require-dir'
@@ -66,15 +65,6 @@ reducers =
         return memo + delimeter + value
     ]
 
-  html: (opts)->
-    input = ''
-    [
-      ''
-      (memo, value)->
-        input = input + '\n\n' + value
-      (v)-> marked v
-    ]
-
   object: (opts)->
     count = 0
     [
@@ -115,12 +105,5 @@ reducers =
         table.add value
         table
     ]
-
-# [
-#   'graph'
-#   'sum'
-#   'summarize'
-# ].forEach (r)->
-#   reducers[r] = require "./reducers/#{r}"
 
 module.exports = Object.assign reducers, requireDir './reducers'
