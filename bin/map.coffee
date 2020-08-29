@@ -20,7 +20,7 @@ if name == 'tableString'
 mapper = mappers name, options
 
 if not mapper?
-  console.error "cannot find mapper '#{name}"
+  console.error "cannot find mapper '#{name}'"
   console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
   process.exit 1
 
