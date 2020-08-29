@@ -17,12 +17,12 @@ options.flat = true
 if name == 'tableString'  
   options.width = process.stdout.columns
 
-if typeof mappers[name] != 'function'
+mapper = mappers name, options
+
+if not mapper?
   console.error "cannot find mapper '#{name}"
   console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
   process.exit 1
-
-mapper = mappers[name]
 
 stream process.stdin
 .through parse()

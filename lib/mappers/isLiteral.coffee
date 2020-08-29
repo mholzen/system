@@ -5,7 +5,10 @@ isLiteral = (data)->
   if isStream data
     return false
 
-  if typeof resources[Symbol.iterator] != 'function'
+  if ['string', 'number', 'boolean', 'symbol'].includes typeof data
+    return true
+
+  if typeof data[Symbol.iterator] != 'function'
     return false
 
   true

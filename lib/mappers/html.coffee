@@ -59,7 +59,6 @@ html = (value, options)->
     return value.toHtml()
 
   if value instanceof Buffer
-
     if options.filename.endsWith '.md'
       return marked value.toString()
 

@@ -1,6 +1,7 @@
 stream = require '../lib/stream'
 query = require '../lib/query'
 
+# TODO: move to /lib
 queries =
   keys:
     url:  /^(url|href)$/i
@@ -15,6 +16,7 @@ mappers =
 mappers.keys.url = (data)->
   mappers.keys data
   .filter (key)->queries.keys.url.test key
+# END
 
 a = url: 'http://ab.com/'
 b = URL: 'http://b.com'

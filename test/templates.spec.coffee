@@ -9,14 +9,14 @@ describe 'tempates', ->
       path = r[0].path.slice(0,2)
       expect(path).eql ['graph', 'template']
 
-      r = query(/DOCTYPE/).match mappers
+      r = query(/DOCTYPE/).match mappers.all
       expect(r).property(0).property('path').eql ['templates', 'graph', 'template', 2]
 
-      r = query('graph').match mappers
+      r = query('graph').match mappers.all
       expect(r).property(0).property('path').eql []   # matches graph mapper
       expect(r).property(1).property('path').eql ['templates']
 
-      r = query(['graph', /DOCTYPE/]).test mappers
+      r = query(['graph', /DOCTYPE/]).test mappers.all
       expect(r).true
 
   describe 'pug', ->

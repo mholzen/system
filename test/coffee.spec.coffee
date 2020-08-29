@@ -16,11 +16,11 @@ describe 'coffee', ()->
     # can be 0 or greater
     expect(c).above -1
 
-  foo = ->
-    throw new Error()
-    await 1
-
   it 'async functions that throw before await', (done)->
+    foo = ->
+      throw new Error()
+      await 1
+
     try
       r = foo()
       expect(r).instanceof Promise
@@ -31,6 +31,18 @@ describe 'coffee', ()->
       expect.fail()
     return # dont return a promise
 
+  it 'async functions that throw after await', ->
+    foo = ->
+      await 1
+      throw new Error 'foo'
+
+    try
+      await foo()       # await makes the test function async (i.e. returns a promise), which makes the resolution overspecified
+      expect.fail() 
+    catch e
+      # expect.fail() above will throw and get caught here, so you have to check that e is an exception of the right kind
+      expect(e.toString()).include 'foo'
+  
   it 'finally', ->
     count = 0
     f = ->

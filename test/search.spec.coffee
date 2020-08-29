@@ -29,7 +29,7 @@ describe 'searchIn', ->
     followDirectories = query type:'directory'
     files = inodes().entries()
     results = search.searchIn query(true), followDirectories, files, {content: mappers.content}
-    output = await results.map(mappers.get.getter('path')).collect().toPromise Promise
+    output = await results.map(mappers('get', 'path')).collect().toPromise Promise
     expect(output).length.above 10
 
   it 'follow:foo.json', ->

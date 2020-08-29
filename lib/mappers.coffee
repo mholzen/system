@@ -1,5 +1,7 @@
 log = require '@vonholzen/log'
 _ = require 'lodash'
+requireDir = require 'require-dir'
+{makeCreator} = require './creators'
 
 graph = require './reducers/graph'
 parse = require './parse'
@@ -12,7 +14,7 @@ template = require './mappers/template'
 
 # TODO: some mappers are f=(data, options)
 # others are mapper constructors (append)
-
+# Replace them with a create
 
 mappers =
   append: (opts)->
@@ -93,10 +95,14 @@ mappers =
   # TODO: 
   # tableString: table.tableString
 
-
-glob = require 'glob'
-path = require 'path'
-
-requireDir = require 'require-dir'
 mappers.templates = require './mappers/templates'
-module.exports = Object.assign mappers, requireDir './mappers'
+
+mappers = Object.assign mappers, requireDir './mappers'
+
+create = makeCreator mappers
+
+create.all = mappers
+
+omitNames = ['name', 'length']    # names that cannot be assigned to a function
+
+module.exports = Object.assign create, _.omit mappers, omitNames

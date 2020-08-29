@@ -4,7 +4,7 @@ isPromise = require 'is-promise'
 {isStream} = require './stream'
 
 isNode = (data)->
-  return true if ['string', 'number', 'function'].includes typeof data
+  return true if ['string', 'number', 'boolean', 'function'].includes typeof data
 
   return true if (isStream data) or (isPromise data)
 

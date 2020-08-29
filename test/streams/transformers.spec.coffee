@@ -14,18 +14,20 @@ describe 'transformers', ->
     expect(p).eql [{a:1}, {a:2}]
 
   it 'mappers.traverse', ->
+    mapper = mappers 'traverse'
     p = 
     stream [1,2,3]
-    .through map mappers.traverse, {flat: true}
+    .through map mapper, {flat: true}
     .collect().toPromise Promise
 
     p = await p
     expect(p).eql [1,2,3]
 
   it 'get:string', ->
+    mapper = mappers 'get', 'a'
     p =
     stream [{a:1}, {a:2}]
-    .through map mappers.get, 'a'
+    .through map mapper
     .collect().toPromise Promise
 
     p = await p

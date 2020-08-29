@@ -2,4 +2,4 @@
 {traverse} = require '../traverse'
 
 module.exports = (data, options)->
-  stream traverse data
+  stream traverse data, options

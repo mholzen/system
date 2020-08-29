@@ -11,10 +11,20 @@
   string
 } = mappers
 
+require './mappers/html.spec'
+require './mappers/isLiteral.spec'
+
 beforeEach ->
   log.debug '=== new test ==='
 
 describe 'mappers', ->
+  it 'is a function', ->
+    expect(mappers).a 'function'
+
+  it 'retrieves isLiteral', ->
+    f = mappers 'isLiteral'
+    expect(f).a 'function'
+
   it 'amount', ->
     expect(amount 1).eql 1
     expect(amount '1').eql 1
@@ -60,16 +70,16 @@ describe 'mappers', ->
     expect(string a:1).eql '{"a":1}'
 
   it 'name', ->
-    expect name 'John Doe'
+    mapper = mappers 'name'
+    expect mapper 'John Doe'
     .eql ['John', 'Doe']
 
-    expect name 'John'
+    expect mapper 'John'
     .eql ['John']
 
-    expect name 'john.doe'
+    expect mapper 'john.doe'
     .eql ['John', 'Doe']
 
   it.skip 'multiword last name', ->
     expect name 'marc.von.holzen'
     .eql ['Marc', 'von Holzen']
-
