@@ -1,4 +1,5 @@
 type = require '../../lib/mappers/type'
+log = require '../../lib/log'
 
 module.exports = (req, res, router)->
   name = req.remainder.shift()
@@ -8,4 +9,5 @@ module.exports = (req, res, router)->
   if not (header = type name, req)
     return res.status(404).send "'#{name}' not found"
 
+  log.debug 'setting type', {header}
   res.type header

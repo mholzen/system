@@ -54,12 +54,14 @@ form = (data)->
   (rows(data).join '') +
   '</table>'
 
-html = (value, options)->
-  if typeof value?.toHtml == 'function'
-    return value.toHtml()
+
+body = (value, options)->
+  if options?.res?.get('Content-Type') == 'image/png'
+    # TODO: extend to more image types
+    return '<img src="data:image/png;base64,' + value.toString('base64') + '">'
 
   if value instanceof Buffer
-    if options.filename.endsWith '.md'
+    if options?.req?.filename.endsWith '.md'
       return marked value.toString()
 
     # detect type
@@ -75,10 +77,18 @@ html = (value, options)->
   if typeof value == 'object'
     # value = "<p><pre>#{escapeHtml json(value, space:2)}</pre></p>"
     value = form value
+  return marked value
+
+html = (value, options)->
+  if typeof value?.toHtml == 'function'
+    return value.toHtml()
+
+  if typeof options?.res?.type == 'function'
+    options.res.type 'text/html'
 
   return '<!DOCTYPE html>
   <html>
-  <body>' + marked value
+  <body>' + body value, options
   + '</body>
   </html>'
 

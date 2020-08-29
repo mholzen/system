@@ -29,15 +29,17 @@ applyArgs = (f, options)->
   
   (data)-> f data, positional, options
 
+positionalWithOptions = mappers.args.positionalWithOptions
+
 map = (mapper, options)->
-  positional = args.positional options
-  mapper = applyArgs mapper, options
   (inputStream)->
     inputStream
     .map mapper
     .map (x)->
       if options?.flat and isStream x
         return x
+
+      # this probably lives in outputter
       stream resolve.deep x
     .parallel 10
 

@@ -110,9 +110,25 @@ describe 'server', ->
       expect response.text
       .includes '[{"name:"file1",'
 
+describe.skip 'post/put a redirect (301/302)', ->
+  it '', ->
+    r.post '/artifacts', '/files/test/artifacts'
+    r.get '/artifacts'
 
-describe 'post', ->
-  it.skip 'path with function (apply) takes one path argument (a template function)', ->
+describe.skip 'directory to index-page'
+
+describe 'image to html', ->
+  it 'works', ->
+    # should mappers.html handle requests?
+    # if so, mappers.html should realize the data is an image, and but the response type to html
+    # how would a mapper function affect the outgoing headers?
+    r.get '/files/test/artifacts/image.png/type/png/apply/html'
+    .then (response)->
+      expect response.text
+      .includes '<img'
+
+describe.skip 'post', ->
+  it 'path with function (apply) takes one path argument (a template function)', ->
     r.post '/mappers/pug/example', 'p a:#{a} b:#{b}'
     .expect 200
     .then (response)->

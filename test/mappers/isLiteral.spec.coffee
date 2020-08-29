@@ -6,4 +6,4 @@ describe 'isLiteral', ->
     .eql true
 
     expect isLiteral {}
-    .eql true
+    .eql false

@@ -1,6 +1,7 @@
 log = require '../../lib/log'
 mappers = require '../../lib/mappers'
 isPromise = require 'is-promise'
+args = require '../../lib/mappers/args'
 
 functions = (obj) ->
   properties = new Set()
@@ -12,32 +13,33 @@ functions = (obj) ->
 
   return [...properties.keys()].filter (item) -> typeof obj[item] == 'function'
 
-
-module.exports = (req, res)->
+handler = (req, res)->
 
   if not req.data?
     return res.status(400).send 'no data'
 
   data = if isPromise req.data then await req.data else req.data
 
-  name = req.remainder.shift()
+  part = req.remainder.shift()
+  [name, words...] = part.split ','
+
   if not (name?.length > 0)
     req.data =
       req_data: req.data
-      isTable: req.data instanceof Table
       'property': Object.getOwnPropertyNames data
       'req.data.functions': functions data
       'mappers': Object.keys mappers
     return
 
-  getFunction = (data)->
-    if typeof data[name] == 'function'
-      return data[name]
-    if typeof mappers[name] == 'function'
-      return mappers[name]
+  options = args words
 
-  if not (f = getFunction req.data)
-    return res.status(404).send "'#{name}' not found"
+  # add request and response to the context for this handler
+  options.req = req
+  options.res = res
+
+  f = mappers name, options
+  if not f?
+    return res.type('text/plain').status(404).send "function '#{name}' not found"
 
   if typeof f != 'function'
     req.data = f
@@ -47,8 +49,17 @@ module.exports = (req, res)->
   if isPromise req.data
     req.data = await req.data
 
-  options = {filename: req.filename}
-  args = [ req.data, options ]
+  positional = args.positional options
+  getArgs = ->
+    if not positional?
+      return [ options ]
+    if positional instanceof Array
+      return [ positional..., options ]
+    [ positional, options ]
 
-  # log.debug 'apply f', {data: req.data, f:f, options}
-  req.data = f.apply req.data, args
+  applyArgs = [ req.data ].concat getArgs()
+  # log.debug 'apply', {applyArgs}   # TODO: this takes 12 seconds (because of circular references?)
+
+  req.data = f.apply req.data, applyArgs
+
+module.exports = handler

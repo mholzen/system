@@ -37,4 +37,15 @@ args.positional = (data)->
     return null
   r.filter (x)->x?
 
+args.positionalWithOptions = (words)->
+  options = args words
+  positional = args.positional words
+  if not positional?
+    return [ options ]
+
+  if positional instanceof Array
+    return [ positional..., options ]
+
+  return [ positional, options ]
+
 module.exports = args
