@@ -24,7 +24,7 @@ class Server
             log.debug 'rewrite.post', {url: req.url}
         next()
 
-    @app.use router()
+    @app.use router options
 
   listen: (cb) ->
     # turn to promise

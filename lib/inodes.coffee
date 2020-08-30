@@ -168,8 +168,8 @@ class Path
     @remainder = null
 
   setPath: (path)->
-    @path = path
     if typeof path == 'string'
+      @path = path
       @segments = path.split '/'   # TODO: must ignore multiple consecutive /
 
       if path.startsWith '/'
@@ -178,6 +178,7 @@ class Path
       return
 
     if path instanceof Array
+      @path = path.join path
       @segments = path
       return
 
@@ -185,9 +186,10 @@ class Path
 
   setRoot: (root)->
     if typeof root == 'string'
-      if @path.startsWith '/'
+      if @path?.startsWith '/'
         throw new Error 'root overspecified'
       @root = root
+      return
     # if root instanceof Stat
     #   @root = root
     #   return

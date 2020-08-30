@@ -129,9 +129,19 @@ describe 'inodes', ->
         expect(err).instanceof Error
 
   describe 'Path', ->
-    it 'root', ->
+    it 'absolute', ->
       path = new inodes.Path '/tmp/foobar'
       expect(path.root.path, '/')
+
+    it 'relative with root', ->
+      path = new inodes.Path 'foobar', 'tmp'
+      expect(path.root.path, '/tmp')
+      #TODO: test path
+
+    it 'empty array with root', ->
+      path = new inodes.Path [], 'tmp'
+      expect(path.root.path, '/tmp')
+      #TODO: test path
 
     it 'no root', ->
       path = new inodes.Path 'foo'

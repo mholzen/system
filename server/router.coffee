@@ -36,13 +36,13 @@ get = (data, path, context)->
 
 
 class TreeRouter
-  constructor: (root)->
+  constructor: (root, options)->
     if not root?
       throw new Error 'missing root data'
     @root = root
-    log.debug {root}
-    # @rootInode = inodes()
-    # throw new Error ('here')
+    @options = options
+    log.debug 'new TreeRouter', {root, options}
+
     @regexp = new RegExp '/*([^/]*)(.*)'
 
   process: (req, res, next)->
@@ -187,8 +187,6 @@ root =
     if not name in req.data
       return res.status(404).send "'#{name}' not found in #{req.data}"
     req.data = req.data[name]
-    
-  type: require './handlers/type'
 
   literals: (req, res)->
     if not (req.remainder?.length > 0)
@@ -252,35 +250,13 @@ root =
 
   reducers: reducers
 
-  files: (req, res, router) ->
-    path = req.remainder ? []
-    log.debug 'files entry', {path}
-    try
-      inodePath = new inodes.Path path
-      await inodePath
-    catch err
-      if err.toString().includes 'ENOENT'
-        log.debug 'ENOENT', {path}
-        # path should equal the remainder
-      else
-        throw err
-
-    req.remainder = inodePath.remainder    # path contains un-matching remaining elements
-    req.data = content inodePath.path, parse: false
-    req.filename = inodePath.path          # TODO: consider a scoped or different name?
-
-    log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
-
-router = ->
+router = (options)->
   r = new express.Router()
-  treeRouter = new TreeRouter root
+  treeRouter = new TreeRouter root, options
   r.use treeRouter.process.bind treeRouter
   r
 
-
-root.apply = require './handlers/apply'
-
-
+root = Object.assign root, require './handlers'
 
 router.TreeRouter = TreeRouter
 router.root = root
