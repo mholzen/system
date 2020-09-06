@@ -32,4 +32,8 @@ mapper = (data, options)->
 mapper.post = (resource, data, options)->
   mapper[resource] = template data, options
 
+mapper.create = (options)->
+  source = options?.template
+  template source
+
 module.exports = mapper
