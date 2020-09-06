@@ -13,7 +13,7 @@ handler = (req, res, router) ->
   catch err
     if err.toString().includes 'ENOENT'
       log.debug 'ENOENT', {path}
-      # path should equal the remainder
+      # path should contain the remainder
     else
       throw err
 

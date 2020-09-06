@@ -2,6 +2,7 @@ log = require '../../lib/log'
 mappers = require '../../lib/mappers'
 isPromise = require 'is-promise'
 args = require '../../lib/mappers/args'
+path = require 'path'
 
 functions = (obj) ->
   properties = new Set()
@@ -37,7 +38,18 @@ handler = (req, res)->
   options.req = req
   options.res = res
 
-  f = mappers name, options
+  getFunction = ->
+    # if the request has a filename
+    if req.filename?
+      # if the name refers to a file in the directory of the resource
+      source = path.join(path.dirname req.filename, name)
+
+      # if inodes(source) and (f = compile(source))
+      #   return f
+
+    mappers name, options
+
+  f = getFunction()
   if not f?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
 
