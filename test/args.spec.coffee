@@ -14,6 +14,9 @@ describe 'args', ->
     expect args [{a:1}]
     .eql {'0':{a:1}}
 
+    expect args '1,2,a:1'
+    .eql {0:1, 1:2, a:1}
+
     expect args.positional args ['a:1', 'b:b']
     .eql null
 

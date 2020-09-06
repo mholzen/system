@@ -3,6 +3,9 @@ log = require '../log'
 {parseValue} = require '../parse'
 
 args = (data)->
+  if typeof data == 'string'
+    data = data.split ','
+
   if not (data instanceof Array)
     throw new Error "expecting array"
 
