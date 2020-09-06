@@ -1,6 +1,6 @@
 compile = require '../../../lib/mappers/compile'
 
-describe.only 'compile', ->
+describe 'compile', ->
   it 'javascript', ->
     f = compile '1', language: 'javascript'
     expect(f).a 'function'

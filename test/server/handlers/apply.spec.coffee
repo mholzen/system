@@ -3,7 +3,7 @@ request = require 'supertest'
 
 r = null
 
-describe.only 'servers/handlers/apply', ->
+describe 'servers/handlers/apply', ->
   before ->
     s = new server.Server()
     r = request s.app
