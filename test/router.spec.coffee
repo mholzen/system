@@ -16,6 +16,28 @@ describe 'router', ->
     f 'abc', 'abc', ''
     f '', '', ''
 
+  describe 'arguments', ->
+    it 'arrays', ->
+      r = new router.TreeRouter()
+      req =
+        path: '/literals/a,b,c'
+      res =
+        status: ->
+          send: ->
+            throw new Error arguments...
+      r.processPath req, res
+      .then (response)->
+        expect req.data
+        .eql ['a','b','c']
+
+  describe.skip 'parens', ->
+    it 'works', ->
+      request.get '/literals/(/literals/1)', ->
+      .then (response)->
+        expect response.text
+        .eql 1
+
+
 describe 'get', ->
   context =
     a: 1

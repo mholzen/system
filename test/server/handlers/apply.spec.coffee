@@ -26,7 +26,7 @@ describe 'servers/handlers/apply', ->
 
   describe.skip 'apply uses a custom template', ->
     it 'can use mappers defined in that directory', ->
-      r.get '/files/test/artifacts/dict.json/apply/.table.pug'
+      r.get '/files/test/artifacts/dict.json/apply/pug,template:/files/test/artifacts/table.pug'
       .then (response)->
         expect response.text
         .includes '<table'

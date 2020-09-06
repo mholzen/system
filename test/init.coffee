@@ -5,7 +5,7 @@ global.expect = chai.expect
 
 global.exec = require '../lib/exec'
 
-global.log = require '@vonholzen/log'
+global.log = require '../lib/log'
 
 global._ = require 'lodash'
 

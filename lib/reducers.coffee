@@ -24,7 +24,7 @@ reducers =
   count: -> [
     0,
     (memo, value)->
-      log 'count', {memo, value}
+      log.debug 'count', {memo, value}
       if value?
         memo = memo + 1
       memo

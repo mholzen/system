@@ -1,6 +1,8 @@
 server = require '../server/'
 request = require 'supertest'
 
+require './router.spec'
+
 r = null
 
 describe 'server', ->

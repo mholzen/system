@@ -1,5 +1,5 @@
 express = require 'express'
-log = require '@vonholzen/log'
+log = require '../lib/log'
 _ = require 'lodash'
 isPromise = require 'is-promise'
 
@@ -14,7 +14,6 @@ id = (obj)->
   if typeof obj.path == 'string'
     return obj.path
   obj
-
 
 get = (data, path, context)->
   if not (path?.length > 0)
@@ -35,13 +34,18 @@ get = (data, path, context)->
   return resource
 
 
+root =
+  mappers: mappers
+
+  reducers: reducers
+
+root = Object.assign root, require './handlers'
+
 class TreeRouter
-  constructor: (root, options)->
-    if not root?
-      throw new Error 'missing root data'
-    @root = root
+  constructor: (aRoot, options)->
+    @root = aRoot ? root
     @options = options
-    log.debug 'new TreeRouter', {root, options}
+    log.debug 'new TreeRouter', {root: @root, options: @options}
 
     @regexp = new RegExp '/*([^/]*)(.*)'
 
@@ -156,107 +160,11 @@ class TreeRouter
 
       req.data = target
 
-root =
-  generators: (req, res, router)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      req.data = Object.keys(generators).sort()
-      return
-
-    if not (generator = generators[name])
-      return res.status(404).send "'#{name}' not found"
-
-    if not req.data?
-      return res.status(400).send 'no data'
-
-    if isPromise req.data
-      req.data = await req.data
-
-    if req.data instanceof Buffer
-      req.data = req.data.toString()
-
-    req.data = generator req.data, {req}
-    log.debug 'generator', {output: req.data, name: req.name}
-    req.data
-
-  searchers: (req, res, router)->
-    name = req.remainder.shift()
-    req.data = searchers()
-    if not name?  
-      return
-    if not name in req.data
-      return res.status(404).send "'#{name}' not found in #{req.data}"
-    req.data = req.data[name]
-
-  literals: (req, res)->
-    if not (req.remainder?.length > 0)
-      throw new Error "no items in req.remainder"
-
-    req.data = req.remainder.shift()
-    # log.debug 'literals handler', {data: req.data, remainder: req.remainder}
-
-  map: (req, res)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      req.data = Object.keys(mappers).sort()
-      return
-
-    if not (f = mappers[name])?
-      return res.status(404).send "'#{name}' not found"
-
-    if typeof f != 'function'
-      req.data = f
-      return
-
-    if not req.data?
-      return res.status(400).send 'no data'
-
-    # perhaps mapper can handle that?
-    if isPromise req.data
-      req.data = await req.data
-
-    if req.data instanceof Buffer
-      req.data = req.data.toString()
-
-    if req.data instanceof Array
-      req.data = stream req.data
-
-    # log.debug 'apply f', {req_data: req.data, f:f}
-    req.data = req.data.map (v)->
-      f v, {filename: req.filename} # TODO: how is the second argument defined?
-
-  reduce: (req, res, router)->
-    name = req.remainder.shift()
-    if not (name?.length > 0)
-      req.data = Object.keys(reducers).sort()
-      return
-
-    if not (reducer = reducers[name])
-      return res.status(404).send "'#{name}' not found"
-
-    if not req.data?
-      return res.status(400).send 'no data'
-
-    # perhaps mapper can handle that?
-    if isPromise req.data
-      req.data = await req.data
-
-    if req.data instanceof Buffer
-      req.data = req.data.toString()
-
-    req.data = reducers.reduce req.data, name
-
-  mappers: mappers
-
-  reducers: reducers
-
 router = (options)->
   r = new express.Router()
   treeRouter = new TreeRouter root, options
   r.use treeRouter.process.bind treeRouter
   r
-
-root = Object.assign root, require './handlers'
 
 router.TreeRouter = TreeRouter
 router.root = root
