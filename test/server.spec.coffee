@@ -1,7 +1,9 @@
 server = require '../server/'
 request = require 'supertest'
+requireDir = require 'require-dir'
 
 require './router.spec'
+requireDir './server/handlers'
 
 r = null
 

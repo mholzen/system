@@ -121,7 +121,9 @@ class TreeRouter
         res.status 200
         req.data = @root
         return
-      req.remainder = req.path.substr(1).split '/'
+
+      decodedPath = decodeURI req.path
+      req.remainder = decodedPath.substr(1).split '/'
 
     log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0

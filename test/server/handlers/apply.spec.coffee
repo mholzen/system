@@ -24,14 +24,16 @@ describe 'servers/handlers/apply', ->
       expect response.text
       .includes '<table'
 
-  describe.skip 'apply uses a custom template', ->
-    it 'can use mappers defined in that directory', ->
-      r.get '/files/test/artifacts/dict.json/apply/pug,template:/files/test/artifacts/table.pug'
-      .then (response)->
-        expect response.text
-        .includes '<table'
+  describe 'apply uses a custom template', ->
+    it 'use template data as option', ->
+      #r.get encodeURI '/literals/a:1/apply/args/apply/pug,template:p %23{a}'
+      r.get encodeURI '/literals/a:1/apply/args/apply/pug,template:p'
+      .then (res)->
+        expect res.text
+        # .eql '<p>1</p>'
+        .eql '<p></p>'
 
-    it 'use mappers defined in that directory', ->
+    it.skip 'use mappers defined in that directory', ->
       r.get '/files/test/artifacts/dict.json/apply/.table.pug'
       .then (response)->
         expect response.text
