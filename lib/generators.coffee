@@ -4,6 +4,8 @@ isIterable = require './mappers/isIterable'
 request = require './request'
 parse = require './parse'
 CSON = require 'cson'
+{makeCreator} = require './creators'
+requireDir = require 'require-dir'
 
 #
 # A generator is a function that returns an iterator, given zero or more arguments
@@ -78,7 +80,7 @@ json = (data, opts)->
 array = (data, opts)->
   Array.from data
 
-module.exports = {
+generators = {
   keys
   items
   lines
@@ -87,3 +89,9 @@ module.exports = {
   array
   tests: require './generators/tests'
 }
+generators = Object.assign generators, requireDir './generators'
+
+fromName = makeCreator generators
+
+
+module.exports = fromName

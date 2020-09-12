@@ -6,21 +6,20 @@
 # transformers   f(s) -> s
 #
 # where
-#   l is a literal
-#   s is a stream
+#   l is a literal; synchronous delivery
+#   s is a stream; stream here implies async delivery; the stream may have many, 1 or 0 element
 
 # Handlers
 
-# apply   (mappers, literal)->literal
-# map     (mappers, stream)->stream
+# apply   (mapper, literal)->literal
+# map     (mapper, stream)->stream
 
-# generate (generators, literal) -> stream
-# flatmap  (generators, stream) -> stream
+# generate (generator, literal) -> stream
+# flatmap  (generator, stream) -> stream
 
-# reduce  (reducers, stream) -> stream
+# reduce  (reducer, stream) -> literal
 
-# generate  (transformers, literal)->stream
-# transform (transformers, stream)->stream
+# transform (transformer, stream) -> stream
 
 # Note: reducing a literal doesn't really make sense
 

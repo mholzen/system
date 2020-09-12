@@ -76,7 +76,7 @@ content = (data, options)->
 
   if data?.path?
     if data.path instanceof Array
-      return get options?.root, data.path
+      return get options?.root, data.path # returns a promise
 
     if data?.type == 'directory'
       return inodes(data.path).entries()

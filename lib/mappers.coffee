@@ -1,5 +1,4 @@
-log = require '@vonholzen/log'
-_ = require 'lodash'
+log = require './log'
 requireDir = require 'require-dir'
 {makeCreator} = require './creators'
 
@@ -99,10 +98,4 @@ mappers.templates = require './mappers/templates'
 
 mappers = Object.assign mappers, requireDir './mappers'
 
-create = makeCreator mappers
-
-create.all = mappers
-
-omitNames = ['name', 'length']    # names that cannot be assigned to a function
-
-module.exports = Object.assign create, _.omit mappers, omitNames
+module.exports = makeCreator mappers

@@ -10,7 +10,7 @@ module.exports = (req, res, router)->
     req.data = Object.keys(generators).sort()
     return
 
-  if not (generator = generators[name])
+  if not (generator = generators name)
     return res.status(404).send "'#{name}' not found"
 
   if not req.data?

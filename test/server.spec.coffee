@@ -3,6 +3,7 @@ request = require 'supertest'
 requireDir = require 'require-dir'
 
 require './router.spec'
+require './generators.spec'
 requireDir './server/handlers'
 
 r = null
