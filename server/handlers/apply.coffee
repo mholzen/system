@@ -34,6 +34,10 @@ handler = (req, res)->
 
   options = args words
 
+  # if any options require an filesystem, resolve these now
+  if options?.file? and req?.inode?
+    req.inode.content options.file
+
   # add request and response to the context for this handler
   options.req = req
   options.res = res

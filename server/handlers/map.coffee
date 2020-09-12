@@ -11,7 +11,7 @@ module.exports = (req, res, router)->
     req.data = Object.keys(mappers).sort()
     return
 
-  if not (f = mappers[name])?
+  if not (f = mappers name)?
     return res.status(404).send "'#{name}' not found"
 
   if typeof f != 'function'

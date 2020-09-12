@@ -72,14 +72,14 @@ describe 'mappers', ->
   it 'name', ->
     mapper = mappers 'name'
     expect mapper 'John Doe'
-    .eql ['John', 'Doe']
+    .eql {first: 'John', last: 'Doe'}
 
     expect mapper 'John'
-    .eql ['John']
+    .eql {first: 'John'}
 
     expect mapper 'john.doe'
-    .eql ['John', 'Doe']
+    .eql {first: 'John', last: 'Doe'}
 
   it.skip 'multiword last name', ->
     expect name 'marc.von.holzen'
-    .eql ['Marc', 'von Holzen']
+    .eql {first: 'Marc', last:'von Holzen'}

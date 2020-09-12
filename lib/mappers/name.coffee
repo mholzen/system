@@ -2,8 +2,6 @@ query = require '../query'
 path = require 'path'
 log = require '../log'
 
-
-
 capitalize = (string)->
   string.charAt(0).toUpperCase() + string.slice(1)
 
@@ -14,10 +12,9 @@ module.exports = (data)->
     match = data.match nameRe
     if match?
       log.debug {match}
-      res = [ match[1]]
+      res = first: capitalize match[1]
       if match[2]?.length > 0
-        res.push match[2]
-      res = res.map capitalize
+        res.last = capitalize match[2], a:'lastName'
       return res
 
   matches = query('name').match data

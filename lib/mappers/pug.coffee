@@ -2,38 +2,28 @@ log = require '../log'
 pug = require 'pug'
 compile = pug.compile
 
-template = (source, options)->
-  if typeof source == 'function'
-    return source
+toTemplate = (data, options)->
+  if typeof data == 'function'
+    return data
 
-  if typeof source == 'string'
-    log.debug 'compiling template from', {source}
-    return compile source, options
+  if typeof data == 'string'
+    log.debug 'compiling template from', {data}
+    return compile data, options
 
-  if typeof source == 'object'
-    if source instanceof Buffer
-      return compile source.toString(), options
-
-    if source instanceof Array
-      throw new Error "cannot create template from array"
-
-    log.debug 'here', {source}
-
-    # now async
-    return compile content source
-
-  throw new Error "cannot determine template from #{source}"
+  if typeof data == 'object'
+    if data instanceof Buffer
+      return compile data.toString(), options
 
 mapper = (data, options)->
-  source = options?.template
-  f = template source
-  f data
+  template = toTemplate options?.template
+  if not template
+    return pug.compile "code " + JSON.stringify data
+  template data
 
 mapper.post = (resource, data, options)->
-  mapper[resource] = template data, options
+  mapper[resource] = toTemplate data, options
 
 mapper.create = (options)->
-  source = options?.template
-  template source
+  toTemplate options?.template
 
 module.exports = mapper
