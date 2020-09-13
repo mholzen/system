@@ -19,23 +19,37 @@ class ComparableSet extends Set
 
 class SimpleGraph
   constructor: (from)->
-    @nodes = new ComparableSet()
-    @edges = new ComparableSet()
+    @_nodes = new ComparableSet()
+    @_edges = new ComparableSet()
+
+  nodes: ->
+    (node for node from @_nodes.values())
+
+  nodeList: ->
+    Array.from @_nodes.values(), (node, i)->
+      {id: i, value: node, label: node?.first}
+
+  edges: ->
+    for link from @_edges.values()
+      # TODO: used findIndex
+      from = nodes.indexOf link.from
+      to = nodes.indexOf link.to
+      {from, to}
 
   add: (s,p,o)->
     if not o?
       o = p
       p = undefined
 
-    @nodes.add s
+    @_nodes.add s
     if o?
-      @nodes.add o
-      @edges.add {from: s, to: o}
+      @_nodes.add o
+      @_edges.add {from: s, to: o}
 
   toJSON: ->
-    nodes = (node for node from @nodes.values())
+    nodes = (node for node from @_nodes.values())
     nodes: nodes
-    edges: for link from @edges.values()
+    edges: for link from @_edges.values()
       # TODO: used findIndex
       from = nodes.indexOf link.from
       to = nodes.indexOf link.to

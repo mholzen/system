@@ -8,6 +8,7 @@ types =
   'text': 'text/plain'
   'png': 'image/png'
   'csv': 'text/csv'
+  'json': 'application/json'
 
 type = (data, context)->
   if types[data]?

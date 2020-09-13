@@ -2,7 +2,8 @@ log = require '../../lib/log'
 mappers = require '../../lib/mappers'
 isPromise = require 'is-promise'
 args = require '../../lib/mappers/args'
-path = require 'path'
+Path = require 'path'
+{content} = require '../../lib/mappers'
 
 functions = (obj) ->
   properties = new Set()
@@ -34,9 +35,19 @@ handler = (req, res)->
 
   options = args words
 
+  resolvePathOption = (options, name)->
+    path = options?[name]?.path
+    if path? and req?.dirname?
+      log.debug 'resolvePathOption', {dirname: req.dirname, path, options}
+      promise = content {path: Path.join req.dirname, path}, parse:'string'
+      options[name] = await promise
+      log.debug 'resolvePathOption content retrieved', {options}
+      return options
+    else
+      return new Promise (resolve)-> resolve options
+
   # if any options require an filesystem, resolve these now
-  if options?.file? and req?.inode?
-    req.inode.content options.file
+  options = await resolvePathOption options, 'template'
 
   # add request and response to the context for this handler
   options.req = req
@@ -46,7 +57,7 @@ handler = (req, res)->
     # if the request has a filename
     if req.filename?
       # if the name refers to a file in the directory of the resource
-      source = path.join(path.dirname req.filename, name)
+      source = Path.join(Path.dirname req.filename, name)
 
       # if inodes(source) and (f = compile(source))
       #   return f
@@ -74,7 +85,7 @@ handler = (req, res)->
     [ positional, options ]
 
   applyArgs = [ req.data ].concat getArgs()
-  # log.debug 'apply', {applyArgs}   # TODO: this takes 12 seconds (because of circular references?)
+  # log.debug 'apply', {applyArgs}   # TODO: this takes 12s during tests (because of circular references?)
 
   req.data = f.apply req.data, applyArgs
 

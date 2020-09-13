@@ -84,6 +84,8 @@ content = (data, options)->
     return fileContent(data.path).then (content)->
       if options?.parse == false
         return content
+      if options?.parse == 'string'
+        return content.toString()
       if content instanceof Buffer
         return parse content.toString()
       content

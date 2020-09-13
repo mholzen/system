@@ -1,6 +1,8 @@
 server = require '../../../server/'
 request = require 'supertest'
 
+require '../../stream.spec'    # test dependencies
+
 r = null
 
 describe 'servers/handlers/apply', ->
@@ -33,11 +35,13 @@ describe 'servers/handlers/apply', ->
         # .eql '<p>1</p>'
         .eql '<p></p>'
 
-    it.skip 'use mappers defined in that directory', ->
-      r.get '/files/test/artifacts/dict.json/apply/.table.pug'
+    it 'use mappers defined in that directory', ->
+      r.get '/files/test/artifacts/dict.json/generators/parse/apply/pug,template:path:table.pug'
       .then (response)->
         expect response.text
-        .includes '<table'
+        .includes '<table>'
+        .includes '<td>1</td>'
+        .includes '<td>2</td>'
 
     it 'image to html', ->
       r.get '/files/test/artifacts/image.jpg/apply/html'

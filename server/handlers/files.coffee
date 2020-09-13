@@ -3,6 +3,7 @@
   mappers: {content}
   log
 } = require '../../lib'
+{dirname} = require 'path'
 
 handler = (req, res, router) ->
   path = req.remainder ? []
@@ -20,6 +21,7 @@ handler = (req, res, router) ->
   req.remainder = inodePath.remainder    # path contains un-matching remaining elements
   req.data = content inodePath.path, parse: false
   req.filename = inodePath.path          # TODO: consider a scoped or different name?
+  req.dirname = dirname inodePath.path
 
   log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 

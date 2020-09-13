@@ -34,11 +34,7 @@ describe 'args', ->
     expect args ['a:b:1']
     .eql a: b: 1
 
-  describe.skip 'interpet filenames', ->
-    it 'two levels with .', ->
-      expect args ['a.b:1']
+  describe 'interpet filenames', ->
+    it.skip 'two levels with .', ->
+      expect args ['a.b:1']   # 'a:b:1' works too
       .eql a: b: 1
-
-    it 'known predicate', ->
-      expect args ['template.file:artifacts/template.pug']
-      .property('template').property('content').a Stream

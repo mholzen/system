@@ -93,14 +93,9 @@ function render(graph) {
     node.attr("transform", function(d){return "translate("+d.x+","+d.y+")"});
   });
 }
-var graph = '{{graph}}';
-function empty(s) { return s.length == 0; }   // TODO: extract
-if (!empty(graph)) {
-  render(JSON.parse(graph));
-}
-
-d3.json("/{{uri}}", function(error, graph) {
-  if (error) console.error(error);
-  render(graph);
-});
+var graph = {
+  nodes: ${JSON.stringify(graph.nodeList())},
+  links: ${JSON.stringify(graph.edges())}
+};
+render(graph);
 </script>

@@ -1,40 +1,23 @@
 log = require '../log'
 query = require '../query'
 args = require './args'
+es6template = require 'es6-template-strings'
 
 class Template
   constructor: (template)->
     @template = template ? ''
-    @expression = /#{(.*?)}/g
-
-  expressions: ->
-    @template.match @expression
 
   substitute: (data)->
-    result = @template
-
-    if not (data instanceof Array)
-      data = [ data ]
-    for d in data
-      for key, value of d
-        result = result.replace '#{'+key+'}', value
-    result
+    log.debug 'Template.substitute', {data}
+    return es6template @template, data
 
 template = (data, options)->
-    if options instanceof Array
-      if typeof options?[0] == 'string'
-        options =
-          template: options[0]
-    if typeof options == 'string'
-      options =
-        template: options
+  t = new Template options?.template
+  t.substitute data
 
-    pattern = options.template ? ''
-
-    result = pattern
-    for key, value of data
-      result = result.replace '#{'+key+'}', value
-    result
+template.create = (options)->
+  t = new Template options?.template
+  (data)-> t.substitute data
 
 template.Template = Template
 

@@ -25,7 +25,10 @@ args = (data)->
       if elements[1].length == 0
         elements[1] = ':'
 
-    _.set result, elements[..-2], parseValue elements[elements.length-1]
+    path = elements[..-2]
+    value = parseValue elements[elements.length-1]
+    # log.debug 'args adding', {path, value}
+    _.set result, path, value
 
   result
 
