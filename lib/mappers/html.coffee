@@ -77,6 +77,8 @@ body = (value, options)->
   if typeof value == 'object'
     # value = "<p><pre>#{escapeHtml json(value, space:2)}</pre></p>"
     value = form value
+
+  # from Markdown to HTML
   return marked value
 
 html = (value, options)->

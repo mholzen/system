@@ -2,7 +2,7 @@ _ = require 'lodash'
 log = require '../log'
 
 module.exports = (value, options)->
-  options.name = options.name ? options[0]
+  options.name = options?.name ? options[0]
   if typeof options.name != 'string'
     throw new Error 'cannot find name for augment'
 
