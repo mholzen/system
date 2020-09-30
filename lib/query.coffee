@@ -41,7 +41,7 @@ class Query
         throw new Error "unknown query type #{typeof query}"
 
   constructor: (query, options)->
-    log 'query.constructor', {query, options}
+    log.debug 'query.constructor', {query, options}
 
     @options = options ? {}
 
@@ -264,7 +264,7 @@ class Query
   test: (data)->
     return true if @query == null
     match = @match data
-    log 'query', {match}
+    log.debug 'query', {match}
     if isPromise match
       return match.then (x) -> not (x == null or x[0] == null)
     if isStream match
@@ -274,9 +274,9 @@ class Query
     true
 
   match: (data, options)->
-    log 'query.match', {query: @query, data}
+    log.debug 'query.match', {query: @query, data}
     r = @matchReturnsArray data, options
-    log 'query.match returns', {r}
+    log.debug 'query.match returns', {r}
 
     if not r?
       return null
@@ -420,11 +420,11 @@ class Query
 
         unmetMatches.searchIn item, {output: subResults}
       catch error
-        log 'query.search error', {error, e: error instanceof Error }
+        log.debug 'query.search error', {error, e: error instanceof Error }
         throw error
 
     .done ->
-      log 'query.search done'
+      log.debug 'query.search done'
       output.end()
       resultStreams.end()
 
@@ -478,7 +478,7 @@ query.fromArgs = ->
         arg = {}
         arg[key] = new RegExp value, 'i'
         terms.push arg
-  log 'query.fromArgs', {terms}
+  log.debug 'query.fromArgs', {terms}
   new Query terms, options
 
 module.exports = query

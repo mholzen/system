@@ -1,12 +1,17 @@
-log = require '@vonholzen/log'
+log = require '../log'
+name = require './name'
 
 image = (value)->
   if value instanceof Array
     # need to know the context?
-    return value
+    return
 
-  value.image = "/files/data/images/#{value.name}"
-  value.shape = 'circularImage'
-  value
+  if typeof value != 'object'
+    return
+
+  if (n = name value)?
+    return
+      image: "/files/data/images/#{log.print n}"
+      shape: 'circularImage'
 
 module.exports = image

@@ -17,7 +17,11 @@ type = (data, context)->
   if typeof data == 'object'
     if data.filename?
       extension = path.extname data.filename
+      if extension?
+        extension = extension.slice(1)
+      log.debug {extension}
       if extension of types
+        log.debug 'returning', {type: types[extension]}
         return types[extension]
 
 type.types = types

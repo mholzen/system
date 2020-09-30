@@ -30,7 +30,7 @@ parse = (value, context)->
 
     d = delimiter value
     if d?
-      log 'parse', {delimter: d, value}
+      log.debug 'parse', {delimter: d, value}
       if d == ','
         columns = context?.columns ? null
         rows = csvParse value, columns: columns
@@ -38,11 +38,11 @@ parse = (value, context)->
 
       return value.split d
 
-    log 'parse', {value}
+    log.debug 'parse', {value}
     return value
 
   if value instanceof Readable
-    log 'parse readable'
+    log.debug 'parse readable'
     return stream value
       .split()
       .filter (line) -> line.length > 0
@@ -59,7 +59,7 @@ class Parser
     if @first
       @first = false
       first = parse value
-      log 'parse first', first
+      log.debug 'parse first', first
       if first[0] == 'Date'
         @headers = first
         return

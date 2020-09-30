@@ -1,6 +1,6 @@
 log = require './log'
 requireDir = require 'require-dir'
-{makeCreator} = require './creators'
+creator = require './creator'
 
 graph = require './reducers/graph'
 parse = require './parse'
@@ -98,4 +98,4 @@ mappers.templates = require './mappers/templates'
 
 mappers = Object.assign mappers, requireDir './mappers'
 
-module.exports = makeCreator mappers
+module.exports = creator mappers

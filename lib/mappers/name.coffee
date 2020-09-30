@@ -5,7 +5,7 @@ log = require '../log'
 capitalize = (string)->
   string.charAt(0).toUpperCase() + string.slice(1)
 
-nameRe = /^(\w+)(?:[\s\.]*)(\w*)/
+nameRe = /^(\w+)(?:[\s\.]*)([\w\s]*)/
 
 module.exports = (data)->
   if typeof data == 'string'
@@ -17,9 +17,11 @@ module.exports = (data)->
         res.last = capitalize match[2], a:'lastName'
       return res
 
-  matches = query('name').match data
+  matches = query(/(name|first|last)/).match data
   if matches?
+    matches.full = matches.map((m)->m.value.first).join ' '
     return matches
+
   matches = query('path').match data
   if matches?
     return matches.map (m)->path.basename m.value

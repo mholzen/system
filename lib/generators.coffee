@@ -4,7 +4,7 @@ isIterable = require './mappers/isIterable'
 request = require './request'
 parse = require './parse'
 CSON = require 'cson'
-{makeCreator} = require './creators'
+creator = require './creator'
 requireDir = require 'require-dir'
 
 #
@@ -91,7 +91,4 @@ generators = {
 }
 generators = Object.assign generators, requireDir './generators'
 
-fromName = makeCreator generators
-
-
-module.exports = fromName
+module.exports = creator generators

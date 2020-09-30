@@ -1,4 +1,4 @@
-log = require '@vonholzen/log'
+log = require '../log'
 marked = require 'marked'
 
 json = require './json'
@@ -56,26 +56,20 @@ form = (data)->
 
 
 body = (value, options)->
-  if options?.res?.get('Content-Type') == 'image/png'
-    # TODO: extend to more image types
-    return '<img src="data:image/png;base64,' + value.toString('base64') + '">'
-
-  if value instanceof Buffer
-    if options?.req?.filename.endsWith '.md'
-      return marked value.toString()
-
-    # detect type
-    if ['[', '{'].includes value.toString()[0]
-      value = JSON.parse value.toString()
-    else
-      # TODO: should not infer jpg as type
-      value = '<div class="a"><img src="data:image/jpeg;base64,' + value.toString('base64') + '"></div>'
-
   if value instanceof Array
     value = value.map((x)->"- [#{x}](./#{encodeURI(x)})").join '\n'
 
+  if typeof value?.toString == 'function'
+    if (type = options?.res?.get('Content-Type'))?.startsWith 'image/'
+      # TODO: may not work for all types?
+      return '<img src="data:' + type + ';base64,' + value.toString('base64') + '">'
+
+    value = value.toString()
+
+  if typeof value == 'string'
+    return marked value
+
   if typeof value == 'object'
-    # value = "<p><pre>#{escapeHtml json(value, space:2)}</pre></p>"
     value = form value
 
   # from Markdown to HTML
@@ -85,13 +79,16 @@ html = (value, options)->
   if typeof value?.toHtml == 'function'
     return value.toHtml()
 
-  if typeof options?.res?.type == 'function'
-    options.res.type 'text/html'
-
-  return '<!DOCTYPE html>
+  result = '<!DOCTYPE html>
   <html>
   <body>' + body value, options
   + '</body>
   </html>'
+
+  # NOTE: idempotent side effect
+  if typeof options?.res?.type == 'function'
+    options.res.type 'text/html'
+
+  return result
 
 module.exports = html
