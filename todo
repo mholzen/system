@@ -1,12 +1,12 @@
 # transform
-
-  - "collection/reduce/table/keys,first,last"   ?
-  - "collection/reduce/table/apply/keys,first,last"   ?
-  - "collection/reduce/table/keys#first,last"   ?
-  - collection/reduce/table#keys:first,last
-
-
   - choose method to pass arugments, or options
+
+    - "collection/reduce/table/keys,first,last"   ?
+    - "collection/reduce/table/apply/keys,first,last"   ?
+    - "collection/reduce/table/keys#first,last"   ?
+    - collection/reduce/table#keys:first,last
+
+
     - use hash mark #
       - it has browser semantics
       - "collection/head#10/"
@@ -30,9 +30,10 @@
       /type:png
       /type/    ?== /type/default/
     - consider .csv/map/pick/param/ because param has no default value
-  - transactions.csv/reduce/table/account-names/reduce/set
+  - filter (eg. /files/data/people/filter-out/directories )
   - head/tail, for x milliseconds, for n items
   - extract rows from html table to scrape from web page
+  - reduce to a set (e.g. transactions.csv/reduce/table/account-names/reduce/set )
   - order by last modified
   - order by most used
   - `get` use cat or curl or open depending on type

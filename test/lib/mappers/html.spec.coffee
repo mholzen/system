@@ -1,4 +1,4 @@
-{html} = require '../../lib/mappers'
+{html} = require '../../../lib/mappers'
 
 describe 'html', ->
   it 'accepts markdown', ->

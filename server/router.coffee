@@ -125,10 +125,10 @@ class TreeRouter
       decodedPath = decodeURI req.path
       req.remainder = decodedPath.substr(1).split '/'
 
-    log.debug 'processPath', {path: req.path, remainder: req.remainder}
+    # log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
 
-      log.debug 'processPath', {remainder: req.remainder, req_data: req.data}
+      # log.debug 'processPath', {remainder: req.remainder, req_data: req.data}
 
       first = req.remainder.shift()
       if not first?

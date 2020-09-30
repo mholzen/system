@@ -1,4 +1,4 @@
-{mappers} = require '../lib'
+{mappers} = require '../../lib'
 {
   amount
   columns

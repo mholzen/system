@@ -1,4 +1,4 @@
-{parse, map} = require '../../streams/transformers'    # units under tests
+{parse, map, notnull} = require '../../streams/transformers'    # units under tests
 
 describe 'transformers', ->
 
@@ -32,3 +32,17 @@ describe 'transformers', ->
 
     p = await p
     expect(p).eql [1,2]
+
+  it 'get:string', ->
+    mapper = mappers 'get', 'a'
+    p =
+    stream [{a:1}, {a:2}]
+    .through map mapper
+    .collect().toPromise Promise
+
+    p = await p
+    expect(p).eql [1,2]
+
+  it 'notnull', ->
+    stream([1, null, undefined, 2])
+    .through notnull

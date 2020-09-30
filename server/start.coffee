@@ -5,6 +5,9 @@ log = require '../lib/log'
 
 s = new server.Server
   port: 3001
+  rewriteRules: [
+    [/\/Graph/, '/reduce/graph/apply/dict,graph/apply/template,template:name:Graph']
+  ]
 
 process.on 'unhandledRejection', (error) =>
   console.log 'unhandledRejection', error

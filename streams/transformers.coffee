@@ -43,4 +43,7 @@ map = (mapper, options)->
       stream resolve.deep x
     .parallel 10
 
-module.exports = {parse, map}
+notnull = (inputStream)->
+  inputStream.filter (x)->x?
+
+module.exports = {parse, map, notnull}

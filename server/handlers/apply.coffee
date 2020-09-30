@@ -15,8 +15,29 @@ functions = (obj) ->
 
   return [...properties.keys()].filter (item) -> typeof obj[item] == 'function'
 
-handler = (req, res)->
+paths =
+  Graph: '/Users/marchome/data/people/graph.html'
 
+resolveNameOption = (options, option)->
+  name = options?[option]?.name
+  if name? and name of paths
+    options[option].path = paths[name]
+  return options
+
+resolvePathOption = (options, option, req)->
+  path = options?[option]?.path
+  if path? and req?.dirname?
+    # log.debug 'resolvePathOption', {dirname: req.dirname, path, options}
+    if not path.startsWith '/'
+      path = Path.join req.dirname, path
+    promise = content {path}, parse:'string'
+    options[option] = await promise
+    # log.debug 'resolvePathOption content retrieved', {options}
+    return options
+  else
+    return new Promise (resolve)-> resolve options
+
+handler = (req, res)->
   if not req.data?
     return res.status(400).send 'no data'
 
@@ -34,20 +55,10 @@ handler = (req, res)->
     return
 
   options = args words
-
-  resolvePathOption = (options, name)->
-    path = options?[name]?.path
-    if path? and req?.dirname?
-      log.debug 'resolvePathOption', {dirname: req.dirname, path, options}
-      promise = content {path: Path.join req.dirname, path}, parse:'string'
-      options[name] = await promise
-      log.debug 'resolvePathOption content retrieved', {options}
-      return options
-    else
-      return new Promise (resolve)-> resolve options
+  options = resolveNameOption options, 'template'
 
   # if any options require an filesystem, resolve these now
-  options = await resolvePathOption options, 'template'
+  options = await resolvePathOption options, 'template', req
 
   # add request and response to the context for this handler
   options.req = req
@@ -85,8 +96,6 @@ handler = (req, res)->
     [ positional, options ]
 
   applyArgs = [ req.data ].concat getArgs()
-  # log.debug 'apply', {applyArgs}   # TODO: this takes 12s during tests (because of circular references?)
-
   req.data = f.apply req.data, applyArgs
 
 module.exports = handler

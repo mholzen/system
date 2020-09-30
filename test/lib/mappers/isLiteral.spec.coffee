@@ -1,4 +1,4 @@
-{isLiteral} = require '../../lib/mappers'
+{isLiteral} = require '../../../lib/mappers'
 
 describe 'isLiteral', ->
   it 'works', ->

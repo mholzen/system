@@ -1,13 +1,13 @@
 {
   inodes
-  mappers: {content}
+  mappers: {content, type}
   log
 } = require '../../lib'
 {dirname} = require 'path'
 
 handler = (req, res, router) ->
   path = req.remainder ? []
-  log.debug 'files entry', {path, router}
+  # log.debug 'files entry', {path, router}
   try
     inodePath = new inodes.Path path, router?.options?.config?.files?.root
     await inodePath
@@ -23,6 +23,10 @@ handler = (req, res, router) ->
   req.filename = inodePath.path          # TODO: consider a scoped or different name?
   req.dirname = dirname inodePath.path
 
-  log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
+  if (t = type req)
+    log.here {t}
+    res.type t
+
+  # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 
 module.exports = handler
