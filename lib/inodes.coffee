@@ -162,6 +162,9 @@ class Stat
 
 class Path
   constructor: (path, root)->
+    if (path.startsWith? '/') and (root?.startsWith? '/')
+      throw new Error 'root overspecified'
+
     @setPath path
     @setRoot root
     @stat = null
@@ -169,12 +172,13 @@ class Path
 
   setPath: (path)->
     if typeof path == 'string'
+      if path.startsWith '/'
+        @root = '/'
+        path = path.slice 1
+
       @path = path
       @segments = path.split '/'   # TODO: must ignore multiple consecutive /
 
-      if path.startsWith '/'
-        @root = '/'
-        @segments.shift() # remove first ''
       return
 
     if path instanceof Array
@@ -186,8 +190,8 @@ class Path
 
   setRoot: (root)->
     if typeof root == 'string'
-      if @path?.startsWith '/'
-        throw new Error 'root overspecified'
+      if not root.startsWith '/'
+        root = join process.cwd(), root
       @root = root
       return
     # if root instanceof Stat
@@ -202,11 +206,15 @@ class Path
   then: (success)->
     @remainder = Array.from @segments
     @path = @root   # assumes root is accessible
+    log.here {r: @path}
+    @stat = await statAsync @path
     while @remainder.length > 0
       try
         next = @remainder[0]
         path = join @path, next
         @stat = await statAsync path
+        # s = await statAsync path
+        # @stat = s
         @path = path
         @remainder.shift()
       catch e
