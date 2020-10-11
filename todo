@@ -1,5 +1,10 @@
+# infrastructure
+  - use NODE_PATH or equivalent to set test/*.spec to root
+
 # transform
   - choose method to pass arugments, or options
+
+    /files/images/ map,image / transform,head / reduce,html
 
     - "collection/reduce/table/keys,first,last"   ?
     - "collection/reduce/table/apply/keys,first,last"   ?

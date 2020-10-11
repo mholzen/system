@@ -87,3 +87,11 @@ describe 'coffee', ()->
     r = await f
     r = await f
     expect(r).eql 1
+
+  it 'if', ->
+    a = if false
+      1
+    else
+      2
+
+    expect(a).eql 2

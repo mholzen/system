@@ -1,4 +1,4 @@
-pug = require '../../lib/reducers/pug'
+pug = require '../../../lib/reducers/pug'
 
 describe 'pug', ->
   it 'pug', ->

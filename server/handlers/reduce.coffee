@@ -23,4 +23,6 @@ module.exports = (req, res, router)->
   if req.data instanceof Buffer
     req.data = req.data.toString()
 
-  req.data = reducers.reduce req.data, name
+  options = {req, res}
+
+  req.data = reducers.reduce req.data, name, options

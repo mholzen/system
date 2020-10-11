@@ -59,7 +59,13 @@ body = (value, options)->
   if value instanceof Array
     value = value.map((x)->"- [#{x}](./#{encodeURI(x)})").join '\n'
 
+  if value?.image?.src?
+    return '<img src="'+ encodeURI(value?.image?.src) + '"></img>'
+
   if typeof value?.toString == 'function'
+    type = options?.res?.get('Content-Type')
+    log.debug {type}
+
     if (type = options?.res?.get('Content-Type'))?.startsWith 'image/'
       # TODO: may not work for all types?
       return '<img src="data:' + type + ';base64,' + value.toString('base64') + '">'
@@ -75,15 +81,23 @@ body = (value, options)->
   # from Markdown to HTML
   return marked value
 
-html = (value, options)->
-  if typeof value?.toHtml == 'function'
-    return value.toHtml()
+base = (b)->
+  if not b?
+    return ''
 
-  result = '<!DOCTYPE html>
-  <html>
-  <body>' + body value, options
-  + '</body>
+  '<base href="' + encodeURI(b) + '">'
+
+outer = (data, options)->
+  '<!DOCTYPE html>
+  <html>' + base(options?.req?.base) + '
+  <body>' + body(data, options) + '</body>
   </html>'
+
+html = (data, options)->
+  if typeof data?.toHtml == 'function'
+    return data.toHtml()
+
+  result = outer data, options
 
   # NOTE: idempotent side effect
   if typeof options?.res?.type == 'function'
@@ -91,4 +105,4 @@ html = (value, options)->
 
   return result
 
-module.exports = html
+module.exports = Object.assign html, {body, outer}

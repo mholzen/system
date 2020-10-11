@@ -7,7 +7,7 @@
 
 handler = (req, res, router) ->
   path = req.remainder ? []
-  # log.debug 'files entry', {path, router}
+  # log.debug 'files entry', {path, options: router.options}
   try
     inodePath = new inodes.Path path, router?.options?.config?.files?.root
     await inodePath
@@ -21,7 +21,13 @@ handler = (req, res, router) ->
   req.remainder = inodePath.remainder    # path contains un-matching remaining elements
   req.data = content inodePath.path, parse: false
   req.filename = inodePath.path          # TODO: consider a scoped or different name?
-  req.dirname = dirname inodePath.path
+  req.dirname = if inodePath.stat.isDirectory()
+    inodePath.path + '/'
+  else
+    dirname inodePath.path
+
+  # TODO: use previously set req.base.  perhaps use an array?
+  req.base = '/files' + req.dirname.slice inodePath.root.length
 
   if (t = type req)
     log.here {t}

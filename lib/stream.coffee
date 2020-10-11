@@ -1,3 +1,4 @@
+#TODO: refactor with ./streams
 highland = require 'highland'
 isIterable = require './mappers/isIterable'
 

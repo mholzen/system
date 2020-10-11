@@ -1,4 +1,4 @@
-log = require '@vonholzen/log'
+log = require './log'
 table = require './table'
 stream = require './stream'
 requireDir = require 'require-dir'

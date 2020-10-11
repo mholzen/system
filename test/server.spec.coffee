@@ -2,6 +2,7 @@ server = require '../server/'
 request = require 'supertest'
 requireDir = require 'require-dir'
 
+require './lib.spec'
 require './router.spec'
 require './generators.spec'
 requireDir './server/handlers'

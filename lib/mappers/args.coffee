@@ -54,4 +54,22 @@ args.positionalWithOptions = (words)->
 
   return [ positional, options ]
 
-module.exports = args
+class Arguments
+  constructor: (words)->
+    @v = args words
+  toObject:-> @v
+
+  toArray: ->
+    result = []
+    options = {}
+    for k, v of @v
+      if isNaN (i = parseInt k)
+        options[k] = v
+      else
+        result[i] = v
+    result.push options
+    result.filter (x)->x?
+
+
+
+module.exports = Object.assign args, {Arguments}

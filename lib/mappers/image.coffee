@@ -1,15 +1,18 @@
 log = require '../log'
 name = require './name'
 
-image = (value)->
-  if value instanceof Array
+image = (data)->
+  if data instanceof Array
     # need to know the context?
     return
 
-  if typeof value != 'object'
+  if typeof data == 'string'
     return
+      image:
+        src: './' + data
+    # return '<img src="./' + escape data + "}'/>"   # TODO: htmlescape
 
-  if (n = name value)?
+  if (n = name data)?
     return
       image: "/files/data/images/#{log.print n}"
       shape: 'circularImage'

@@ -4,6 +4,8 @@ isPromise = require 'is-promise'
 args = require '../../lib/mappers/args'
 Path = require 'path'
 {content} = require '../../lib/mappers'
+{isStream} = require '../../lib/stream'
+expandTilde = require 'expand-tilde'
 
 functions = (obj) ->
   properties = new Set()
@@ -16,12 +18,12 @@ functions = (obj) ->
   return [...properties.keys()].filter (item) -> typeof obj[item] == 'function'
 
 paths =
-  Graph: '/Users/marchome/data/people/graph.html'
+  Graph: '~/develop/mholzen/system/lib/mappers/templates/graph.html'
 
 resolveNameOption = (options, option)->
   name = options?[option]?.name
   if name? and name of paths
-    options[option].path = paths[name]
+    options[option].path = expandTilde paths[name]
   return options
 
 resolvePathOption = (options, option, req)->
@@ -40,6 +42,9 @@ resolvePathOption = (options, option, req)->
 handler = (req, res)->
   if not req.data?
     return res.status(400).send 'no data'
+
+  if isStream req.data
+    req.data = req.data.collect().toPromise Promise
 
   data = if isPromise req.data then await req.data else req.data
 
@@ -64,23 +69,12 @@ handler = (req, res)->
   options.req = req
   options.res = res
 
-  getFunction = ->
-    # if the request has a filename
-    if req.filename?
-      # if the name refers to a file in the directory of the resource
-      source = Path.join(Path.dirname req.filename, name)
-
-      # if inodes(source) and (f = compile(source))
-      #   return f
-
-    mappers name, options
-
-  f = getFunction()
-  if not f?
+  mapper = mappers name, options
+  if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
 
-  if typeof f != 'function'
-    req.data = f
+  if typeof mapper != 'function'
+    req.data = mapper
     return
 
   # perhaps mapper can handle that?
@@ -96,6 +90,6 @@ handler = (req, res)->
     [ positional, options ]
 
   applyArgs = [ req.data ].concat getArgs()
-  req.data = f.apply req.data, applyArgs
+  req.data = mapper.apply req.data, applyArgs
 
 module.exports = handler

@@ -34,6 +34,7 @@
     "json2yaml": "^1.1.0",
     "jsonpath": "^1.0.1",
     "lodash": "^4.17.11",
+    "madge": "^3.11.0",
     "map-stream": "0.0.6",
     "marked": "^0.4.0",
     "moment": "^2.22.2",

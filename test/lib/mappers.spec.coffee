@@ -11,8 +11,8 @@
   string
 } = mappers
 
-require './mappers/html.spec'
-require './mappers/isLiteral.spec'
+requireDir = require 'require-dir'
+requireDir './mappers'
 
 beforeEach ->
   log.debug '=== new test ==='

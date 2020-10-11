@@ -1,4 +1,4 @@
-{reducers: {reduce, html}} = require '../../lib'
+{reducers: {reduce, html}} = require '../../../lib'
 
 describe 'reducers/html', ->
   it 'works', ->

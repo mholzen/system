@@ -1,10 +1,6 @@
 log = require './log'
 requireDir = require 'require-dir'
 creator = require './creator'
-
-graph = require './reducers/graph'
-parse = require './parse'
-path = require 'path'
 request = require './request'
 template = require './mappers/template'
 
@@ -37,7 +33,6 @@ mappers =
       c = await content(value)
       return append c, opts.value
 
-
   basename: (value)->
     if value?.path
       path.basename value?.path
@@ -45,15 +40,6 @@ mappers =
   dirname: (value)->
     if value?.path
       path.dirname value?.path
-
-  graph: (value, opts)->
-    if typeof value == 'object'
-      if value.nodes? and value.edges?
-        return value
-      if value?.type == 'file'
-        readable = await content value
-        [memo,reducer] = graph opts
-        return parse(readable).reduce(reducer, memo)
 
   location: (value)->
     if typeof value == 'string'
