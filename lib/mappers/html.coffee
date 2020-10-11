@@ -1,8 +1,7 @@
 log = require '../log'
 marked = require 'marked'
-
+url = require './url'
 json = require './json'
-# table = require './table'
 
 # escape = (data)->
 #   data
@@ -54,7 +53,6 @@ form = (data)->
   (rows(data).join '') +
   '</table>'
 
-
 body = (value, options)->
   if value instanceof Array
     value = value.map((x)->"- [#{x}](./#{encodeURI(x)})").join '\n'
@@ -88,7 +86,9 @@ base = (b)->
   '<base href="' + encodeURI(b) + '">'
 
 style = (data)->
-  return '<style>'
+  if not data?.url?
+    data = url data
+    return '<link href="' + data + '" rel="stylesheet" type="text/css">'
 
 head = (data)->
   result = ''

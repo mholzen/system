@@ -1,4 +1,11 @@
-module.exports = (data)->
+# TODO: this probably should come from the context
+urlNames =
+  thumbnails: '/files/test/artifacts/thumbnails.css'
+
+url = (data)->
+  if data?.name?
+    if data.name of urlNames
+      return urlNames[data.name]
 
   if typeof data == 'string'
     if data.match /https*:\/\/[^/]+/
@@ -13,3 +20,5 @@ module.exports = (data)->
     return 'file://' + data.path
 
   throw new Error "cannot get url from #{data}"
+
+module.exports = url

@@ -126,12 +126,12 @@ describe 'server', ->
         expect response.text
         .includes '<img'
 
-    it.only 'list of resources', ->
+    it 'list of resources', ->
       r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'
       .then (res)->
         expect(res.text)
         .includes '<img'
-        .includes '<style'
+        .includes '<link'
         .includes 'thumbnails'
 
 describe.skip 'post/put a redirect (301/302)', ->
