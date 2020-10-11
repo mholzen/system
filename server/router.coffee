@@ -33,6 +33,9 @@ get = (data, path, context)->
  
   return resource
 
+parse = (path)->
+  words = path.split '/'
+  (word.split ',' for word in words)
 
 root =
   mappers: mappers
@@ -130,14 +133,18 @@ class TreeRouter
 
       # log.debug 'processPath', {remainder: req.remainder, req_data: req.data}
 
-      first = req.remainder.shift()
-      if not first?
-        log.debug 'empty first'
-        return res.status(404).send('empty first path element')
+      command = req.remainder.shift()
+      if not command?
+        log.debug 'empty command'
+        continue
 
-      if not (first?.length > 0)
-        log.debug 'no more paths. about to send response', {first, remainder: req.remainder}
-        break
+      # commands = args.parse command
+
+      first = command
+      # if typeof command != 'string'
+      # # if not (first?.length > 0)
+      #   log.debug 'not a path. about to send response', {first, remainder: req.remainder}
+      #   break
 
       if isPromise req.data
         req.data = await req.data
