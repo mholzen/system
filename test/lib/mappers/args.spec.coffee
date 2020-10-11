@@ -48,7 +48,7 @@ describe 'args', ->
 
 describe 'Arguments', ->
   it 'works', ->
-    a = new args.Arguments 'a,b,c,a:1'
+    a = args.Arguments.from 'a,b,c,a:1'
 
     expect(a.toArray())
     .eql ['a', 'b', 'c', {a:1}]

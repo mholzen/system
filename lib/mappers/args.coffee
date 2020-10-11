@@ -55,6 +55,8 @@ args.positionalWithOptions = (words)->
   return [ positional, options ]
 
 class Arguments   # TODO: consider extending Array
+  @from: (words)-> new Arguments words
+
   constructor: (words)->
     @v = args words
 

@@ -8,7 +8,7 @@ module.exports = (req, res, router)->
     req.data = Object.keys(reducers).sort()
     return
 
-  args = new Arguments segment    # TODO: rename file to arguments, use a function 'arguments' instead of a class
+  args = Arguments.from segment
   name = args.toArray().shift()
 
   if not (reducer = reducers[name])
