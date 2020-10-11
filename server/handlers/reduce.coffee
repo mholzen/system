@@ -1,14 +1,15 @@
-{
-  reducers
-  log
-} = require '../../lib'
+{reducers, log} = require '../../lib'
+{Arguments} = require '../../lib/mappers/args'
 isPromise = require 'is-promise'
 
 module.exports = (req, res, router)->
-  name = req.remainder.shift()
-  if not (name?.length > 0)
+  segment = req.remainder.shift()
+  if not (segment?.length > 0)
     req.data = Object.keys(reducers).sort()
     return
+
+  args = new Arguments segment    # TODO: rename file to arguments, use a function 'arguments' instead of a class
+  name = args.toArray().shift()
 
   if not (reducer = reducers[name])
     return res.status(404).send "'#{name}' not found"
@@ -23,6 +24,6 @@ module.exports = (req, res, router)->
   if req.data instanceof Buffer
     req.data = req.data.toString()
 
-  options = {req, res}
+  options = Object.assign args.options(), {req, res}
 
   req.data = reducers.reduce req.data, name, options

@@ -87,9 +87,20 @@ base = (b)->
 
   '<base href="' + encodeURI(b) + '">'
 
+style = (data)->
+  return '<style>'
+
+head = (data)->
+  result = ''
+  if data?.style?
+    result += style data.style
+  if data?.req?.base
+    result += base data.req.base
+  result
+
 outer = (data, options)->
   '<!DOCTYPE html>
-  <html>' + base(options?.req?.base) + '
+  <html>' + head(options) + '
   <body>' + body(data, options) + '</body>
   </html>'
 

@@ -116,28 +116,30 @@ describe 'server', ->
       expect response.text
       .includes '[{"name:"file1",'
 
+  describe 'images to html', ->
+    it 'one image', ->
+      # should mappers.html handle requests?
+      # if so, mappers.html should realize the data is an image, and but the response type to html
+      # how would a mapper function affect the outgoing headers?
+      r.get '/files/test/artifacts/image.png/type/png/apply/html'
+      .then (response)->
+        expect response.text
+        .includes '<img'
+
+    it.only 'list of resources', ->
+      r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'
+      .then (res)->
+        expect(res.text)
+        .includes '<img'
+        .includes '<style'
+        .includes 'thumbnails'
+
 describe.skip 'post/put a redirect (301/302)', ->
   it '', ->
     r.post '/artifacts', '/files/test/artifacts'
     r.get '/artifacts'
 
 describe.skip 'directory to index-page'
-
-describe 'images to html', ->
-  it 'one image', ->
-    # should mappers.html handle requests?
-    # if so, mappers.html should realize the data is an image, and but the response type to html
-    # how would a mapper function affect the outgoing headers?
-    r.get '/files/test/artifacts/image.png/type/png/apply/html'
-    .then (response)->
-      expect response.text
-      .includes '<img'
-
-  it.only 'list of resources', ->
-    r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'
-    .then (res)->
-      expect(res.text)
-      .includes '<img'
 
 describe.skip 'post', ->
   it 'path with function (apply) takes one path argument (a template function)', ->

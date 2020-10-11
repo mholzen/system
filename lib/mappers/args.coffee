@@ -54,10 +54,9 @@ args.positionalWithOptions = (words)->
 
   return [ positional, options ]
 
-class Arguments
+class Arguments   # TODO: consider extending Array
   constructor: (words)->
     @v = args words
-  toObject:-> @v
 
   toArray: ->
     result = []
@@ -70,6 +69,8 @@ class Arguments
     result.push options
     result.filter (x)->x?
 
+  options: ->
+    @toArray().last()
 
 
 module.exports = Object.assign args, {Arguments}
