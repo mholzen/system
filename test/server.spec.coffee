@@ -129,10 +129,17 @@ describe 'server', ->
     it 'list of resources', ->
       r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'
       .then (res)->
-        expect(res.text)
+        expect res.text
         .includes '<img'
         .includes '<link'
         .includes 'thumbnails'
+
+  describe.only 'count words in logs', ->
+    it 'jsonl', ->
+      r.get '/files/test/artifacts/marchome/data/logs/index.json/map/pick,log/transform/words/reduce/count'
+      .then (res)->
+        expect res.text
+        .includes 'sad'
 
 describe.skip 'post/put a redirect (301/302)', ->
   it '', ->
