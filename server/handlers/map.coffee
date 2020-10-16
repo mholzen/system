@@ -4,9 +4,13 @@
   log
 } = require '../../lib'
 isPromise = require 'is-promise'
+{Arguments} = mappers.args
 
 module.exports = (req, res, router)->
-  name = req.remainder.shift()
+  segment = req.remainder.shift()
+  args = Arguments.from segment
+  name = args.toArray()[0]
+
   if not (name?.length > 0)
     req.data = Object.keys(mappers).sort()
     return
@@ -31,7 +35,6 @@ module.exports = (req, res, router)->
   if req.data instanceof Array
     req.data = stream req.data
 
-  # log.debug 'apply f', {req_data: req.data, f:f}
-  req.data = req.data.map (v)->
-    f v, {filename: req.filename} # TODO: how is the second argument defined?
-
+  a = args.toArray()
+  f = mappers a...
+  req.data = req.data.map f

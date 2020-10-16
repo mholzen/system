@@ -1,8 +1,8 @@
-{summarize} = require '../lib/reducers'
+{summary} = require '../lib/reducers'
 
-it 'should summarize', ->
+it 'summary', ->
   a = [1,2,3]
-  reducer = summarize()
-  expect a.reduce reducer[1], reducer[0]
+  [init,reducer] = summary
+  expect a.reduce reducer, init
   .include
     count: 3

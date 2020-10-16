@@ -31,7 +31,6 @@ describe 'args', ->
 
 
   it.skip 'from string', ->
-    log.here {a: args.positionalWithOptions 'apply,html,style:name:pretty' }
     expect args.positionalWithOptions 'apply,html,style:name:pretty'
     .eql [
       'apply', 'html', {style:name:'pretty'}
@@ -55,3 +54,6 @@ describe 'Arguments', ->
 
     expect(a.options())
     .eql {a:1}
+
+    expect(a.positional())
+    .eql ['a', 'b', 'c']

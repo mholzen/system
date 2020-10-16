@@ -206,7 +206,6 @@ class Path
   then: (success)->
     @remainder = Array.from @segments
     @path = @root   # assumes root is accessible
-    log.here {r: @path}
     @stat = await statAsync @path
     while @remainder.length > 0
       try

@@ -10,7 +10,7 @@ requireDir './server/handlers'
 r = null
 
 describe 'server', ->
-  before ->
+  beforeEach ->
     s = new server.Server()
     r = request s.app
 
@@ -134,9 +134,18 @@ describe 'server', ->
         .includes '<link'
         .includes 'thumbnails'
 
-  describe.only 'count words in logs', ->
-    it 'jsonl', ->
-      r.get '/files/test/artifacts/marchome/data/logs/index.json/map/pick,log/transform/words/reduce/count'
+  describe 'count words in logs', ->
+    it '.../pick,a,b,c', ->
+      r.get '/files/test/artifacts/array.json/apply/parse/map/pick,a,c'
+      .then (res)->
+        expect res.text
+        .includes '1'
+        .includes '3'
+        .includes '4'
+        .includes '7'
+
+    it 'works', ->
+      r.get '/files/test/artifacts/marchome/data/logs/index.json/generators/lines/map/parse/map/get,log/map/words/reduce/concat/reduce/distribution/apply/entries/apply/sort'
       .then (res)->
         expect res.text
         .includes 'sad'

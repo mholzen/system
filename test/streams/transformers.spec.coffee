@@ -1,3 +1,5 @@
+require '../lib/index'
+
 {parse, map, notnull} = require '../../streams/transformers'    # units under tests
 
 describe 'transformers', ->

@@ -74,5 +74,7 @@ class Arguments   # TODO: consider extending Array
   options: ->
     @toArray().last()
 
+  positional: ->
+    @toArray().slice 0, -1
 
 module.exports = Object.assign args, {Arguments}

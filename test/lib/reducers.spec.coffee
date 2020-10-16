@@ -1,4 +1,7 @@
-{reducers} = require '../lib'
+{reducers} = require 'lib'
+
+requireDir = require 'require-dir'
+requireDir './reducers'
 
 describe 'reducers', ->
   reduce = reducers.reduce

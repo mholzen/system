@@ -3,9 +3,11 @@ log = require '../lib/log'
 _ = require 'lodash'
 isPromise = require 'is-promise'
 
-{stream, mappers, searchers, reducers, generators, inodes} = require '../lib'
+{stream, mappers, reducers, generators} = require '../lib'
 {isStream} = stream
 content = mappers.content
+{Arguments} = mappers.args
+
 keys = generators.keys
 
 {join, sep} = require 'path'
@@ -133,18 +135,13 @@ class TreeRouter
 
       # log.debug 'processPath', {remainder: req.remainder, req_data: req.data}
 
-      command = req.remainder.shift()
-      if not command?
-        log.debug 'empty command'
+      segment = req.remainder.shift()
+      if not segment?
+        log.debug 'empty segment'
         continue
 
-      # commands = args.parse command
-
-      first = command
-      # if typeof command != 'string'
-      # # if not (first?.length > 0)
-      #   log.debug 'not a path. about to send response', {first, remainder: req.remainder}
-      #   break
+      req.args = Arguments.from segment
+      first = req.args.toArray()[0]
 
       if isPromise req.data
         req.data = await req.data

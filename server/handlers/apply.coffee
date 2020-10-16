@@ -49,6 +49,8 @@ handler = (req, res)->
   data = if isPromise req.data then await req.data else req.data
 
   part = req.remainder.shift()
+
+  # TODO: refactor with Arguments
   [name, words...] = part.split ','
 
   if not (name?.length > 0)

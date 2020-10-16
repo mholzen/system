@@ -1,5 +1,4 @@
 moment = require 'moment'
-log = require '@vonholzen/log'
 
 text = (value, context)->
   if typeof value == 'object'

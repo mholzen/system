@@ -30,7 +30,6 @@ handler = (req, res, router) ->
   req.base = '/files' + req.dirname.slice inodePath.root.length
 
   if (t = type req)
-    log.here {t}
     res.type t
 
   # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
