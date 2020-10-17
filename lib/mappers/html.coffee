@@ -60,6 +60,9 @@ body = (value, options)->
   if value?.image?.src?
     return '<img src="'+ encodeURI(value?.image?.src) + '"></img>'
 
+  if value?.a?.href?
+    return '<a href="'+ encodeURI(value?.a?.href) + '">foo</a>'
+
   if typeof value?.toString == 'function'
     type = options?.res?.get('Content-Type')
     log.debug {type}
