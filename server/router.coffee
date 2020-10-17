@@ -141,7 +141,7 @@ class TreeRouter
         continue
 
       req.args = Arguments.from segment
-      first = req.args.toArray()[0]
+      first = req.args.first()
 
       if isPromise req.data
         req.data = await req.data
@@ -154,7 +154,7 @@ class TreeRouter
 
       target = target()
       if not target
-        return res.status(400).send("cannot find '#{first}' in req.data of '#{log.print req.data}' nor in root")
+        return res.status(400).send("cannot find '#{first}' in req.data of '#{log.print req.data}' nor in root if '#{log.print @root}'")
 
       if typeof target == 'function'
         log.debug 'calling handler', {name: first}

@@ -54,27 +54,49 @@ args.positionalWithOptions = (words)->
 
   return [ positional, options ]
 
-class Arguments   # TODO: consider extending Array
-  @from: (words)-> new Arguments words
+class Arguments
+  @from: (words)->
+    new Arguments words
 
-  constructor: (words)->
-    @v = args words
+  constructor: (data)->
+    if typeof data == 'string'
+      data = data.split ','
 
-  toArray: ->
-    result = []
-    options = {}
-    for k, v of @v
-      if isNaN (i = parseInt k)
-        options[k] = v
+    if not (Array.isArray data)
+      throw new Error "expecting array, got #{data}"
+
+    @positional = []
+    @options = {}
+
+    for arg, i in data
+      if typeof arg != 'string'
+        @[i] = arg
+        continue
+
+      elements = arg.split ':'
+
+      if elements.length == 1
+        elements.unshift i
+
+      if elements[0].length == 0
+        elements[0] = i
+        if elements[1].length == 0
+          elements[1] = ':'
+
+      path = elements[..-2]
+      value = parseValue elements[elements.length-1]
+
+      if typeof path[0] == 'number'
+        @positional[path[0]] = value
       else
-        result[i] = v
-    result.push options
-    result.filter (x)->x?
+        _.set @options, path, value
 
-  options: ->
-    @toArray().last()
+  first: ->
+    @positional[0]
 
-  positional: ->
-    @toArray().slice 0, -1
+  all: ->
+    all = Array.from @positional
+    all.push @options
+    all
 
 module.exports = Object.assign args, {Arguments}

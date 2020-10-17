@@ -9,7 +9,7 @@ module.exports = (req, res, router)->
     return
 
   args = Arguments.from segment
-  name = args.toArray().shift()
+  name = args.first()
 
   if not (reducer = reducers[name])
     return res.status(404).send "'#{name}' not found"
@@ -24,6 +24,7 @@ module.exports = (req, res, router)->
   if req.data instanceof Buffer
     req.data = req.data.toString()
 
-  options = Object.assign args.options(), {req, res}
+  Object.assign args.options, {req, res}
 
-  req.data = reducers.reduce req.data, name, options
+  a = args.all()
+  req.data = reducers.reduce req.data, a...

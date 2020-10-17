@@ -1,7 +1,8 @@
 log = require '../log'
 
 module.exports = (data, options)->
-  name = options.name ? options[0] ? 'value'
+  log.here {data, options}
+  name = options.name ? 'value'
 
   return
     [name]: data

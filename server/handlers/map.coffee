@@ -9,7 +9,7 @@ isPromise = require 'is-promise'
 module.exports = (req, res, router)->
   segment = req.remainder.shift()
   args = Arguments.from segment
-  name = args.toArray()[0]
+  name = args.first()
 
   if not (name?.length > 0)
     req.data = Object.keys(mappers).sort()
@@ -35,6 +35,6 @@ module.exports = (req, res, router)->
   if req.data instanceof Array
     req.data = stream req.data
 
-  a = args.toArray()
+  a = args.all()
   f = mappers a...
   req.data = req.data.map f

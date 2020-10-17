@@ -45,15 +45,34 @@ describe 'args', ->
       expect args ['a.b:1']   # 'a:b:1' works too
       .eql a: b: 1
 
+{Arguments} = args
 describe 'Arguments', ->
   it 'works', ->
-    a = args.Arguments.from 'a,b,c,a:1'
+    a = Arguments.from 'a,b,c,a:1'
 
-    expect(a.toArray())
+    expect(a.all())
     .eql ['a', 'b', 'c', {a:1}]
 
-    expect(a.options())
+    expect(a.options)
     .eql {a:1}
 
-    expect(a.positional())
+    expect(a.positional)
     .eql ['a', 'b', 'c']
+
+  it.skip 'handles edge cases', ->
+    a = Arguments.from ':a'
+    expect(a.all()).eql ['a', {}]
+
+    a = Arguments.from ':a:2'
+    expect(a).eql [{a:2}]
+
+    a = Arguments.from '::2'
+    expect(a).eql [{0:2}]
+
+    a = Arguments.from 'a:b:3'
+    expect(a).eql []
+    expect(a).property('options', {a:{b:3}})
+
+  it 'options can be modified', ->
+    a = Arguments.from 'a,b,c,k:1'
+    expect(a).property('options').eql {k:1}

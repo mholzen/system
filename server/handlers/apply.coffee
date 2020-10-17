@@ -1,7 +1,7 @@
 log = require '../../lib/log'
 mappers = require '../../lib/mappers'
 isPromise = require 'is-promise'
-args = require '../../lib/mappers/args'
+{Arguments} = require '../../lib/mappers/args'
 Path = require 'path'
 {content} = require '../../lib/mappers'
 {isStream} = require '../../lib/stream'
@@ -39,7 +39,7 @@ resolvePathOption = (options, option, req)->
   else
     return new Promise (resolve)-> resolve options
 
-handler = (req, res)->
+module.exports = (req, res)->
   if not req.data?
     return res.status(400).send 'no data'
 
@@ -49,11 +49,7 @@ handler = (req, res)->
   data = if isPromise req.data then await req.data else req.data
 
   part = req.remainder.shift()
-
-  # TODO: refactor with Arguments
-  [name, words...] = part.split ','
-
-  if not (name?.length > 0)
+  if not (part?.length > 0)
     req.data =
       req_data: req.data
       'property': Object.getOwnPropertyNames data
@@ -61,17 +57,18 @@ handler = (req, res)->
       'mappers': Object.keys mappers
     return
 
-  options = args words
-  options = resolveNameOption options, 'template'
+  args = Arguments.from part
+
+  resolveNameOption args.options, 'template'
 
   # if any options require an filesystem, resolve these now
-  options = await resolvePathOption options, 'template', req
+  args.options = await resolvePathOption args.options, 'template', req
 
   # add request and response to the context for this handler
-  options.req = req
-  options.res = res
+  Object.assign args.options, {req, res}
 
-  mapper = mappers name, options
+  a = args.all()
+  mapper = mappers a...
   if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
 
@@ -83,15 +80,4 @@ handler = (req, res)->
   if isPromise req.data
     req.data = await req.data
 
-  positional = args.positional options
-  getArgs = ->
-    if not positional?
-      return [ options ]
-    if positional instanceof Array
-      return [ positional..., options ]
-    [ positional, options ]
-
-  applyArgs = [ req.data ].concat getArgs()
-  req.data = mapper.apply req.data, applyArgs
-
-module.exports = handler
+  req.data = mapper.apply req.data, [ req.data ]

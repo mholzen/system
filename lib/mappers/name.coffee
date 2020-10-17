@@ -11,7 +11,6 @@ module.exports = (data)->
   if typeof data == 'string'
     match = data.match nameRe
     if match?
-      log.debug {match}
       res = first: capitalize match[1]
       if match[2]?.length > 0
         res.last = capitalize match[2], a:'lastName'
