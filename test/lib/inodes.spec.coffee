@@ -99,7 +99,6 @@ describe 'inodes', ->
       results = await matches.collect().toPromise Promise
       expect(results).property(0).property 'path', file
 
-
     it 'fails', ->
       try
         s = await inodes().get('/some-path')

@@ -18,6 +18,9 @@ stat = statAsync
 # use it to update symlinks targets
 
 class Stat
+  @from: (path, options)->
+    new Stat path, options
+
   constructor: (path, options)->
     @path = path ? process.cwd()
     @path = expandTilde @path
@@ -51,7 +54,7 @@ class Stat
       result.push parent
 
     await @stat
-    readdir @path
+    readdir @path   # TODO: probably not working
 
   isDirectory: ->
     # log.debug 'isDirectory entry', {path: @path, stat: @stat}

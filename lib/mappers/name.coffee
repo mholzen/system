@@ -7,7 +7,7 @@ capitalize = (string)->
 
 nameRe = /^(\w+)(?:[\s\.]*)([\w\s]*)/
 
-module.exports = (data)->
+module.exports = (data, name, options)->
   if typeof data == 'string'
     match = data.match nameRe
     if match?

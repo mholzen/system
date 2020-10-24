@@ -5,7 +5,7 @@ types =
   'css': 'text/css'
   'jpg': 'image/jpeg'
   'html': 'text/html'
-  'text': 'text/plain'
+  'txt': 'text/plain'
   'png': 'image/png'
   'csv': 'text/csv'
   'json': 'application/json'
@@ -19,7 +19,7 @@ type = (data, context)->
       extension = path.extname data.filename
       if extension?
         extension = extension.slice(1)
-      log.debug {extension}
+
       if extension of types
         log.debug 'returning', {type: types[extension]}
         return types[extension]

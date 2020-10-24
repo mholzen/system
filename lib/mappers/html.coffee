@@ -53,15 +53,22 @@ form = (data)->
   (rows(data).join '') +
   '</table>'
 
+li = (data, options)->
+  '<li>' + body(data, options) + '</li>'
+
+ul = (data, options)->
+  '<ul>' +  data.map(li).join("\n") + '</ul>'
+
 body = (value, options)->
   if value instanceof Array
-    value = value.map((x)->"- [#{x}](./#{encodeURI(x)})").join '\n'
+    # value = value.map((x)->"- [#{x}](./#{encodeURI(x)})").join '\n'
+    return ul value, options
 
   if value?.image?.src?
-    return '<img src="'+ encodeURI(value?.image?.src) + '"></img>'
+    return '<img src="'+ encodeURI(value.image.src) + '"></img>'
 
   if value?.a?.href?
-    return '<a href="'+ encodeURI(value?.a?.href) + '">foo</a>'
+    return '<a href="'+ encodeURI(value.a.href) + '">' + value.a.text + '</a>'
 
   if typeof value?.toString == 'function'
     type = options?.res?.get('Content-Type')
@@ -82,11 +89,11 @@ body = (value, options)->
   # from Markdown to HTML
   return marked value
 
-base = (b)->
-  if not b?
+base = (href)->
+  if not href?
     return ''
 
-  '<base href="' + encodeURI(b) + '">'
+  '<base href="' + encodeURI(href) + '">'
 
 style = (data)->
   if not data?.url?

@@ -35,6 +35,8 @@ module.exports = (req, res, router)->
   if req.data instanceof Array
     req.data = stream req.data
 
+  Object.assign args.options, {req, res, resolve: mappers}
+
   a = args.all()
   f = mappers a...
   req.data = req.data.map f
