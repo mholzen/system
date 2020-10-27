@@ -22,9 +22,17 @@ describe 'integration', ->
       r.get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
       .then (res)->
         expect res.text
-        .includes '<li><a href='
+        .match /<li>[^<]*<a href=/
         .includes 'image.html'
 
+    it 'should have different postfix url/remainder maps depending on file type', ->
+      r.get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
+      .then (res)->
+        expect res.text
+        .match /<li>[^<]*<a href=[^<]*<img/
+        .includes 'image.html'
+
+  describe.skip '?', ->
     it 'inode generator', ->
       f = generators 'stat'
       r = await stream [ 'test/artifacts' ]
@@ -51,3 +59,13 @@ describe 'integration', ->
       expect mappers 'link', dir
       .property 'href'
       .include 'map/link/apply/html'
+
+describe.skip 'traverse directories up to N deep, display as graph'
+describe.skip 'move /files to /generators/files'
+describe 'graph with edges', ->
+  it 'works', ->
+    r.get 'files/test/artifacts/graph.json/generators/json/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
+    .then (res)->
+      expect res.text
+      .match /<li>[^<]*<a href=/
+      .includes 'image.html'

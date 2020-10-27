@@ -23,19 +23,12 @@ resolve.deep = (data)->
   nodes = Array.from traverse data, path: true
   log.debug 'resolve.deep', {nodes}
   promises = nodes.map (match)->
-    log.debug 'resolving', {match}
     resolve match.value
-    # if isStream match.value
-    #   match.value = match.value.fork().collect().toPromise Promise
-
-    # if not isPromise match.value
-    #   return match.value
-    
-    # match.value
     .then (value)->
       _.set data, match.path, value
+    .catch (error)->    # TODO: make this behaviour depend on options
+      _.set data, match.path, error
 
-    # resolve node
   Promise.all promises
   .then ->
     data

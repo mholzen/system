@@ -32,9 +32,9 @@ class SimpleGraph
   edges: ->
     for link from @_edges.values()
       # TODO: used findIndex
-      from = nodes.indexOf link.from
-      to = nodes.indexOf link.to
-      {from, to}
+      source = @_nodes.indexOf link.from
+      target = @_nodes.indexOf link.to
+      {source, target}
 
   add: (s,p,o)->
     if not o?
@@ -51,9 +51,9 @@ class SimpleGraph
     nodes: nodes
     edges: for link from @_edges.values()
       # TODO: used findIndex
-      from = nodes.indexOf link.from
-      to = nodes.indexOf link.to
-      {from, to}
+      source = nodes.indexOf link.from
+      target = nodes.indexOf link.to
+      {source, target}
 
 graph = (value, opts)->
   if typeof value == 'object'

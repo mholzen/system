@@ -4,19 +4,24 @@ path = require 'path'
 types =
   'css': 'text/css'
   'jpg': 'image/jpeg'
+  'jpeg': 'image/jpeg'
   'html': 'text/html'
   'txt': 'text/plain'
+  'md': 'text/plain'
   'png': 'image/png'
   'csv': 'text/csv'
   'json': 'application/json'
+
+name = (data)->
+  data?.filename ? data?.name
 
 type = (data, context)->
   if types[data]?
     return types[data]
 
   if typeof data == 'object'
-    if data.filename?
-      extension = path.extname data.filename
+    if name(data)?
+      extension = path.extname name data
       if extension?
         extension = extension.slice(1)
 

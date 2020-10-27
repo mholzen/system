@@ -127,7 +127,7 @@ describe 'server', ->
         .includes '<img'
 
     it 'list of resources', ->
-      r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'
+      r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'  # TODO: make style a mapper
       .then (res)->
         expect res.text
         .includes '<img'

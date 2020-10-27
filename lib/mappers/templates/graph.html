@@ -6,9 +6,9 @@ text {
   font: 10px sans-serif;
 }
 
-/*circle {
+circle {
   fill: rgb(198, 232, 255);
-}*/
+}
 
 .link {
   stroke: #999;
@@ -83,7 +83,7 @@ function render(graph) {
   node.append("text")
       .attr("dy", ".3em")
       .style("text-anchor", "middle")
-      .text(function(d) { return d.label; });
+      .text(function(d) { return (d.label || d.value); });
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
