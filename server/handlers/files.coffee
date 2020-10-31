@@ -31,8 +31,9 @@ handler = (req, res, router) ->
   # TODO: use previously set req.base.  perhaps use an array?
   req.base = '/files' + req.dirname.slice inodePath.root.length
 
-  if (t = type req)
-    res.type t
+  t = (type req) ? 'text/plain'
+  log.here {t}
+  res.type t
 
   # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 

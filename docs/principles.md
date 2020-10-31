@@ -11,37 +11,37 @@
 
 # Functions
 
-  l is a literal; synchronous delivery
-  s is a stream; stream here implies async delivery; the stream may have many, 1 or 0 element
+  l is a literal; synchronous response
+  s is a stream; stream here implies async response; the stream may have many, 1 or 0 element
 
-## ... that take a Literal
+## Functions that take a Literal
 
   mappers        f(literal) -> literal
+  mappers.async  f(literal) -> literal async
   generators     f(literal) -> stream
 
-TODO: should we distinguish between sync and async mappers?
-    mappers.async
-
-## ... that take a Stream
+## Functions that take a Stream
 
   reducers       f(stream) -> literal
   transformers   f(stream) -> stream
 
-## Mapper functions
+## Usages of a mapper function
   apply     (mapper, literal)   -> literal
   map       (mapper, stream)    -> stream
-  map       (mapper, iterable)    -> stream
-  applyresolve (mapper, literal)   -> literal
-
-## Generator functions
-  generate  (generator, literal) -> stream
-  flatmap   (generator, stream) -> stream   # can be composed with `flatten`
 
 ## Reducer functions
   reduce    (reducer, stream) -> literal
 
 ## Transformer functions
-
   transform (transformer, stream) -> stream
 
-  filter
+## Generator functions
+  generate  (generator, literal) -> stream
+
+## Composite functions
+
+  flatmap (mapper, stream)->stream
+
+  map   (generator, stream)  -> stream   # can be composed with `flatten`
+
+  flatten

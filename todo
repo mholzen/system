@@ -1,5 +1,4 @@
 # infrastructure, design, code quality
-  - clean up test directory
   - use NODE_PATH or equivalent to set test/*.spec to root
   - move /files handler to /generators/files
 
@@ -34,6 +33,7 @@
   - integrate todo into software engineering process
 
 # search
+  - search for directories from command line
   - interface for searchers
     - file/network searcher is a stream
     - in-memory data can be searched too
