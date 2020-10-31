@@ -15,7 +15,6 @@ augment = (data, addition, options)->
   if typeof data != 'object'
     data = [identify data]: data
 
-
   Object.assign data, [name]: addition
 
 module.exports = Object.assign augment

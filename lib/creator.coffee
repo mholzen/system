@@ -13,7 +13,9 @@ module.exports = (map)->
       return
 
     if typeof map[name] == 'function'
-      return (data) ->
+      return (data, a...) ->
+        if a.length > 0
+          throw new Error 'unary function called with more arguments'
         # TODO: consider wrapping the error hanlding in another function
         try
           map[name] data, args...

@@ -7,7 +7,6 @@ path = require 'path'
 module.exports = (data, options)->
   if Array.isArray data
     data = path.join data...
-    log.here {data}
 
   if typeof data == 'string'
     s = await stat data

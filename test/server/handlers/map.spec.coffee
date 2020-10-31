@@ -12,14 +12,13 @@ describe 'servers/handlers/map', ->
     s = new server.Server()
     r = request s.app
 
-  # TODO: mapper.augment = (data, functionOrString, options)->
-  # how do we distinguish between function and string for second argument?
-
-  # option 1: force 2nd argument to be a function.  use a literal function to pass a string
-  # option 2: we search functions first
-
   it 'map resolves converts string to function', ->
-    r.get '/literals/a,b,c/map/augment,html'
+    r.get '/literals/1,3,5/map/augment,increase,name:increment'
     .then (response)->
       expect response.text
-      .includes '<p>123</p>'
+      .includes '1'
+      .includes '2'
+      .includes '3'
+      .includes '4'
+      .includes '5'
+      .includes '6'

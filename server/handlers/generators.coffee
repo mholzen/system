@@ -10,7 +10,7 @@ module.exports = (req, res, router)->
     req.data = Object.keys(generators).sort()
     return
 
-  if not (generator = generators name)
+  if not (generator = generators name, {req})
     return res.status(404).send "'#{name}' not found"
 
   if not req.data?
@@ -22,6 +22,6 @@ module.exports = (req, res, router)->
   if req.data instanceof Buffer
     req.data = req.data.toString()
 
-  req.data = generator req.data, {req}
+  req.data = generator req.data
   log.debug 'generator', {output: req.data, name: req.name}
   req.data

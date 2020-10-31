@@ -3,8 +3,7 @@ getArray = require './array'
 value = require './value'
 
 module.exports = (data, addition, options)->
-  # TODO: refactor code with augment
-  addition = f data, addition, options
+  addition = value data, addition, options
 
   if not addition?
     throw new Error 'nothing to prepend with'

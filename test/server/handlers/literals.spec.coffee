@@ -6,7 +6,7 @@ require '../../streams/transformers.spec'    # test ordering based on dependenci
 
 r = null
 
-describe.only 'servers/handlers/literals', ->
+describe 'servers/handlers/literals', ->
   before ->
     s = new server.Server()
     r = request s.app

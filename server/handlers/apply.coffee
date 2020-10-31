@@ -17,8 +17,10 @@ functions = (obj) ->
 
   return [...properties.keys()].filter (item) -> typeof obj[item] == 'function'
 
+# TODO: make accessible to the server
 paths =
   Graph: '~/develop/mholzen/system/lib/mappers/templates/graph.html'
+  Image: '~/develop/mholzen/system/lib/mappers/templates/image.html'
 
 resolveNameOption = (options, option)->
   name = options?[option]?.name
@@ -58,7 +60,6 @@ module.exports = (req, res)->
     return
 
   args = Arguments.from part
-
   resolveNameOption args.options, 'template'
 
   # if any options require an filesystem, resolve these now

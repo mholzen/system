@@ -14,7 +14,7 @@ describe 'integration', ->
     s = new server.Server()
     r = request s.app
 
-  describe.only 'navigate directories', ->
+  describe 'navigate directories', ->
     it 'works', ->
       # r.get '/files,statDirectories:true/test/artifacts/map/link/apply/html'
 #      r.get '/files/test/artifacts/map/augment,stat/apply/resolve/map/link/apply/html'
@@ -62,10 +62,10 @@ describe 'integration', ->
 
 describe.skip 'traverse directories up to N deep, display as graph'
 describe.skip 'move /files to /generators/files'
+
 describe 'graph with edges', ->
   it 'works', ->
-    r.get 'files/test/artifacts/graph.json/generators/json/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
+    r.get '/files/test/artifacts/graph.json/generators/json/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
     .then (res)->
       expect res.text
-      .match /<li>[^<]*<a href=/
-      .includes 'image.html'
+      .match /links: \[{"source":0,"target":1}/

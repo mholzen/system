@@ -25,7 +25,6 @@ describe 'server', ->
       
   it 'literals/123', ->
     r.get '/literals/123'
-    .expect 200
     .then (response)->
       expect response.text
       .eql '123'
@@ -54,12 +53,10 @@ describe 'server', ->
 
   it '/literals/1/type/css', ->
     r.get '/literals/1/type/css'
-    .expect 200
     .expect('Content-Type', /text\/css/)
 
   it.skip 'searchers', ->
     r.get '/searchers'
-    .expect 200
     # .expect('Content-Type', /text\/css/)
 
   it '/files/reduce/count', ->
@@ -83,21 +80,18 @@ describe 'server', ->
 
   it '/searchers/inodes', ->
     r.get '/searchers/inodes'
-    # .expect 200
     .then (response)->
       expect response.text
       .includes '"path":'
 
   it '/files/test/artifacts/names.csv/generators/lines/map/split', ->
     r.get '/files/test/artifacts/names.csv/generators/lines/map/split'
-    # .expect 200
     .then (response)->
       expect response.text
       .includes '[["First","Last"],['
 
-  it '...reducer/table', ->
-    r.get '/type/text/files/test/artifacts/names.csv/generators/lines/map/split/reducers/table'
-    # .expect 200
+  it '...reduce/table', ->
+    r.get '/files/test/artifacts/names.csv/generators/lines/map/split/reducer/table'
     .then (response)->
       expect response.text
       .includes '{' # JSON of a table
@@ -105,13 +99,11 @@ describe 'server', ->
 
   it.skip 'difference between dir and dir/', ->
     r.get '/files/test/artifacts'
-    # .expect 200
     .then (response)->
       expect response.text
       .includes '["file1", "file2"]'
 
     r.get '/files/test/artifacts/'
-    # .expect 200
     .then (response)->
       expect response.text
       .includes '[{"name:"file1",'
@@ -160,7 +152,6 @@ describe.skip 'directory to index-page'
 describe.skip 'post', ->
   it 'path with function (apply) takes one path argument (a template function)', ->
     r.post '/mappers/pug/example', 'p a:#{a} b:#{b}'
-    .expect 200
     .then (response)->
       r.get '/files/test/artifacts/dict.json/apply/pug/example'
       .then (response)->
