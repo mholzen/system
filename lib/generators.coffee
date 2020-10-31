@@ -1,7 +1,7 @@
 {stream, isStream} = require './stream'
 log = require './log'
 isIterable = require './mappers/isIterable'
-request = require './request'
+request = require './mappers/request'
 parse = require './parse'
 CSON = require 'cson'
 creator = require './creator'

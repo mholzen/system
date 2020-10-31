@@ -1,7 +1,7 @@
 log = require './log'
 requireDir = require 'require-dir'
 creator = require './creator'
-request = require './request'
+request = require './mappers/request'
 template = require './mappers/template'
 
 # Functions that take one value and return one value

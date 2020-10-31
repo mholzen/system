@@ -1,4 +1,4 @@
-request = require '../request'
+request = require './request'
 log = require '../log'
 {stream, isStream} = require '../stream'
 inodes = require '../inodes'
