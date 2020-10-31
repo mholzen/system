@@ -1,42 +1,12 @@
-# infrastructure
+# infrastructure, design, code quality
+  - clean up test directory
   - use NODE_PATH or equivalent to set test/*.spec to root
+  - move /files handler to /generators/files
 
 # transform
-  - choose method to pass arugments, or options
-
-    /files/images/ map,image / transform,head / reduce,html
-
-    - "collection/reduce/table/keys,first,last"   ?
-    - "collection/reduce/table/apply/keys,first,last"   ?
-    - "collection/reduce/table/keys#first,last"   ?
-    - collection/reduce/table#keys:first,last
-
-
-    - use hash mark #
-      - it has browser semantics
-      - "collection/head#10/"
-      - "collection/reduce/table/keys#first,last"   ?
-      - seems we can use multiple # in an URL
-      - we use named arguments using colon
-        - "collection/map#flat:true/
-
-    - use colon
-      collection/head:10/
-      resource/pick:param  (which incdentally is also resource/param)
-
-
-
-      /collect/map/param
-      /pick/param
-      /pick:first,last,address
-      /pick#first
-
-      /type/png
-      /type:png
-      /type/    ?== /type/default/
-    - consider .csv/map/pick/param/ because param has no default value
-  - filter (eg. /files/data/people/filter-out/directories )
-  - head/tail, for x milliseconds, for n items
+  - clean up use of Args in handlers
+  - filter (eg. /files/data/people/transform/filter-out,directories )
+  - head/tail, for x milliseconds
   - extract rows from html table to scrape from web page
   - reduce to a set (e.g. transactions.csv/reduce/table/account-names/reduce/set )
   - order by last modified
@@ -91,3 +61,4 @@
     - order files based on "relevance" (eg. a query "foo" should first return names matching query entirely: ["foo", "abcfoodef"])
   - store search results in temporary files to be able to access the content again
 
+# visualize

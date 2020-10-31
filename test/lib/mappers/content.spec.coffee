@@ -1,11 +1,10 @@
-{post, mappers: {content}} = require '../lib'
-{searchers} = require '../lib'
+{post, mappers: {content}, searchers} = require 'lib'
 
-require './searchers.spec.coffee'
+require '../../searchers.spec.coffee'
 
 {get} = content
 describe 'content.get', ->
-  it '', ->
+  it 'works', ->
     expect(get 1, []).eql 1
     a = await get {a:1}, ['a']
     expect(a).eql 1

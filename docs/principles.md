@@ -14,7 +14,7 @@
   l is a literal; synchronous delivery
   s is a stream; stream here implies async delivery; the stream may have many, 1 or 0 element
 
-## Literal functions
+## ... that take a Literal
 
   mappers        f(literal) -> literal
   generators     f(literal) -> stream
@@ -22,7 +22,7 @@
 TODO: should we distinguish between sync and async mappers?
     mappers.async
 
-## Stream functions
+## ... that take a Stream
 
   reducers       f(stream) -> literal
   transformers   f(stream) -> stream

@@ -5,6 +5,7 @@ types =
   'css': 'text/css'
   'jpg': 'image/jpeg'
   'jpeg': 'image/jpeg'
+  'gif': 'image/gif'
   'html': 'text/html'
   'txt': 'text/plain'
   'md': 'text/plain'
