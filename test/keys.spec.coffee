@@ -1,4 +1,4 @@
-{keys} = require '../lib/generators'
+{keys} = require  'lib/generators'
 
 describe 'keys', ->
   it 'should work on string', ->

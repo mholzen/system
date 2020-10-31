@@ -1,7 +1,7 @@
-{stream, post, mappers: {content}} = require '../lib'
+{stream, post, mappers: {content}} = require  'lib'
 tempy = require 'tempy'
 
-{stat} = require '../lib/inodes'
+{stat} = require  'lib/inodes'
 
 describe 'post', ->
   it 'string', ->

@@ -1,6 +1,6 @@
-{stream} = require '../lib'
+{stream} = require  'lib'
 
-{sum} = require '../lib/reducers'
+{sum} = require  'lib/reducers'
 
 describe 'sum', ->
   it 'from:numbers', ->

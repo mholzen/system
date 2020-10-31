@@ -1,4 +1,4 @@
-{stream} = require '../lib'
+{stream} = require  'lib'
 _ = require 'lodash'
 
 describe 'stream', ->

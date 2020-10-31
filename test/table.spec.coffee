@@ -1,4 +1,4 @@
-{table} = require '../lib'
+{table} = require  'lib'
 
 describe 'table', ->
   it 'should construct from an array of object', ->

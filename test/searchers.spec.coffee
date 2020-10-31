@@ -4,7 +4,7 @@
   query
   post
   content
-} = require '../lib'
+} = require  'lib'
 
 describe 'searchers', ->
 

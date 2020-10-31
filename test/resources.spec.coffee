@@ -1,4 +1,4 @@
-Resources = require '../lib/resources'
+Resources = require  'lib/resources'
 
 r = null
 describe 'resources', ->

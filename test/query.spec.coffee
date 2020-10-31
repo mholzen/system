@@ -1,7 +1,7 @@
-{query, stream} = require '../lib/'
-{Match} = require '../lib/match'
+{query, stream} = require  'lib/'
+{Match} = require  'lib/match'
 {createQuery, fromArgs, Query} = query
-{post} = require '../lib'
+{post} = require  'lib'
 isPromise = require 'is-promise'
 
 require './results.spec'

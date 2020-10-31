@@ -1,4 +1,4 @@
-require '../lib/index'
+require  'lib/index'
 
 {parse, map, notnull} = require '../../streams/transformers'    # units under tests
 

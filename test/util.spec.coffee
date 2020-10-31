@@ -1,4 +1,4 @@
-{sortAs, localeCompareDirectory} = require '../lib/util'
+{sortAs, localeCompareDirectory} = require  'lib/util'
 
 describe 'util', ()->
   describe 'localeCompare', ->

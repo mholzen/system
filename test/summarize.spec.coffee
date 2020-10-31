@@ -1,4 +1,4 @@
-{summarize} = require '../lib/mappers'
+{summarize} = require  'lib/mappers'
 
 it 'should summarize', ->
 

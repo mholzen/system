@@ -1,5 +1,5 @@
-{search, post, query, stream, inodes, mappers} = require '../lib'
-{outputter} = require '../lib'
+{search, post, query, stream, inodes, mappers} = require  'lib'
+{outputter} = require  'lib'
 {dirname, basename} = require 'path'
 
 describe 'search', ->

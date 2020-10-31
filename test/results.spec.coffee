@@ -1,5 +1,5 @@
-{Results} = require '../lib/results'
-log = require '../lib/log'
+{Results} = require  'lib/results'
+log = require  'lib/log'
 
 describe 'Results', ->
 

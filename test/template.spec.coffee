@@ -1,4 +1,4 @@
-{substitute, Template} = require '../lib/mappers/template'
+{substitute, Template} = require  'lib/mappers/template'
 
 describe 'template', ->
   it 'expressions substitute', ->

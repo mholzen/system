@@ -1,5 +1,5 @@
-query = require '../lib/query'
-{post} = require '../lib'
+query = require  'lib/query'
+{post} = require  'lib'
 
 describe 'query.searchIn', ->
 

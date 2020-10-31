@@ -1,6 +1,6 @@
-urlQueries = require '../lib/urlQueries'
-mappers = require '../lib/mappers'
-stream = require '../lib/stream'
+urlQueries = require  'lib/urlQueries'
+mappers = require  'lib/mappers'
+stream = require  'lib/stream'
 
 describe 'urlQueries', ->
   it 'should get content', ->

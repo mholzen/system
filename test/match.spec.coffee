@@ -1,6 +1,6 @@
-{query} = require '../lib/query'
-{Match, intersect, startsWith} = require '../lib/match'
-{stream} = require '../lib'
+{query} = require  'lib/query'
+{Match, intersect, startsWith} = require  'lib/match'
+{stream} = require  'lib'
 
 data =
   mvh:

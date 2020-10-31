@@ -1,4 +1,4 @@
-{generators} = require '../lib'
+{generators} = require  'lib'
 fs = require 'fs'
 
 describe 'generators', ->

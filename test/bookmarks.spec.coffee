@@ -1,5 +1,5 @@
-bookmarks = require '../lib/bookmarks'
-{query} = require '../lib'
+bookmarks = require  'lib/bookmarks'
+{query} = require  'lib'
 
 require './query.spec'
 

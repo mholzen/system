@@ -1,4 +1,4 @@
-{summary} = require '../lib/reducers'
+{summary} = require  'lib/reducers'
 
 it 'summary', ->
   a = [1,2,3]

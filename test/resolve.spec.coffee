@@ -1,5 +1,5 @@
-resolve = require '../lib/resolve'
-stream = require '../lib/stream'
+resolve = require  'lib/resolve'
+stream = require  'lib/stream'
 
 it 'promise', ->
   p = new Promise (resolve, reject)->resolve 1

@@ -1,5 +1,5 @@
-dates = require '../lib/dates'
-query = require '../lib/query'
+dates = require  'lib/dates'
+query = require  'lib/query'
 
 describe 'dates', ->
   it 'iterator', (done)->

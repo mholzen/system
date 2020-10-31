@@ -1,4 +1,4 @@
-{request, body, string, lines} = require '../lib/request'
+{request, body, string, lines} = require  'lib/request'
 
 describe.skip 'request', ->
   it 'should get a request', ->

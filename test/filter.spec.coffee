@@ -1,5 +1,5 @@
-stream = require '../lib/stream'
-query = require '../lib/query'
+stream = require  'lib/stream'
+query = require  'lib/query'
 
 # TODO: move to /lib
 queries =

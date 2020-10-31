@@ -1,8 +1,8 @@
-{edges, value, traverse} = require '../lib/traverse'
-mappers = require '../lib/mappers'
-inodes = require '../lib/inodes'
+{edges, value, traverse} = require  'lib/traverse'
+mappers = require  'lib/mappers'
+inodes = require  'lib/inodes'
 
-{stream, post, inodes: {inode}} = require '../lib'
+{stream, post, inodes: {inode}} = require  'lib'
 
 describe 'value', ->
   it 'array', ->
