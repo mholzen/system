@@ -4,7 +4,7 @@ require  'lib/index'
 
 describe 'transformers', ->
 
-  {stream, mappers} = require '../../lib'              # helpers (therefore depends on)
+  {stream, mappers} = require  'lib'              # helpers (therefore depends on)
 
   it 'map', ->
     p =

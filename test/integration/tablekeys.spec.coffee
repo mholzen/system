@@ -2,7 +2,7 @@
 
 describe 'tablekeys', ->
 
-  {stream, mappers} = require '../../lib'              # helpers (therefore depends on)
+  {stream, mappers} = require  'lib'              # helpers (therefore depends on)
 
   it 'works', ->
     @timeout 10000

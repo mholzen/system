@@ -1,4 +1,4 @@
-router = require '../server/router'
+{router} = require 'server'
 get = router.get
 
 describe 'router', ->

@@ -1,7 +1,7 @@
 bookmarks = require  'lib/bookmarks'
 {query} = require  'lib'
 
-require './query.spec'
+require 'test/lib/query.spec'
 
 describe 'bookmarks', ->
   it 'iterator', ->

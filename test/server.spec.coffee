@@ -1,10 +1,10 @@
-server = require '../server/'
+server = require 'server'
 request = require 'supertest'
 requireDir = require 'require-dir'
 
-require './lib.spec'
-require './router.spec'
-require './generators.spec'
+require 'test/lib.spec'
+require 'test/server/router.spec'
+require 'test/lib/generators.spec'
 requireDir './server/handlers'
 
 r = null

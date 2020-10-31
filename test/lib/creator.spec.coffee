@@ -1,4 +1,4 @@
-{creator} = require '../../lib'
+{creator} = require  'lib'
 
 describe 'creator', ->
   it 'works', ->

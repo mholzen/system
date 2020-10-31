@@ -1,4 +1,4 @@
-require '../server.spec'
+require 'test/server.spec'
 
 describe 'bin/map', ->
   @timeout 5000
