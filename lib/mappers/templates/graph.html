@@ -26,13 +26,13 @@ var width = window.innerWidth ,
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-400)
-    .linkDistance(100)
+    .charge(-40)
+    .linkDistance(10)
     .size([width, height]);
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width*2)
-    .attr("height", height*2);
+    .attr("width", width*5)
+    .attr("height", height*5);
 
 function render(graph) {
   force
@@ -72,7 +72,7 @@ function render(graph) {
       //   </defs>
 
   node.append('circle')
-      .attr("r", 40)
+      .attr("r", 10)    // TODO: make a function of the count of nodes?
       .attr("stroke", "black")
       .attr("fill", "#000")
       .attr("fill", function(d) { return "url(#image)"; });
@@ -83,7 +83,16 @@ function render(graph) {
   node.append("text")
       .attr("dy", ".3em")
       .style("text-anchor", "middle")
-      .text(function(d) { return (d.label || d.value); });
+      .text(function(d) {
+        if (d.label)
+          return d.label;
+        if (d.value)
+          if (d.value.indexOf('-') > 0)
+            return "*";
+          else
+            return d.value;
+        return '';
+      });
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -94,9 +103,9 @@ function render(graph) {
     node.attr("transform", function(d){return "translate("+d.x+","+d.y+")"});
   });
 }
-var graph = {
+var g = {
   nodes: ${JSON.stringify(graph.nodeList())},
   links: ${JSON.stringify(graph.edges())}
 };
-render(graph);
+render(g);
 </script>

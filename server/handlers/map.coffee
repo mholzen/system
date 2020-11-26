@@ -37,6 +37,15 @@ module.exports = (req, res, router)->
 
   Object.assign args.options, {req, res, resolve: mappers}
 
+  catchAndLog = (f)->
+    (a...)->
+      try
+        f a...
+      catch e
+        log.error {e}
+        null
+
   a = args.all()
   f = mappers a...
-  req.data = req.data.map f
+  g = catchAndLog f
+  req.data = req.data.map g

@@ -44,17 +44,42 @@ root =
 
   reducers: reducers
 
+  measures:
+    uptime: (req, res)-> req.data = process.uptime()
+
+  metrics:
+    uptime:
+      period: '10s'
+      measure: '/measures/uptime'
+    load:
+      frequency: 1
+      measures: '/requests/logs/entries/reduce/count'
+
 root = Object.assign root, require './handlers'
+
+class RequestLogs
+  constructor: (size)->
+    @size = size ? 10
+    @entries = []
+  add: (req)->
+    @entries.unshift {path: req.path, timestamp: Date.now()}
+    if @entries.length > @size
+      @entries.pop()
+    @entries[0]
 
 class TreeRouter
   constructor: (aRoot, options)->
     @root = aRoot ? root
     @options = options
-    log.debug 'new TreeRouter', {root: @root, options: @options}
+    # log.debug 'new TreeRouter', {root: @root, options: @options}
 
-    @regexp = new RegExp '/*([^/]*)(.*)'
+    @logs = new RequestLogs()
+    @root.requests =
+      logs: @logs
 
   process: (req, res, next)->
+    req.log = @logs.add req   # Warning: dirty `req`
+    req.root = @root
     req.data = @root
     try
       await @processPath req, res, next
@@ -73,7 +98,7 @@ class TreeRouter
       return res.send @root
 
     req.data = await req.data
-    log.debug 'respond', {data: 'typeof-' + typeof req.data}
+    log.debug 'respond', {data:req.data}
     if typeof req.data == 'number'
       req.data = req.data.toString()
 
@@ -91,7 +116,7 @@ class TreeRouter
     if typeof req.data == 'object'
       if req.data instanceof Buffer
         # streamable?
-        return res.send(req.data.toString())
+        return res.send req.data.toString()
 
       if isStream req.data
         log.debug 'respond with stream'
@@ -133,11 +158,27 @@ class TreeRouter
     # log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
 
-      # log.debug 'processPath', {remainder: req.remainder, req_data: req.data}
+      # log.debug 'processPath', {remainder: req.remainder, data: req.data}
 
       segment = req.remainder.shift()
       if not segment?
         log.debug 'empty segment'
+        continue
+
+      if segment.length == 0
+        log.debug 'trailing(or empty) slash', {data: req.data}
+        # return req.data as a collection
+        toCollection = (data)->
+          if Array.isArray data
+            return data
+          if typeof data?.entries == 'function'
+            return data.entries()
+          if typeof data?.keys == 'function'
+            return data.keys()
+          if data?.values == 'function'
+            return data.values()
+          Object.keys data
+        req.data = await toCollection req.data
         continue
 
       req.args = Arguments.from segment

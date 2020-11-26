@@ -12,7 +12,7 @@ url = require './mappers/url'
 
 log = require './log'
 tempy = require 'tempy'
-uuidv1 = require 'uuid/v1'
+{uuid} = require 'uuidv4'
 path = require 'path'
 
 mkdir = promisify fs.mkdir
@@ -65,7 +65,7 @@ post = (content, resource)->
           if e.code != 'EISDIR'
             throw e
 
-          resource = path.join resource, uuidv1()
+          resource = path.join resource, uuid()
           log 'post.appendFile', resource
           return appendFile(resource, content).then -> resource
 

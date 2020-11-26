@@ -23,16 +23,14 @@ handler = (req, res, router) ->
     remainder: Array.from req.remainder
   req.data = content inodePath.path, parse: false
   req.filename = inodePath.path          # TODO: consider a scoped or different name?
-  req.dirname = if inodePath.stat.isDirectory()
-    inodePath.path + '/'
-  else
-    dirname inodePath.path
+  req.dirname = if inodePath.stat.isDirectory() then inodePath.path else dirname inodePath.path
+  req.dirname += '/'
+
   req.reldirname = req.dirname.slice inodePath.root.length + 1
   # TODO: use previously set req.base.  perhaps use an array?
   req.base = '/files' + req.dirname.slice inodePath.root.length
 
   t = (type req) ? 'text/plain'
-  log.here {t}
   res.type t
 
   # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}

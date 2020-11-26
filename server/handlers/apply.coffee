@@ -3,7 +3,7 @@ mappers = require '../../lib/mappers'
 isPromise = require 'is-promise'
 {Arguments} = require '../../lib/mappers/args'
 Path = require 'path'
-{content} = require '../../lib/mappers'
+{content, value} = require '../../lib/mappers'
 {isStream} = require '../../lib/stream'
 expandTilde = require 'expand-tilde'
 
@@ -21,6 +21,7 @@ functions = (obj) ->
 paths =
   Graph: '~/develop/mholzen/system/lib/mappers/templates/graph.html'
   Image: '~/develop/mholzen/system/lib/mappers/templates/image.html'
+  Table: '~/develop/mholzen/vonholzen.org/files/private/table.pug'
 
 resolveNameOption = (options, option)->
   name = options?[option]?.name
@@ -30,13 +31,15 @@ resolveNameOption = (options, option)->
 
 resolvePathOption = (options, option, req)->
   path = options?[option]?.path
-  if path? and req?.dirname?
-    # log.debug 'resolvePathOption', {dirname: req.dirname, path, options}
+  if path?
+    log.debug 'resolvePathOption', {option}
     if not path.startsWith '/'
+      if not req?.dirname?
+        throw new Error "relative path '#{path}' but no req.dirname"
       path = Path.join req.dirname, path
-    promise = content {path}, parse:'string'
-    options[option] = await promise
-    # log.debug 'resolvePathOption content retrieved', {options}
+    options[option].path = path
+    options[option].content = await content {path}, parse:'string'
+    log.debug 'resolvePathOption content retrieved', {[option]: options[option]}
     return options
   else
     return new Promise (resolve)-> resolve options
@@ -61,14 +64,29 @@ module.exports = (req, res)->
 
   args = Arguments.from part
   resolveNameOption args.options, 'template'
+  resolveNameOption args.options, 'style'
 
   # if any options require an filesystem, resolve these now
   args.options = await resolvePathOption args.options, 'template', req
+  args.options = await resolvePathOption args.options, 'style', req
 
   # add request and response to the context for this handler
   Object.assign args.options, {req, res}
 
   a = args.all()
+  name = a[0]
+  if typeof req.data[name] == 'function'
+    args.positional.shift() # remove name
+    # if args.positional[0]?   # TODO: do this for all positional
+    #   args.positional[0] = value req.data, args.positional[0], args.options
+
+    if args.positional[0] == 'score'   # TODO: do this for all positional
+      args.positional[0] = req.root.reducers.sort.score
+
+    log.debug "applying req.data.'{#name}' function"
+    req.data = req.data[name].apply req.data, args.positional
+    return
+
   mapper = mappers a...
   if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
@@ -81,4 +99,5 @@ module.exports = (req, res)->
   if isPromise req.data
     req.data = await req.data
 
+  log.debug "applying mapper '#{name}' to req.data" 
   req.data = mapper.apply req.data, [ req.data ]

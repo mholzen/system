@@ -2,6 +2,12 @@
   - use NODE_PATH or equivalent to set test/*.spec to root
   - move /files handler to /generators/files
 
+# server
+  - redirect (302) with rewrites expanded, to troubleshoot/modify
+# search
+
+  bookmarks
+
 # transform
   - clean up use of Args in handlers
   - filter (eg. /files/data/people/transform/filter-out,directories )

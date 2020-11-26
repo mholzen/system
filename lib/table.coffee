@@ -33,15 +33,16 @@ class Table
       _.keys(row).forEach (key)->keys[key] = 1
     Object.keys(keys)
 
-  rows: ->
+  rows: (keys...)->
     rows = []
+    keys = if keys.length > 0 then keys else @keys()
     for data in @datas
       if data instanceof Array
         rows.push data
         continue
 
       row = []
-      for key in @keys()
+      for key in keys
         row.push data[key]
       rows.push row
     rows

@@ -95,3 +95,11 @@ describe 'coffee', ()->
       2
 
     expect(a).eql 2
+
+  it 'value of a for loop', ->
+    f = ->
+      for i in [1..2]
+        i+1
+    
+    expect f()
+    .eql [2,3]

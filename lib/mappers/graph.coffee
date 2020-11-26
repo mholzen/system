@@ -30,16 +30,22 @@ class SimpleGraph
       {id: i, value: node, label: node?.first}
 
   edges: ->
-    for link from @_edges.values()
-      # TODO: used findIndex
-      source = @_nodes.indexOf link.from
-      target = @_nodes.indexOf link.to
+    nodes = @nodes()
+    console.log {nodes}
+    for edge from @_edges.values()
+      source = nodes.indexOf edge.from
+      target = nodes.indexOf edge.to
       {source, target}
 
   add: (s,p,o)->
-    if not o?
+    if p? and not o?
       o = p
       p = undefined
+
+    if s? and not p? and not o?
+      p = s.predicate
+      o = s.object ? s.target
+      s = s.subject ? s.source
 
     @_nodes.add s
     if o?

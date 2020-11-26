@@ -97,15 +97,18 @@ base = (href)->
 
 style = (data)->
   if not data?.url?
-    data = url data
-    return '<link href="' + data + '" rel="stylesheet" type="text/css">'
+    data.url = url data
+
+  if data?.url?
+    # return '<link href="' + data.url + '" rel="stylesheet" type="text/css">'
+    return '<link href="' + data.url + '" rel="stylesheet">'
 
 head = (data)->
   result = ''
-  if data?.style?
-    result += style data.style
   if data?.req?.base
     result += base data.req.base
+  if data?.style?
+    result += style data.style
   result
 
 outer = (data, options)->

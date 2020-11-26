@@ -20,8 +20,8 @@ module.exports = (map)->
         try
           map[name] data, args...
         catch e
-          if not options?.errors?.throw
-            log.error e
+          if options?.errors?.ignore
+            log.error 'in creator', e
             return e
           else
             throw e

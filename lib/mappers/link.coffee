@@ -10,7 +10,7 @@ href = (data, options)->
   if typeof data?.name == 'string'
     res = data.name
 
-    if typeof data?.stat == 'object'
+    if typeof data?.stat?.isDirectory == 'function'
       if data.stat.isDirectory()
         res += '/directory'
 
@@ -23,7 +23,8 @@ text = (data, options)->
     if type(data, options)?.startsWith 'image'
       return '<img src="' + href(data, options) + '"/>'
 
-    postfix = if data?.stat?.isDirectory() then '/' else ''
+    isDirectory = if typeof data?.stat?.isDirectory == 'function' then data.stat.isDirectory() else false
+    postfix = if isDirectory then '/' else ''
     return data.name + postfix
 
 module.exports = (data, options)->

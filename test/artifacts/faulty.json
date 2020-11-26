@@ -5,7 +5,7 @@
         "c"
     ],
     "edges": [
-        {"from": "a", "to": "b" },
+        {"from": "a", "to": "b" }
         {"from": "b", "to": "c" }
     ]
 }

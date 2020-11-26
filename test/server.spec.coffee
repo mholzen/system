@@ -7,12 +7,30 @@ require 'test/server/router.spec'
 require 'test/lib/generators.spec'
 requireDir './server/handlers'
 
+{parse} = require 'lib/mappers'
 r = null
 
 describe 'server', ->
   beforeEach ->
-    s = new server.Server()
+    s = server()
     r = request s.app
+
+  it '/measures', ->
+    r.get '/measures'
+    .then (response)->
+      expect response.text
+      .includes 'uptime'
+
+    r.get '/measures/uptime'
+    .then (response)->
+      expect parseInt response.text
+      .above 0
+
+    r.get '/measures/'
+    .then (response)->
+      expect parse response.text
+      .property 'length'
+      .above 0
 
   it 'start', ->
     r.get '/'
@@ -58,12 +76,6 @@ describe 'server', ->
   it.skip 'searchers', ->
     r.get '/searchers'
     # .expect('Content-Type', /text\/css/)
-
-  it '/files/reduce/count', ->
-    r.get '/files/reduce/count'
-    .then (response)->
-      expect parseInt response.text
-      .above 2
 
   it '/files/test/artifacts/blurb.md/apply/html', ->
     r.get '/files/test/artifacts/blurb.md/apply/html'
@@ -137,7 +149,21 @@ describe 'server', ->
         .includes '7'
 
     it 'works', ->
-      r.get '/files/test/artifacts/marchome/data/logs/index.json/generators/lines/map/parse/map/get,log/map/words/reduce/concat/reduce/distribution/apply/entries/apply/sort'
+      pipeline = 
+      [
+        '/files/test/artifacts/marchome/data/logs/index.json'
+        'generators/lines'
+        'map/parse'
+        'map/get,log'
+        'map/words'
+        'reduce/concat'
+        'reduce/distribution'
+        'apply/entries'
+        'apply/sort'
+      ].join '/'
+      
+      # r.get '/files/test/artifacts/marchome/data/logs/index.json/generators/lines/map/parse/map/get,log/map/words/reduce/concat/reduce/distribution/apply/entries/apply/sort'
+      r.get pipeline
       .then (res)->
         expect res.text
         .includes 'sad'

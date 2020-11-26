@@ -5,6 +5,7 @@ router = require './router'
 class Server
   constructor: (options)->
     @app = express()
+    @app.set 'etag', false
     @port = options?.port ? 3000
     @rewrites = options?.rewrites
     if @rewrites?

@@ -21,8 +21,10 @@
     "coffeescript": "^2.5.1",
     "command-line-args": "^5.0.2",
     "cson": "^7.0.0",
+    "cson-parser": "^4.0.5",
     "csv-parse": "^2.5.0",
     "datejs": "^1.0.0-rc3",
+    "es6-template-strings": "^2.0.1",
     "expand-tilde": "^2.0.2",
     "expect": "^1.20.2",
     "express": "^4.16.4",
@@ -43,6 +45,7 @@
     "require-dir": "^1.2.0",
     "table-layout": "^0.4.4",
     "tempy": "^0.2.1",
+    "uuidv4": "^6.2.5",
     "walk": "^2.3.9"
   },
   "devDependencies": {

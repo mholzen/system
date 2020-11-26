@@ -35,7 +35,7 @@ get = (data, path)->
 fileContent = (path)->
   # TODO: use promise-fs or async-file
   new Promise (resolve, reject)->
-    log.debug 'readFile', path
+    # log.debug 'readFile', path
     fs.readFile path, (err, content)->
       return if err
         return if err.code == 'EISDIR'

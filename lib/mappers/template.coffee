@@ -5,13 +5,15 @@ es6template = require 'es6-template-strings'
 
 class Template
   constructor: (template)->
-    @template = template ? ''
+    @template = template?.content ? template ? ''
 
   substitute: (data)->
-    log.debug 'Template.substitute', {data}
     return es6template @template, data
 
 template = (data, options)->
+  if typeof options?.res?.type == 'function'
+    options.res.type 'text/html'
+
   t = new Template options?.template
   t.substitute data
 
