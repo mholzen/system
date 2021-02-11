@@ -7,9 +7,9 @@ outputter = require '../lib/outputter'
 noName = ->
   try
     transformers()
-  catch NotFound e
+  catch e
     console.error "no name provided"
-    console.log "Available transformers:\n" + e.set
+    console.error transformers.signature?.helper()
     process.exit 1
 
 

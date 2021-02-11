@@ -81,7 +81,7 @@ describe 'integration', ->
 
   describe 'graph with edges', ->
     it 'works', ->
-      r.get '/files/test/artifacts/graph.json/generators/json/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
+      r.get '/files/test/artifacts/graph.json/apply/parse/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
       .then (res)->
         expect res.text
         .match /links: \[{"source":0,"target":1}/

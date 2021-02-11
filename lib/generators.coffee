@@ -71,12 +71,6 @@ split = (data, opts)->
   sep = opts?[0] ? '\n'
   data.split '\n'
 
-json = (data, opts)->
-  if true # opts?.req?.name?.endsWith '.cson'
-    return CSON.parse data
-
-  JSON.parse data
-
 array = (data, opts)->
   Array.from data
 
@@ -85,7 +79,6 @@ generators = {
   items
   lines
   split
-  json
   array
   tests: require './generators/tests'
 }
