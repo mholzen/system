@@ -1,0 +1,10 @@
+#!/bin/bash
+
+sep="$@"
+
+while IFS=: read -r -a parts
+do
+    for part in "${parts[@]}"; do
+        echo $part
+    done
+done

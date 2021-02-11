@@ -8,9 +8,9 @@ describe 'bin/map', ->
       {stdout, stderr, child} = await exec 'map'
     catch e
       expect(e.child).property('exitCode', 1)
-      expect(e.stderr).contains 'cannot find mapper'
-      expect(e.stdout).contains 'Available mappers'
-      expect(e.stdout).contains 'isLiteral'
+      expect(e.stderr).contains 'cannot find'
+      expect(e.stderr).contains 'One of'
+      expect(e.stderr).contains 'isLiteral'
 
   it 'keys work', ->
     {stdout, stderr} = await exec '(echo 1; echo {}) | map isLiteral'

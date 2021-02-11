@@ -99,4 +99,19 @@ class Arguments
     all.push @options
     all
 
+class OneOf
+  constructor: (array)->
+    @array = array
+  helper: ->
+    "One of: #{@array.join ', '}"
+  test: (data)->
+    data in @array
+
+class Signature
+  @from: (data)->
+    if Array.isArray data
+      return new OneOf data
+
+Arguments.Signature = Signature
+
 module.exports = Object.assign args, {Arguments}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<style>
+
+text {
+  font: 14px sans-serif;
+}
+
+circle {
+  fill: rgb(198, 232, 255);
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+</style>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+<script src="/files/data/js/graph.js"></script>
+</head>
+<body>
+  <div></div>
+  <script>
+  var g = {
+    nodes: ${JSON.stringify(graph.nodeList())},
+    links: ${JSON.stringify(graph.edges())}
+  };
+
+  var c = chart(g);
+  var div = document.getElementsByTagName('div')[0]; //Get svg element
+  div.appendChild(c);
+  </script>
+</body>

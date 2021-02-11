@@ -17,8 +17,8 @@ describe 'servers/handlers/apply', ->
       expect response.text
       .includes '<p>123</p>'
   
-  it 'mappers/apply/html', ->
-    r.get '/mappers/apply/html'
+  it.skip 'apply finds root item over instance function', ->
+    r.get '/mappers/apply/mappers,html'      # /mappers/apply/html calls function mappers.html()
     .expect 200 # processed the root document
 
   it '/files/test/artifacts/blurb.md/apply/html', ->
@@ -49,3 +49,10 @@ describe 'servers/handlers/apply', ->
       .then (response)->
         expect response.text
         .includes '<img'
+
+  describe 'data function that takes an argument', ->
+    it 'sort', ->
+      r.get '/literals/c,b,a/apply/sort'
+      .then (res)->
+        expect res.text
+        .eql '["a","b","c"]'

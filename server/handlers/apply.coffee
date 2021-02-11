@@ -20,6 +20,7 @@ functions = (obj) ->
 # TODO: make accessible to the server
 paths =
   Graph: '~/develop/mholzen/system/lib/mappers/templates/graph.html'
+  Graph2: '~/develop/mholzen/system/lib/mappers/templates/graph2.html'
   Image: '~/develop/mholzen/system/lib/mappers/templates/image.html'
   Table: '~/develop/mholzen/vonholzen.org/files/private/table.pug'
 
@@ -56,13 +57,33 @@ module.exports = (req, res)->
   part = req.remainder.shift()
   if not (part?.length > 0)
     req.data =
-      req_data: req.data
-      'property': Object.getOwnPropertyNames data
-      'req.data.functions': functions data
+      data: req.data
+      'properties': Object.getOwnPropertyNames data
+      'functions': functions data
       'mappers': Object.keys mappers
     return
 
   args = Arguments.from part
+
+  name = args.first()
+  if typeof req.data[name] == 'function'
+    args.positional.shift() # remove name
+    # if args.positional[0]?   # TODO: do this for all positional
+    #   args.positional[0] = value req.data, args.positional[0], args.options
+
+    # if a[0] == 'score'   # TODO: do this for all positional
+    #   a[0] = req.root.reducers.sort.score
+
+    log.debug "applying req.data['#{name}'] function", {f: req.data[name], args: args.positional}
+    # DEBUG: this is calling mappers.all.html
+    # a.unshift req.data # applies the function on req.data
+    # DEBUG: but passing req.data as first argument (as apply requires) doesn't work for Array.sort()
+    
+    # req.data = req.data[name].apply req.data, args.positional
+    aa = [args.positional, args.options]
+    req.data = req.data[name].apply req.data, aa...
+    return
+
   resolveNameOption args.options, 'template'
   resolveNameOption args.options, 'style'
 
@@ -74,19 +95,6 @@ module.exports = (req, res)->
   Object.assign args.options, {req, res}
 
   a = args.all()
-  name = a[0]
-  if typeof req.data[name] == 'function'
-    args.positional.shift() # remove name
-    # if args.positional[0]?   # TODO: do this for all positional
-    #   args.positional[0] = value req.data, args.positional[0], args.options
-
-    if args.positional[0] == 'score'   # TODO: do this for all positional
-      args.positional[0] = req.root.reducers.sort.score
-
-    log.debug "applying req.data.'{#name}' function"
-    req.data = req.data[name].apply req.data, args.positional
-    return
-
   mapper = mappers a...
   if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
@@ -99,5 +107,5 @@ module.exports = (req, res)->
   if isPromise req.data
     req.data = await req.data
 
-  log.debug "applying mapper '#{name}' to req.data" 
+  log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}" 
   req.data = mapper.apply req.data, [ req.data ]

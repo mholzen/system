@@ -70,21 +70,21 @@ body = (value, options)->
   if value?.a?.href?
     return '<a href="'+ encodeURI(value.a.href) + '">' + value.a.text + '</a>'
 
-  if typeof value?.toString == 'function'
-    type = options?.res?.get('Content-Type')
-    log.debug {type}
+  type = options?.res?.get 'Content-Type'
+  if type?.startsWith 'image/'  
+    log.debug 'detected image content-type', {type}
+    return '<img src="data:' + type + ';base64,' + value.toString('base64') + '">'
 
-    if (type = options?.res?.get('Content-Type'))?.startsWith 'image/'
-      # TODO: may not work for all types?
-      return '<img src="data:' + type + ';base64,' + value.toString('base64') + '">'
-
-    value = value.toString()
 
   if typeof value == 'string'
     return marked value
 
   if typeof value == 'object'
     value = form value
+    return marked value
+
+  if typeof value?.toString == 'function'
+    value = value.toString()
 
   # from Markdown to HTML
   return marked value

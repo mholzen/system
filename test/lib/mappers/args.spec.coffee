@@ -59,6 +59,29 @@ describe 'Arguments', ->
     expect(a.positional)
     .eql ['a', 'b', 'c']
 
+  it 'accepts array', ->
+    a = Arguments.from ['a', 'b', 'c', 'a:1']
+
+    expect(a.all())
+    .eql ['a', 'b', 'c', {a:1}]
+
+    expect(a.options)
+    .eql {a:1}
+
+    expect(a.positional)
+    .eql ['a', 'b', 'c']
+
+  it 'validates a signature', ->
+    s = Arguments.Signature.from ['a', 'b', 'c']
+    expect s.test 'a'
+    .eql true
+
+    expect s.test 'd'
+    .eql false
+
+    expect s.helper()
+    .match /one of.*(a|b|c)/i
+
   it.skip 'handles edge cases', ->
     a = Arguments.from ':a'
     expect(a.all()).eql ['a', {}]

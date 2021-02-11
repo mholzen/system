@@ -28,20 +28,26 @@ toTemplate = (data, options)->
   pugOptions = {}
   if data?.path?
     pugOptions.filename = data.path
+  if options?.self?
+    pugOptions.self = options.self
   return pug.compile string(content(data)), pugOptions
 
   # throw new Error "cannot make template from #{typeof data}:'#{log.print data}'"
     
 # HAVE MADE THIS ASYNC by reading the content
 mapper = (data, options)->
+  log.here 'pug', {options}
+
   if options?.template?
     templateFn = toTemplate options?.template, options
   else
+    options.self = true
     templateFn = pug.compile data, options
 
   if typeof templateFn != 'function'
     throw new Error "cannot get template function"
 
+  log.debug 'applying template function with', {data}
   res = templateFn data
 
   # TODO: function with side effects?

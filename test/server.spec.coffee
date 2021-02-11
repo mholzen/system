@@ -65,10 +65,6 @@ describe 'server', ->
       expect response.text
       .contain 'index.coffee' 
 
-  it 'mappers/apply/html', ->
-    r.get '/mappers/apply/html'
-    .expect 200 # processed the root document
-
   it '/literals/1/type/css', ->
     r.get '/literals/1/type/css'
     .expect('Content-Type', /text\/css/)

@@ -1,6 +1,6 @@
 {log, stream} = require '../../lib'
 transformers = require '../../streams/transformers'
-args = require '../../lib/mappers/args'
+{Arguments} = require '../../lib/mappers/args'
 Path = require 'path'
 
 getName = (remainder)->   # async
@@ -32,14 +32,19 @@ module.exports = (req, res)->
   if not stream.isStream req.data
     throw new Error "need a stream"
 
-  [name, options] = await getName req.remainder
+  segment = req.remainder.shift()
+  args = Arguments.from segment
+  name = args.first()
+  # [name, options] = await getName req.remainder
 
   # add request and response to the context for this handler
-  options = options ? {}
-  options.req = req
-  options.res = res
+  # options = options ? {}
+  # options.req = req
+  # options.res = res
+  Object.assign args.options, {req, res, resolve: transformers}
 
-  f = transformers name, options
+  a = args.all()
+  f = transformers a...
   if not f?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
 

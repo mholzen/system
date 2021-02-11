@@ -17,7 +17,12 @@ options.flat = true
 if name == 'tableString'  
   options.width = process.stdout.columns
 
-mapper = mappers name, options
+try
+  mapper = mappers name, options
+catch e
+  console.error "cannot find mapper '#{name}'"
+  console.error "help: " + mappers.signature?.helper()
+  process.exit 1
 
 if not mapper?
   console.error "cannot find mapper '#{name}'"

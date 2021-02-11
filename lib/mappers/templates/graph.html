@@ -25,16 +25,20 @@ var width = window.innerWidth ,
 
 var color = d3.scale.category20();
 
-var force = d3.layout.force()
-    .charge(-40)
-    .linkDistance(10)
-    .size([width, height]);
-
 var svg = d3.select("body").append("svg")
     .attr("width", width*5)
     .attr("height", height*5);
 
 function render(graph) {
+
+  var scale = Math.floor(Math.log(graph.nodes.length));
+  console.log(scale);
+
+  var force = d3.layout.force()
+    .charge(-100)
+    .linkDistance(200 * scale)
+    .size([width, height]);
+
   force
       .nodes(graph.nodes)
       .links(graph.links)
@@ -72,7 +76,7 @@ function render(graph) {
       //   </defs>
 
   node.append('circle')
-      .attr("r", 10)    // TODO: make a function of the count of nodes?
+      .attr("r", 50 * scale)    // TODO: make a function of the count of nodes?
       .attr("stroke", "black")
       .attr("fill", "#000")
       .attr("fill", function(d) { return "url(#image)"; });

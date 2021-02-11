@@ -40,7 +40,7 @@ parse = (path)->
   (word.split ',' for word in words)
 
 root =
-  mappers: mappers
+  mappers: mappers.all    # DEBUG: do we want this?
 
   reducers: reducers
 
@@ -56,6 +56,23 @@ root =
       measures: '/requests/logs/entries/reduce/count'
 
 root = Object.assign root, require './handlers'
+
+class RewriteRouter
+  constructor: (rewrites)->
+    @rewrites = rewrites
+  process: (req, res)->
+    if @rewrites?
+      log.debug 'router.process pre-rewrite', {url: req.url}
+      if req.url of @rewrites
+        req.url = @rewrites[req.url]
+      log.debug 'router.process post-rewrite', {url: req.url}
+
+    if @rewriteRules?
+      for rule in @rewriteRules
+        if rule[0].test req.url
+          log.debug 'rewrite.pre', {url: req.url}
+          req.url = req.url.replace rule[0], rule[1]
+          log.debug 'rewrite.post', {url: req.url}
 
 class RequestLogs
   constructor: (size)->
@@ -77,10 +94,16 @@ class TreeRouter
     @root.requests =
       logs: @logs
 
+    if options?.rewrites?
+      @rewriter = new RewriteRouter options.rewrites
+      @root.rewrites = options.rewrites
+
   process: (req, res, next)->
     req.log = @logs.add req   # Warning: dirty `req`
     req.root = @root
     req.data = @root
+    if @rewriter
+      @rewriter.process req, res, next
     try
       await @processPath req, res, next
       if req.data? and (not res.headersSent)
@@ -187,18 +210,23 @@ class TreeRouter
       if isPromise req.data
         req.data = await req.data
 
-      target = =>
-        if (typeof req.data == 'object') and (req.data.hasOwnProperty first)
-          return req.data[first]
-        if (first of @root)
-          return @root[first]
+      target = (data, first, root) =>
+        if (typeof data == 'object') and (data.hasOwnProperty first)
+          # DEBUG: when first=mappers, it returns the mappers creator function
+          # option 1: creator functions are handled differently
+          log.debug 'found first in data', {first}
+          return data[first]
+        if (first of root)
+          log.debug 'found first in root', {first}
+          return root[first]
 
-      target = target()
+      target = target req.data, first, @root
       if not target
         return res.status(400).send("cannot find '#{first}' in req.data of '#{log.print req.data}' nor in root if '#{log.print @root}'")
 
       if typeof target == 'function'
         log.debug 'calling handler', {name: first}
+        # DEBUG: when req.data=/mappers, target calls the mappers() function here
         await target req, res, @
         continue
 

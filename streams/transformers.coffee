@@ -49,4 +49,16 @@ transformers =
     n = options?.n ? 10
     inputStream.take n
 
+  filter: (inputStream, name, options)->
+    filters =
+      ok: (x)->x?
+      string: (x)->
+        if options?.path?
+          x = _.get x, options.path
+        typeof x == 'string'
+
+    f = filters[name] ? filters.ok
+    # log.debug 'filter', {name}
+    inputStream.filter f
+
 module.exports = creator transformers

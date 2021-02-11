@@ -8,7 +8,7 @@
     "test": "mocha-watch",
     "start": "forever -a -c coffee start server/start.coffee",
     "stop": "forever -a stop server/start.coffee",
-    "watch": "cross-env NODE_PATH=. forever --debug -v -a -w --watchIgnore 'files/**' --watchIgnore 'test/artifacts/marchome/**' --watchIgnore 'node_modules/**' -c coffee server/start.coffee",
+    "watch": "cross-env NODE_PATH=. forever --debug -v -a -w --watchIgnore 'data/**' --watchIgnore 'test/artifacts/marchome/**' --watchIgnore 'node_modules/**' -c coffee server/start.coffee",
     "log": "log-tail-debug",
     "open": "open http://localhost:3001",
     "open-coverage": "open-http coverage/lcov-report/index.html"
