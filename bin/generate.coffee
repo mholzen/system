@@ -6,12 +6,7 @@ outputter = require '../lib/outputter'
 
 module.exports = ->
   name = process.argv[2]
-  # if not name?
-  #   generator = noName()
-
   options = args process.argv[3..]
-  # options.root = searchers()
-  options.flat = true
 
   try
     generator = generators name, options

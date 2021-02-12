@@ -12,10 +12,7 @@
 
 # server
   - add ?debug to redirect (302) with rewrites expanded, to troubleshoot/modify
-
-# search
-  bookmarks
-
+ 
 # transform
   - clean up use of Args in handlers
   - filter (eg. /files/data/people/transform/filter-out,directories )
@@ -47,6 +44,7 @@
   - integrate todo into software engineering process
 
 # search
+  - bookmarks
   - search for directories from command line
   - interface for searchers
     - file/network searcher is a stream
@@ -76,3 +74,5 @@
   - store search results in temporary files to be able to access the content again
 
 # visualize
+  - show a graph inside a node
+  - time series

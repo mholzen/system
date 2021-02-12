@@ -1,3 +1,6 @@
+creator = require '../lib/creator'
+requireDir = require 'require-dir'
+
 {Parser} = require '../lib/parse'
 {stream, isStream} = require '../lib/stream'
 outputter = require '../lib/outputter'
@@ -60,5 +63,7 @@ transformers =
     f = filters[name] ? filters.ok
     # log.debug 'filter', {name}
     inputStream.filter f
+
+transformers = Object.assign transformers, requireDir './transformers'
 
 module.exports = creator transformers
