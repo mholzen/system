@@ -20,7 +20,7 @@ if name == 'tableString'
 try
   mapper = mappers name, options
 catch e
-  console.error "Name'#{name}' not found"
+  console.error e.message
   console.error "help: " + mappers.signature?.helper()
   process.exit 1
 
