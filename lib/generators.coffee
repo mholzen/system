@@ -8,11 +8,10 @@ creator = require './creator'
 requireDir = require 'require-dir'
 
 #
-# A generator is a function that returns an iterator, given zero or more arguments
+# A generator is a function that returns an iterator, given one optional argument
 #
 # TODO: `traverse` is a generator and should be moved here
 # TODO: should `parse` return an iterator?
-
 
 keys = (x)->
   if stream.isStream x
