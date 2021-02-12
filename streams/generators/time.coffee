@@ -1,7 +1,12 @@
 stream = require '../../lib/stream'
 
 module.exports = (data, options)->
-  interval = options?.interval || 1000  # ms
+
+  interval = if options?.bpm
+     60*1000 / options?.bpm
+  else
+    options?.interval || 1000  # ms
+
   start = Date.now()
   tick = 0
 
