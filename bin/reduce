@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env node
 
-root="$( cd "$( dirname "$0" )"/.. && pwd )"
-coffee=$root/node_modules/.bin/coffee
-$coffee $root/bin/reduce.coffee "$@"
+require('coffeescript/register');
+reduce = require ('./reduce.coffee');
+reduce();

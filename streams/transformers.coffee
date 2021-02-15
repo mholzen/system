@@ -14,14 +14,6 @@ creator = require '../lib/creator'
 # transformers are generators that take 1 argument
 #
 transformers =
-  parse: (parser)->
-    parser ?= new Parser()
-    (inputStream)->
-      inputStream
-      .split()
-      .filter (line) -> line.length > 0
-      .map (data)-> parser.parse data
-
   # TODO: move to args
   applyArgs: (f, options)->
     positional = args.positional options

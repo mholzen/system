@@ -22,6 +22,10 @@ log.filter = (data)->
 
   if isStream data
     return '<Stream>'
+
+  if data instanceof Set
+    return '{' + Array.from(data.values()).join(',') + '}'
+
   return data
 
 log.defaultLength = 600

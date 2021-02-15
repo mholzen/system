@@ -2,6 +2,7 @@ log = require './log'
 table = require './table'
 stream = require './stream'
 requireDir = require 'require-dir'
+creator = require './creator'
 
 reducers =
   reduce: (data, name, opts)->
@@ -41,19 +42,18 @@ reducers =
         memo
     ]
 
-  group: (options)->
-    keyName = options[0]
-    [
-      {}
+  group:
+    create: (name, options)->
+      keyName = name
       (memo, value)->
+        memo ?= {} 
         return memo if not value?
-        log 'group', keyName, value
+        log.debug 'group', {keyName, value}
         key = value[keyName]
         values = memo[key] ? []
         values.push value
         memo[key] = values
         memo
-    ]
 
   join: (options)->
     delimeter = options.delimeter ? ', '
@@ -106,4 +106,7 @@ reducers =
         table
     ]
 
-module.exports = Object.assign reducers, requireDir './reducers'
+v = Object.assign reducers, requireDir './reducers'
+module.exports = creator v
+
+# module.exports = creator Object.assign reducers, requireDir './reducers'

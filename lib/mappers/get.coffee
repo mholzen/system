@@ -2,6 +2,9 @@ _ = require 'lodash'
 log = require '../log'
 {toArray} = require './args'
 
+learnColumn = ->
+  # see transformers/get
+
 create = (path, options)->
   if not path?
     throw new Error 'no path to get'

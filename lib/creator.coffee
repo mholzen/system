@@ -13,12 +13,20 @@ class NotFound extends Error
     @set = set
 
 module.exports = (map)->
+  # Returns factory function given a map of [name, factoryFunction] which passes arguments from the factory to the individual factory function
+  # only works if factoryFunction takes one argument
+  # which means it won't work for reducer functions
+
   # TODO: consider warning or failing if map contains any of omitNames
   create = (name, args...)->
+    log.debug 'calling create', {name, args}
     if typeof name == 'undefined'
       throw new NotFound "cannot find without name", Object.keys map
 
     if typeof name == 'object'
+      if typeof name[0] == 'undefined'
+        throw new Error "cannot find without a name"
+
       throw new Error "cannot find based on an object '#{name.constructor.name}'"
 
     if not (name of map)
@@ -30,6 +38,8 @@ module.exports = (map)->
           throw new Error 'unary function called with more arguments'
         # TODO: consider wrapping the error hanlding in another function
         try
+          # TOFIX: this doesn't work when map[name] is a reducer function
+          # console.log 'calling factory function', {name, v: args[0]}
           map[name] data, args...
         catch e
           if options?.errors?.ignore

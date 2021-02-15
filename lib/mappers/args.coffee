@@ -96,7 +96,8 @@ class Arguments
 
   all: ->
     all = Array.from @positional
-    all.push @options
+    if Object.keys(@options).length > 0
+      all.push @options
     all
 
 class OneOf

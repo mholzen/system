@@ -1,22 +1,21 @@
-{args} = require '../lib/mappers'
+{Arguments} = require '../lib/mappers/args'
 transformers = require '../streams/transformers'
 {stream} = require '../lib'
 {parse, map} = transformers
 outputter = require '../lib/outputter'
 
 module.exports = ->
-  name = process.argv[2]
-  options = args process.argv[3..]
-
   try
-    transformer = transformers name, options
+    args = process.argv[2..]
+    args = Arguments.from(args).all()
+    transformer = transformers args...
   catch e
     console.error e.message
     console.error "help: " + transformers.signature?.helper()
     process.exit 1
 
   if not transformer?
-    console.error "cannot get transformer from '#{name}'"
+    console.error "cannot get transformer from '#{args}'"
     console.error "transformers:\n" + transformers()
     process.exit 2
 

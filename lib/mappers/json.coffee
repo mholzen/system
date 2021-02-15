@@ -13,6 +13,9 @@ defaultReplacer = (key, value)->
     return value
 
   if typeof value?[Symbol.iterator] == 'function'
+    if value instanceof Set
+      return Array.from value.values()
+
     if typeof value?.entries == 'function'
       return Object.fromEntries value.entries()
 
