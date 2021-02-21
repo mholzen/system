@@ -1,9 +1,9 @@
 set =
   create: ->
-    (result, item)->
-      result ?= new Set()
-      result.add item
-      log.debug {item, v: Object.fromEntries result.entries()}
-      return result
+    (memo, data)->
+      memo ?= new Set()
+      memo.add data
+      # log.debug 'set', {data, entries: Object.fromEntries memo.entries()}
+      return memo
 
 module.exports = set

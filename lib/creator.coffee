@@ -19,7 +19,7 @@ module.exports = (map)->
 
   # TODO: consider warning or failing if map contains any of omitNames
   create = (name, args...)->
-    log.debug 'calling create', {name, args}
+    # log.debug 'creator', {name, args}
     if typeof name == 'undefined'
       throw new NotFound "cannot find without name", Object.keys map
 

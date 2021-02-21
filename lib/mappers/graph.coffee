@@ -14,8 +14,6 @@ class ComparableSet extends Set
     if not @has value
       super value
 
-  find: (where)->
-
 
 class SimpleGraph
   constructor: (data, options)->

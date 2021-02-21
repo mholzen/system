@@ -1,5 +1,3 @@
 #!/usr/bin/env node
-
 require('coffeescript/register');
-reduce = require ('./reduce.coffee');
-reduce();
+require ('./reduce.coffee')();

@@ -21,7 +21,7 @@ resolve = (data)->
 
 resolve.deep = (data)->
   nodes = Array.from traverse data, path: true
-  log.debug 'resolve.deep', {nodes}
+  # log.debug 'resolve.deep', {nodes}
   promises = nodes.map (match)->
     resolve match.value
     .then (value)->

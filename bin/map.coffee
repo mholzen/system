@@ -1,39 +1,41 @@
 #!/usr/bin/env coffee
 
 mappers = require '../lib/mappers'
-searchers = require '../lib/searchers'
-{args} = require '../lib/mappers'
+{Arguments} = mappers.args
+
 {stream} = require '../lib/'
 {parse, map} = require '../streams/transformers'
 outputter = require '../lib/outputter'
 
-name = process.argv[2]
+searchers = require '../lib/searchers'
 
-options = args process.argv[3..]
-options.root = searchers()
-options.flat = true
+module.exports = ->
+  # TODO: generalize
+  # options.root = searchers()
+  # if name == 'tableString'
+  #   options.width = process.stdout.columns
 
-# TODO: generalize
-if name == 'tableString'  
-  options.width = process.stdout.columns
+  try
+    args = process.argv[2..]
+    args = Arguments.from(args).all()
+    mapper = mappers args...
 
-try
-  mapper = mappers name, options
-catch e
-  console.error e.message
-  console.error "help: " + mappers.signature?.helper()
-  process.exit 1
 
-if not mapper?
-  console.error "cannot find mapper '#{name}'"
-  console.log "Available mappers:\n" + Object.keys(mappers).sort().join "\n"
-  process.exit 1
+  catch e
+    console.error e.message
+    console.error "help: " + mappers.signature?.helper()
+    process.exit 1
 
-stream process.stdin
-.through parse()
-.through map mapper, options
-.errors (err)->
-  console.log err
-  process.exit 1
-  # TODO: any errors in outputter will not set the process exit code
-.through outputter process.stdout, process.stderr
+  if not mapper?
+    console.error "cannot get mapper from '#{args}'"
+    console.error "help: " + mappers.signature?.helper()
+    process.exit 2
+
+  stream process.stdin
+  .through parse()
+  .through map mapper
+  .errors (err)->
+    console.log err
+    process.exit 1
+    # TODO: any errors in outputter will not set the process exit code
+  .through outputter process.stdout, process.stderr

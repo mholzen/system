@@ -121,7 +121,7 @@ class TreeRouter
       return res.send @root
 
     req.data = await req.data
-    log.debug 'respond', {data:req.data}
+    # log.debug 'respond', {data:req.data}
     if typeof req.data == 'number'
       req.data = req.data.toString()
 
@@ -142,7 +142,7 @@ class TreeRouter
         return res.send req.data.toString()
 
       if isStream req.data
-        log.debug 'respond with stream'
+        # log.debug 'respond with stream'
         # streamable?
         # req.data.pipe res
         # return res.end
@@ -151,7 +151,7 @@ class TreeRouter
         return res.send data
 
       if not isStream req.data
-        log.debug 'respond', {data: req.data}
+        # log.debug 'respond', {data: req.data}
         req.data = mappers.json req.data
         res.type 'application/json'
 

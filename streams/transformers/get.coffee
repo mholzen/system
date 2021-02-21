@@ -1,32 +1,43 @@
 stream = require '../../lib/stream'
 
-create = (path, options)->
+flatMapper = (path, options)->
   if not path?
     throw new Error 'no path to get'
 
   if typeof path == 'string'
     # find column
-    column = undefined
-    return (data) ->
-      data.flatMap (x)->
-        # log.debug {column, x}
-        if not x?
-          return []
-
+    columnNo = undefined
+    return (x)->
+      if not x?
+        return []
+      if typeof x == 'object'
         if path of x
           return [ x[path] ]
 
-        # if not column?
-        #   log.debug {path, v: x[path], column}
-        #   if x[path] == column
-        #     column = path
-        #     return []
-        return []
+        if not columnNo?
+          # find column number given path
+          # assumes first data element were headers
+          if (columnNo = x.indexOf path) > 0
+            # path found in header, return nothing
+            return []
+          else
+            # path not found in header, also return nothing
+            return []
+          
+        if columnNo of x
+          return [ x[columnNo] ]
+
+      return []
 
   throw new Error "can't make getter from '#{path}', #{typeof path}"
+
+create = (path, options)->
+  f = flatMapper path, options
+  (input) -> input.flatMap f     
 
 get = (data, path, options)->(create path, options) data
 
 get.create = create
+get.flatMapper = flatMapper
 
 module.exports = get

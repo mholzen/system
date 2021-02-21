@@ -25,7 +25,7 @@ reducers =
   count: -> [
     0,
     (memo, value)->
-      log.debug 'count', {memo, value}
+      # log.debug 'count', {memo, value}
       if value?
         memo = memo + 1
       memo
@@ -41,19 +41,6 @@ reducers =
         log 'defined', {value}
         memo
     ]
-
-  group:
-    create: (name, options)->
-      keyName = name
-      (memo, value)->
-        memo ?= {} 
-        return memo if not value?
-        log.debug 'group', {keyName, value}
-        key = value[keyName]
-        values = memo[key] ? []
-        values.push value
-        memo[key] = values
-        memo
 
   join: (options)->
     delimeter = options.delimeter ? ', '

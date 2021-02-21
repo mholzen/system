@@ -16,11 +16,12 @@ module.exports = ->
 
   if not transformer?
     console.error "cannot get transformer from '#{args}'"
-    console.error "transformers:\n" + transformers()
+    console.error "help: " + transformers.signature?.helper()
     process.exit 2
 
   stream process.stdin
   .through parse()
+  # .doto console.log
   .through transformer
   .errors (err)->
     console.log err

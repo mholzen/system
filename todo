@@ -4,6 +4,7 @@
 
   - use NODE_PATH or equivalent to set test/*.spec to root
   - move /files handler to /generators/files
+  - integration tests that fail should show stderr
 
 # data
   - can a graph have no edges? and only have nodes?

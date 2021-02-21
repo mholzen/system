@@ -31,7 +31,7 @@ class Resources extends Map
 
     key = path[0]
     value = super.get key
-    log.debug {value, key}
+    # log.debug {value, key}
     return if path.length == 1
       value
     else

@@ -72,7 +72,7 @@ class Stat
   recurse: -> @options.recurse
 
   get: (path)->
-    log.debug 'inodes.get', {'@path': @path, path}
+    # log.debug 'inodes.get', {'@path': @path, path}
     if not path?
       return this
 
@@ -88,7 +88,7 @@ class Stat
 
     if path instanceof Array
       if path.length == 0
-        log.debug 'inodes.get empty path. returning this'
+        # log.debug 'inodes.get empty path. returning this'
         # it doesn't await right here if @stat does not exist
         return this
       p = join @path, ...path
@@ -117,7 +117,7 @@ class Stat
         next()
       .on 'directory', (base, stat, next) ->
         stat.path = resolve base, stat.name
-        log 'file.onDirectory', stat.path
+        # log.debug 'file.onDirectory', stat.path
         push null, stat
         # streamNext()
         next()
@@ -130,16 +130,16 @@ class Stat
 
         parent = resolve base, '..'
         if parent != '/'
-          log 'file.onDirectories', {parent}
+          # log.debug 'file.onDirectories', {parent}
           parentStat = fs.statSync parent
           dirStatsArray.push {name: '..', ino: parentStat.ino}
 
-        log 'file.onDirectories', dirStatsArray.map (d)->d.name
+        # log.debug 'file.onDirectories', dirStatsArray.map (d)->d.name
         dirStatsArray.forEach (stat, index)->
           path = resolve base, stat.name
 
           if directories[stat.ino]?
-            log 'file.onDirectories ignoring already seen', path
+            # log.debug 'file.onDirectories ignoring already seen', path
             delete dirStatsArray[index]
 
           directories[stat.ino] = 1
@@ -220,7 +220,7 @@ class Path
         @path = path
         @remainder.shift()
       catch e
-        log.debug 'error', {e}
+        log.error 'error', {e}
         break
     success()
 

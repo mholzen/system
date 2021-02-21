@@ -16,12 +16,12 @@ class Table
     @setData datas
 
   setData: (datas)->
-    log.debug {datas}
+    # log.debug 'table.setData', {datas}
     @_keys = if datas?[0] instanceof Array then datas.shift() else null
     @datas = datas ? []
 
   keys: (newKeys)->
-    log.debug 'table.keys', {newKeys}
+    # log.debug 'table.keys', {newKeys}
     if newKey?
       @_keys = newKeys
 

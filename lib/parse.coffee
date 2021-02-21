@@ -5,7 +5,12 @@ log = require './log'
 csvParse = require 'csv-parse/lib/sync'
 
 count = (char, value)->
-  value.match(new RegExp char, 'g')?.length
+  re = '('+char+')(?=(?:[^"]|"[^"]*")*$)'
+  re = new RegExp re, 'g'
+  # log.debug 'parse.count', {match: value.match re}
+
+  value.match(re)
+  ?.length
 
 # delimiters = ['/', ',', "\n", ':']
 delimiters = [',', "\n"]
@@ -30,19 +35,24 @@ parse = (value, context)->
 
     d = delimiter value
     if d?
-      log.debug 'parse', {delimter: d, value}
       if d == ','
         columns = context?.columns ? null
-        rows = csvParse value, columns: columns
+        # columns = 
+        rows = csvParse value #, columns: columns
+        # log.debug 'parse', {delimter: d, value, rows}
         return rows[0]
 
       return value.split d
 
-    log.debug 'parse', {value}
+    # single quoted value
+    if ['"'].includes value?[0]
+      return JSON.parse value
+
+    # log.debug 'parse', {value}
     return value
 
   if value instanceof Readable
-    log.debug 'parse readable'
+    # log.debug 'parse readable'
     return stream value
       .split()
       .filter (line) -> line.length > 0
@@ -59,10 +69,6 @@ class Parser
     if @first
       @first = false
       first = parse value
-      log.debug 'parse first', first
-      if first[0] == 'Date'
-        @headers = first
-        return
 
     parse value, {columns: @headers}
 
@@ -77,5 +83,7 @@ parse.parseValue = (data)->
     return number
 
   data
+
+parse.delimiter = delimiter
 
 module.exports = parse

@@ -12,6 +12,11 @@ create = (path, options)->
   (data)->
     if data instanceof Map
       data = Array.from data
+
+    if not isNaN (n = parseInt path)
+      path = n
+
+    # log.debug 'get', {data, path}
     _.get data, path, options?.default
 
 get = (data, path, options)->(create path, options) data

@@ -32,6 +32,7 @@ module.exports = ->
 
   stream process.stdin
   .through parse()
+  # .doto console.log
   .reduce null, reducer
   .errors (err)->
     console.log err
