@@ -26,6 +26,9 @@ delimiter = (value)->
   r.char
 
 parse = (value, context)->
+  if not value?
+    throw new Error "no data to parse"
+
   if value instanceof Buffer
     value = value.toString()
 

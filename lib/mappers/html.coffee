@@ -118,6 +118,9 @@ outer = (data, options)->
   </html>'
 
 html = (data, options)->
+  if data instanceof Buffer
+    data = data.toString()
+
   if typeof data?.toHtml == 'function'
     return data.toHtml()
 

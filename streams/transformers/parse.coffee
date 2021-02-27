@@ -7,5 +7,7 @@ module.exports = (options)->
   (input)->
     input
     .split()
-    .filter (line) -> line.length > 0
-    .map (data)-> parser.parse data
+    .filter (line) -> 
+      line.length > 0
+    .map (data)->
+      parser.parse data

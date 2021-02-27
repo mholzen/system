@@ -3,6 +3,8 @@
   stream
   log
 } = require '../../lib'
+{parse} = require '../../streams/transformers'
+
 isPromise = require 'is-promise'
 {Arguments} = mappers.args
 
@@ -30,7 +32,7 @@ module.exports = (req, res, router)->
     req.data = await req.data
 
   if req.data instanceof Buffer
-    req.data = req.data.toString()
+    req.data = stream([req.data]).through parse()
 
   if req.data instanceof Array
     req.data = stream req.data
