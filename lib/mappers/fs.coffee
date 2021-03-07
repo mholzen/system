@@ -20,7 +20,7 @@ call = (f)->
   (data, options...)->
     fp = filepath data, options...
     if fp?
-      log.debug 'fs', {filepath: fp, func: f}
+      # log.debug 'fs', {filepath: fp, func: f}
       pf fp
 
 functions = creator

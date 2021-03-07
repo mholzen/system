@@ -5,10 +5,10 @@ defaultSep = ','
 
 module.exports = (data, options)->
   sep = options?.sep ? options?[0] ? defaultSep
-  log.debug 'split', {data}
+  # log.debug 'split', {data}
 
   if typeof data == 'string'
-    log.debug 'split return', {r: data.split sep}
+    # log.debug 'split return', {r: data.split sep}
     return data.split sep
 
   data.map (x)->

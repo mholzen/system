@@ -83,3 +83,22 @@ describe 'mappers', ->
   it.skip 'multiword last name', ->
     expect name 'marc.von.holzen'
     .eql {first: 'Marc', last:'von Holzen'}
+
+  it 'can get which mappers complete, given data', ->
+    validate = (entry)->
+      [name, f] = entry
+      try
+        # log.debug 'calling mapper', {name}
+        r = f 'data'
+        if typeof r?.catch == 'function'
+          r.catch (e)->
+            log.debug 'caught1', {name, e}
+            {}
+        return name
+      catch e
+        log.debug 'caught2', {name, e}
+        return null
+
+    expect Object.entries(mappers.all).map(validate)
+    .log
+    .includes 'isLiteral'

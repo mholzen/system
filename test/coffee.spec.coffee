@@ -43,6 +43,22 @@ describe 'coffee', ()->
       # expect.fail() above will throw and get caught here, so you have to check that e is an exception of the right kind
       expect(e.toString()).include 'foo'
   
+
+  it 'await in a function makes any caller implicitly async', ->
+    h = ->
+      throw new Error "fail"
+
+    f = ->
+      if false
+        await h()
+      2
+    
+    p = f()
+    expect p
+    .property 'then'
+    .a 'function'
+    
+
   it 'finally', ->
     count = 0
     f = ->

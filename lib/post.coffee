@@ -59,14 +59,14 @@ post = (content, resource)->
 
       # from string
       if typeof content == 'string'
-        log 'post.appendFile', resource
+        # log.debug 'post.appendFile', resource
         return appendFile(resource, content).then -> resource
         .catch (e)->
           if e.code != 'EISDIR'
             throw e
 
           resource = path.join resource, uuid()
-          log 'post.appendFile', resource
+          # log.debug 'post.appendFile', resource
           return appendFile(resource, content).then -> resource
 
 

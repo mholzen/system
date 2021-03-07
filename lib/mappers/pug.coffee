@@ -36,7 +36,7 @@ toTemplate = (data, options)->
     
 # HAVE MADE THIS ASYNC by reading the content
 mapper = (data, options)->
-  log.here 'pug', {options}
+  # log.debug 'pug', {options}
 
   if options?.template?
     templateFn = toTemplate options?.template, options
@@ -47,7 +47,7 @@ mapper = (data, options)->
   if typeof templateFn != 'function'
     throw new Error "cannot get template function"
 
-  log.debug 'applying template function with', {data}
+  # log.debug 'applying template function with', {data}
   res = templateFn data
 
   # TODO: function with side effects?

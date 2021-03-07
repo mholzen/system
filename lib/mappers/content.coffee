@@ -10,7 +10,7 @@ _ = require 'lodash'
 
 # warning: async function
 get = (data, path)->
-  log.debug 'content.get', {data, path}
+  # log.debug 'content.get', {data, path}
   if not (path instanceof Array)
     path = path.split '.'
 
@@ -42,7 +42,7 @@ fileContent = (path)->
           fs.readdir path, (err, files)->resolve files
         reject err
 
-      log.debug 'readFile', {content: typeof content}
+      # log.debug 'readFile', {content: typeof content}
       resolve content
 
 fileContentSync = (path)->

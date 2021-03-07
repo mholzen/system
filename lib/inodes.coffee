@@ -213,7 +213,12 @@ class Path
     while @remainder.length > 0
       try
         next = @remainder[0]
-        path = join @path, next
+        path = if next == '~'
+          expandTilde next
+        else
+          join @path, next
+
+        # log.debug {path}
         @stat = await statAsync path
         # s = await statAsync path
         # @stat = s

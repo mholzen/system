@@ -31,7 +31,7 @@ get = (data, path, context)->
   if not resource?
     resource = _.get context, first
 
-  log.debug 'returning', {resource, context, first}
+  # log.debug 'returning', {resource, context, first}
  
   return resource
 
@@ -62,17 +62,17 @@ class RewriteRouter
     @rewrites = rewrites
   process: (req, res)->
     if @rewrites?
-      log.debug 'router.process pre-rewrite', {url: req.url}
+      # log.debug 'router.process pre-rewrite', {url: req.url}
       if req.url of @rewrites
         req.url = @rewrites[req.url]
-      log.debug 'router.process post-rewrite', {url: req.url}
+      # log.debug 'router.process post-rewrite', {url: req.url}
 
     if @rewriteRules?
       for rule in @rewriteRules
         if rule[0].test req.url
-          log.debug 'rewrite.pre', {url: req.url}
+          # log.debug 'rewrite.pre', {url: req.url}
           req.url = req.url.replace rule[0], rule[1]
-          log.debug 'rewrite.post', {url: req.url}
+          # log.debug 'rewrite.post', {url: req.url}
 
 class RequestLogs
   constructor: (size)->
@@ -109,7 +109,7 @@ class TreeRouter
       if req.data? and (not res.headersSent)
         await @respond req, res
     catch err
-      log.debug 'process.error', {path: req.path, err: err.stack}
+      # log.debug 'process.error', {path: req.path, err: err.stack}
       res.type 'text/plain'
       .status 500
       .send err.stack
@@ -185,11 +185,11 @@ class TreeRouter
 
       segment = req.remainder.shift()
       if not segment?
-        log.debug 'empty segment'
+        # log.debug 'empty segment'
         continue
 
       if segment.length == 0
-        log.debug 'trailing(or empty) slash', {data: req.data}
+        # log.debug 'trailing(or empty) slash', {data: req.data}
         # return req.data as a collection
         toCollection = (data)->
           if Array.isArray data
@@ -214,10 +214,10 @@ class TreeRouter
         if (typeof data == 'object') and (data.hasOwnProperty first)
           # DEBUG: when first=mappers, it returns the mappers creator function
           # option 1: creator functions are handled differently
-          log.debug 'found first in data', {first}
+          # log.debug 'found first in data', {first}
           return data[first]
         if (first of root)
-          log.debug 'found first in root', {first}
+          # log.debug 'found first in root', {first}
           return root[first]
 
       target = target req.data, first, @root
@@ -225,7 +225,7 @@ class TreeRouter
         return res.status(400).send("cannot find '#{first}' in req.data of '#{log.print req.data}' nor in root if '#{log.print @root}'")
 
       if typeof target == 'function'
-        log.debug 'calling handler', {name: first}
+        # log.debug 'calling handler', {name: first}
         # DEBUG: when req.data=/mappers, target calls the mappers() function here
         await target req, res, @
         continue

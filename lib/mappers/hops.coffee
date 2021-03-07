@@ -18,9 +18,6 @@ module.exports = (data, options)->
       memo
     , null
 
-    if not data.interface?
-      log.debug 'no interface', {data}
-
     leg =
       source: (if hops.previous? then hops.previous.target else data.interface?.ip)
       target: (if pings.ip == '*' then uuid() else pings.ip)

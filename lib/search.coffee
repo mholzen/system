@@ -31,7 +31,7 @@ search.search2 = (data, options)->
   searcherOptions = a?.searchers
   delete a.searchers
   s = searchers searcherOptions
-  log.debug {s}
+  # log.debug {s}
 
   q = query a
 
@@ -53,7 +53,7 @@ search.searchIn = (match, follow, data, options)->
 
   matches = input
     .filter (x)->
-      log.debug 'data testing', {x}
+      # log.debug 'data testing', {x}
       match.test x
 
   isNew = (x)->true
@@ -61,13 +61,13 @@ search.searchIn = (match, follow, data, options)->
   contentCount = 0
   inc = ->
     contentCount++
-    log.debug 'contentCount', {contentCount}
+    # log.debug 'contentCount', {contentCount}
   dec = ->
     contentCount--
-    log.debug 'contentCount', {contentCount}
+    # log.debug 'contentCount', {contentCount}
   close = (s)->
     if contentCount <= 0
-      log.debug 'closing content'
+      # log.debug 'closing content'
       s.end()   # Doc recommends never calling on stream that were created without a source
 
   contentStream = input.observe()
@@ -83,7 +83,7 @@ search.searchIn = (match, follow, data, options)->
         test = new Promise (resolve)->resolve test
       
       test = test.then (x)->
-        log.debug 'follow testing', {follow, x}
+        # log.debug 'follow testing', {follow, x}
         if not x
           dec()
         x
@@ -99,7 +99,7 @@ search.searchIn = (match, follow, data, options)->
     .map (x)->
       try
         c = content x
-        log.debug 'content', {c}
+        # log.debug 'content', {c}
       catch error
         console.log error.toString()
         return stream()
@@ -116,7 +116,7 @@ search.searchIn = (match, follow, data, options)->
       x
     .flatMap (x)->x
     .filter (x)->
-      log.debug 'filter', {x}
+      # log.debug 'filter', {x}
       x?  # is this needed because x can contain a promise?
   
   mergePoint.write data

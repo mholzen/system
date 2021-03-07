@@ -19,7 +19,7 @@ mappers =
         value: value
 
     append = (a,b)->
-      log 'append append', typeof a, b instanceof Array
+      # log.debug 'append append', typeof a, b instanceof Array
       return if typeof a == 'string' and typeof b == 'string'
         a + b
       return if b instanceof Array
@@ -28,7 +28,7 @@ mappers =
         , a
       return a
 
-    log 'append', opts
+    # log.debug 'append', opts
     (value)->
       c = await content(value)
       return append c, opts.value

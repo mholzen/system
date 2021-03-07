@@ -45,7 +45,7 @@ rows = (data)->
   if data instanceof Array
     (tr v for v in data)
   else
-    log.debug 'html', {data}
+    # log.debug 'html', {data}
     (tr v, k for k, v of data when data.hasOwnProperty k)
 
 form = (data)->
@@ -72,7 +72,7 @@ body = (value, options)->
 
   type = options?.res?.get 'Content-Type'
   if type?.startsWith 'image/'  
-    log.debug 'detected image content-type', {type}
+    # log.debug 'detected image content-type', {type}
     return '<img src="data:' + type + ';base64,' + value.toString('base64') + '">'
 
 

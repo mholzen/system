@@ -11,13 +11,13 @@ s = null
 r = null
 
 get = (a...)->
-  log.debug "GET /#{a[0]}"
+  # log.debug "GET /#{a[0]}"
   request s.app
   .get a...
 
 describe 'integration', ->
   before ->
-    log.debug 'new server'
+    # log.debug 'new server'
     s = new server.Server()
 
   beforeEach ->

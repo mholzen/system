@@ -14,13 +14,13 @@ summarize = (data, options)->
     return data.map summarize
 
   keys = Object.keys data
-  log.debug 'summarize', {keys, length}
+  # log.debug 'summarize', {keys, length}
   if keys.length > length
     extra = "#{keys.length - length} more"
     keys = keys.slice 0, length
     data['...'] = extra
     keys.push '...'
-    log.debug 'summarize', {keys, data, d: ("#{k}":summarize data[k] for k in keys)}
+    # log.debug 'summarize', {keys, data, d: ("#{k}":summarize data[k] for k in keys)}
   return Object.assign {}, ...("#{k}":summarize(data[k]) for k in keys)
 
 module.exports = summarize

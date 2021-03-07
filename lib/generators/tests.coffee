@@ -35,7 +35,7 @@ run = (data, options)->
         body: test.body.split '\n'
       # next()
     .on 'end', (d)->
-      log.debug 'tests end'
+      # log.debug 'tests end'
       push null, stream.nil
  
 

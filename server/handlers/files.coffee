@@ -12,11 +12,10 @@ handler = (req, res, router) ->
     inodePath = new inodes.Path path, router?.options?.config?.files?.root
     await inodePath
   catch err
-    if err.toString().includes 'ENOENT'
-      log.debug 'ENOENT', {path}
-      # path should contain the remainder
-    else
+    if not err.toString().includes 'ENOENT'
       throw err
+    # log.debug 'ENOENT', {path}
+    # path should contain the remainder
 
   req.remainder = inodePath.remainder    # path contains un-matching remaining elements
   req.files =

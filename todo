@@ -12,7 +12,8 @@
       nodes with literals but no edges
 
 # server
-  - add ?debug to redirect (302) with rewrites expanded, to troubleshoot/modify
+  - add ?expand or /expands/<url> to redirect (302) with rewrites expanded, to troubleshoot/modify
+  - support ?help or perhaps /help/ (might even be a rewrite rule)
  
 # transform
   - clean up use of Args in handlers

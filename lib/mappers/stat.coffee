@@ -20,5 +20,5 @@ module.exports = (data, options)->
   data = filepath data,  options
   if data?
     f = if options.symlink? then lstat else stat
-    log.debug 'stat', {data, f}
+    # log.debug 'stat', {data, f}
     f data

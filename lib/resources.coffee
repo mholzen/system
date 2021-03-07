@@ -3,7 +3,7 @@ class Resources extends Map
   constructor: ->
     super()
   set: (path, value)->
-    log.debug {path}
+    # log.debug {path}
     if typeof path == 'string'
       path = path.split '/'
 

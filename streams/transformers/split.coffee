@@ -9,7 +9,7 @@ create = (delim, options)->
     column = undefined
     return (data) ->
       data.flatMap (x)->
-        log.debug 'split.flatMap', {x}
+        # log.debug 'split.flatMap', {x}
         x.split delim
 
   throw new Error "can't make split from '#{delim}', #{typeof delim}"

@@ -211,7 +211,7 @@ describe 'query', ->
       expect(data).property('then').a 'function'
 
       matches = query('b').match data
-      log.debug {matches}
+      # log.debug {matches}
       expect(matches).satisfy isPromise
       results = await matches
       expect(results).eql [
@@ -221,7 +221,7 @@ describe 'query', ->
     it 'data:{k:Promise}', ->
       data = new Promise (resolve, reject)-> resolve ['a', 'b', 'c']
       r = query('b').match {k: data}
-      log.debug {r}
+      # log.debug {r}
       r = await Promise.all r
       r = r.flat()
 

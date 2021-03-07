@@ -33,14 +33,14 @@ resolveNameOption = (options, option)->
 resolvePathOption = (options, option, req)->
   path = options?[option]?.path
   if path?
-    log.debug 'resolvePathOption', {option}
+    # log.debug 'resolvePathOption', {option}
     if not path.startsWith '/'
       if not req?.dirname?
         throw new Error "relative path '#{path}' but no req.dirname"
       path = Path.join req.dirname, path
     options[option].path = path
     options[option].content = await content {path}, parse:'string'
-    log.debug 'resolvePathOption content retrieved', {[option]: options[option]}
+    # log.debug 'resolvePathOption content retrieved', {[option]: options[option]}
     return options
   else
     return new Promise (resolve)-> resolve options
@@ -74,7 +74,7 @@ module.exports = (req, res)->
     # if a[0] == 'score'   # TODO: do this for all positional
     #   a[0] = req.root.reducers.sort.score
 
-    log.debug "applying req.data['#{name}'] function", {f: req.data[name], args: args.positional}
+    # log.debug "applying req.data['#{name}'] function", {f: req.data[name], args: args.positional}
     # DEBUG: this is calling mappers.all.html
     # a.unshift req.data # applies the function on req.data
     # DEBUG: but passing req.data as first argument (as apply requires) doesn't work for Array.sort()
@@ -107,5 +107,5 @@ module.exports = (req, res)->
   if isPromise req.data
     req.data = await req.data
 
-  log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}" 
+  # log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}" 
   req.data = mapper.apply req.data, [ req.data ]

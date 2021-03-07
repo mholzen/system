@@ -29,5 +29,6 @@ process.on 'unhandledRejection', (error) =>
 s.listen (err)->
   if err
     log.error err
-  else
-    log.debug 'started', {port: s.port}
+    return
+
+  log.info 'started', {port: s.port}
