@@ -1,4 +1,3 @@
-log = require '@vonholzen/log'
 {isStream} = require '../stream'
 
 isLiteral = (data)->

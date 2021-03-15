@@ -10,4 +10,4 @@ global._ = require 'lodash'
 global.system = require "../index"
 
 chai.Assertion.addChainableMethod 'log', null, ->
-    # log.debug 'expect.log', {object: this._obj}
+  log.debug 'expect.log', {object: this._obj}

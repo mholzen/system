@@ -14,6 +14,7 @@
 # server
   - add ?expand or /expands/<url> to redirect (302) with rewrites expanded, to troubleshoot/modify
   - support ?help or perhaps /help/ (might even be a rewrite rule)
+    - list templates with substitutions containing a string
  
 # transform
   - clean up use of Args in handlers

@@ -122,7 +122,8 @@ class TreeRouter
 
     req.data = await req.data
     # log.debug 'respond', {data:req.data}
-    if typeof req.data == 'number'
+
+    if ['boolean', 'number'].includes typeof req.data
       req.data = req.data.toString()
 
     if req.data instanceof Buffer
@@ -161,6 +162,7 @@ class TreeRouter
     if not isStream req.data
       req.data = keys req.data
 
+    # log.debug {data: req.data}
     data = await reducers.reduce req.data.map(id), 'html'
     .toPromise Promise
 

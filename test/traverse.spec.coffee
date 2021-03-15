@@ -64,10 +64,6 @@ describe 'edges, value, traverse', ->
       {value: 3, path: ['2']}
     ]
 
-  it 'traverse mappers', ->
-    graph = m for m from traverse mappers.all, path:true when m.path.includes 'graph'
-    expect(graph).property('value').property('template').includes 'graph.links'
-
   it 'stream traverse', ->
     # a stream is considered an node, so traversing the stream simply returns that node
     s = stream [1,2,3]
