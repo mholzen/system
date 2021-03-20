@@ -20,7 +20,7 @@ describe 'router', ->
     it 'args mapper', ->
       r = new router.TreeRouter()
       req =
-        path: '/literals/a:1/apply/args/apply/pug,template:p #{a}'
+        path: '/literals/a:1/apply/args/apply/pug,template:p #{options.a}'
       res =
         status: ->
           send: ->

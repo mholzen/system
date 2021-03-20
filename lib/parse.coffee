@@ -84,7 +84,6 @@ parse.parseValue = (data)->
   number = parseInt data
   if not isNaN number
     return number
-
   data
 
 parse.delimiter = delimiter

@@ -1,1 +1,1 @@
-coffee -r ~/develop/mholzen/system/bin/init.coffee "$*"
+coffee -r ~/develop/mholzen/system/bin/init.coffee

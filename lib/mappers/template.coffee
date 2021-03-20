@@ -1,14 +1,16 @@
 log = require '../log'
 query = require '../query'
 args = require './args'
-es6template = require 'es6-template-strings'
+compile = require 'es6-template-strings/compile'
+resolve = require 'es6-template-strings/resolve-to-string'
 
 class Template
   constructor: (template)->
-    @template = template?.content ? template ? ''
+    @template = compile template?.content ? template ? ''
+    @substitutions = @template.substitutions
 
   substitute: (data)->
-    return es6template @template, data
+    return resolve @template, data
 
 template = (data, options)->
   if typeof options?.res?.type == 'function'
@@ -22,16 +24,5 @@ template.create = (options)->
   (data)-> t.substitute data
 
 template.Template = Template
-
-template.substitute = (substitutions...)->
-  substitutions = args substitutions
-
-  (data)->
-    matches = query('template').match data
-    if not matches?
-      return
-
-    t = new Template matches[0].value.template
-    t.substitute substitutions
 
 module.exports = template

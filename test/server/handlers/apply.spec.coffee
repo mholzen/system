@@ -1,8 +1,9 @@
 server = require '../../../server/'
 request = require 'supertest'
 
-require '../../stream.spec'    # test ordering based on dependencies
-require '../../streams/transformers.spec'    # test ordering based on dependencies
+# test ordering based on known dependencies of `apply`
+require '../../stream.spec'
+require '../../streams/transformers.spec'
 
 r = null
 
@@ -16,7 +17,26 @@ describe 'servers/handlers/apply', ->
     .then (response)->
       expect response.text
       .includes '<p>123</p>'
-  
+
+  it 'find a mapper by name', ->
+    r.get '/literals/123/apply/isLiteral'
+    .then (response)->
+      expect response.text
+      .includes 'true'
+
+  it 'find a mapper by path', ->
+    # TODO: can mappers be referenced by a path?
+    # TODO: distinguish between
+    # .../apply/name,option1
+    # .../apply/path,name,option1
+    # .../apply/path,name
+    r.get '/literals/graph/apply/templates,reference'
+    .then (response)->
+      expect response.text
+      .includes '"graph"'
+      .includes '"graph2"'
+
+
   it.skip 'apply finds root item over instance function', ->
     r.get '/mappers/apply/mappers,html'      # /mappers/apply/html calls function mappers.html()
     .expect 200 # processed the root document
@@ -56,3 +76,4 @@ describe 'servers/handlers/apply', ->
       .then (res)->
         expect res.text
         .eql '["a","b","c"]'
+

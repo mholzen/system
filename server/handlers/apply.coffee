@@ -6,6 +6,7 @@ Path = require 'path'
 {content, value} = require '../../lib/mappers'
 {isStream} = require '../../lib/stream'
 expandTilde = require 'expand-tilde'
+objectPath = require '../../lib/path'
 
 functions = (obj) ->
   properties = new Set()
@@ -84,6 +85,24 @@ module.exports = (req, res)->
     req.data = req.data[name].apply req.data, aa...
     return
 
+  path = objectPath args.all()
+  path.follow mappers
+  mapper = path.to
+  log.debug {remainder: path.remainder()}
+  args = Arguments.from path.remainder()
+  log.debug {args}
+
+
+  if not mapper?
+    return res.type('text/plain').status(404).send "function '#{name}' not found"
+
+  if typeof mapper != 'function'
+    req.data = mapper
+    return
+
+  #
+  # augment and resolve `options`
+  #
   resolveNameOption args.options, 'template'
   resolveNameOption args.options, 'style'
 
@@ -95,17 +114,15 @@ module.exports = (req, res)->
   Object.assign args.options, {req, res}
 
   a = args.all()
-  mapper = mappers a...
-  if not mapper?
-    return res.type('text/plain').status(404).send "function '#{name}' not found"
-
-  if typeof mapper != 'function'
-    req.data = mapper
-    return
+  log.debug 'apply', {a}
+  # mapper = mappers a...
+  # mapper = target a...
 
   # perhaps mapper can handle that?
   if isPromise req.data
     req.data = await req.data
 
   # log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}" 
-  req.data = mapper.apply req.data, [ req.data ]
+  # req.data = mapper.apply req.data, [ req.data ]
+  a.unshift req.data
+  req.data = mapper.apply req.data, a

@@ -2,75 +2,31 @@ _ = require 'lodash'
 log = require '../log'
 {parseValue} = require '../parse'
 
-args = (data)->
-  if typeof data == 'string'
-    data = data.split ','
-
-  if not (data instanceof Array)
-    throw new Error "expecting array"
-
-  result = {}
-  for arg, i in data
-    if typeof arg != 'string'
-      result[i] = arg
-      continue
-
-    elements = arg.split ':'
-
-    if elements.length == 1
-      elements.unshift i
-
-    if elements[0].length == 0
-      elements[0] = i
-      if elements[1].length == 0
-        elements[1] = ':'
-
-    path = elements[..-2]
-    value = parseValue elements[elements.length-1]
-    # log.debug 'args adding', {path, value}
-    _.set result, path, value
-
-  result
-
-args.positional = (data)->
-  if typeof data == 'string'
-    return [data]
-  r = []
-  for k, v of data
-    if not isNaN (i = parseInt k)
-      r[i] = v
-  if r.length == 0
-    return null
-  r.filter (x)->x?
-
-args.positionalWithOptions = (words)->
-  options = args words
-  positional = args.positional words
-  if not positional?
-    return [ options ]
-
-  if positional instanceof Array
-    return [ positional..., options ]
-
-  return [ positional, options ]
-
 class Arguments
   @from: (words)->
     new Arguments words
 
   constructor: (data)->
+    @positional = []
+    @options = {}
+
     if typeof data == 'string'
       data = data.split ','
 
     if not (Array.isArray data)
+      if typeof data == 'object'
+        @options = data
+        return
+
       throw new Error "expecting array, got #{data}"
 
-    @positional = []
-    @options = {}
-
     for arg, i in data
+      if typeof arg == 'object'
+        @options = Object.assign @options, arg
+        continue
+
       if typeof arg != 'string'
-        @[i] = arg
+        @positional.push arg
         continue
 
       elements = arg.split ':'
@@ -87,7 +43,7 @@ class Arguments
       value = parseValue elements[elements.length-1]
 
       if typeof path[0] == 'number'
-        @positional[path[0]] = value
+        @positional.push value
       else
         _.set @options, path, value
 
@@ -114,5 +70,7 @@ class Signature
       return new OneOf data
 
 Arguments.Signature = Signature
+
+args = (x)-> Arguments.from x
 
 module.exports = Object.assign args, {Arguments}

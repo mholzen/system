@@ -1,43 +1,66 @@
 args = require 'lib/mappers/args'
 
+require '../../lodash.spec'
+
 describe 'args', ->
+  it 'handles an object', ->
+    expect args {a:1}
+    .eql { positional: [], options: {a:1} }
+
+
   it 'basic', ->
     expect args [1,2,3]
-    .eql {0:1, 1:2, 2:3}
+    .property 'positional'
+    .eql [1, 2, 3]
 
     expect args ['a', 'b', 'c']
-    .eql {0:'a', 1:'b', 2:'c'}
+    .property 'positional'
+    .eql ['a', 'b', 'c']
 
-    expect args ['a:1', 'b:b', 'c', ':']
-    .eql {a:1, b:'b', 2:'c', 3:':'}
+    expect args ['c', ':', 'a:1', 'b:b']
+    .property 'positional'
+    .eql ['c', ':']
+
+  it 'options', ->
+    expect args 'a:1'
+    .property 'options'
+    .eql {a:1}
 
     expect args [{a:1}]
-    .eql {'0':{a:1}}
+    .property 'options'
+    .eql {a:1}
 
-    expect args '1,2,a:1'
-    .eql {0:1, 1:2, a:1}
+  it 'positional', ->
+    expect args ['a:1', 'b:b']
+    .property 'positional'
+    .eql []
 
-    expect args.positional args ['a:1', 'b:b']
-    .eql null
-
-    expect args.positional args ['a:1', 'b:b', 'c', 'd:1', 'b']
+    expect args ['a:1', 'b:b', 'c', 'd:1', 'b']
+    .property 'positional'
     .eql ['c', 'b']
 
-    expect args.positional args ['a:1', 'b:b', 'c']
+    expect args ['a:1', 'b:b', 'c']
+    .property 'positional'
     .eql ['c']
 
-    expect args.positional args ['a', 'b', 'c:x', 'd:y']
+    expect args ['a', 'b', 'c:x', 'd:y']
+    .property 'positional'
     .eql ['a', 'b']
 
 
-  it.skip 'from string', ->
-    expect args.positionalWithOptions 'apply,html,style:name:pretty'
-    .eql [
-      'apply', 'html', {style:name:'pretty'}
-    ]
+  it 'positional after dictionary', ->
+    expect args ['a:1', 'b:b', 'c', ':']
+    .property 'positional'
+    .eql ['c', ':']
+
+    expect args '1,2,a:1'
+    .eql
+      positional: [1,2]
+      options: {a:1}
 
   it 'two levels', ->
     expect args ['a:b:1']
+    .property 'options'
     .eql a: b: 1
 
   describe 'interpet filenames', ->
@@ -99,3 +122,16 @@ describe 'Arguments', ->
   it 'options can be modified', ->
     a = Arguments.from 'a,b,c,k:1'
     expect(a).property('options').eql {k:1}
+
+  describe.skip 'supports .', ->
+    it '1. means array', ->
+      a = Arguments.from 'a.b'
+      expect(a.all()).eql [['a', 'b']]
+
+    it '2. means array', ->
+      a = Arguments.from 'a.b:1'
+      expect(a.all()).eql [{a:{b:1}}]
+
+    it '3. means array', ->
+      a = Arguments.from 'a.b,d.e'
+      expect(a.all()).eql [['a','b'], ['d', 'e']]

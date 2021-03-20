@@ -17,7 +17,7 @@ module.exports = (data, options)->
       e.data = data
       throw e
 
-  name = options.name ? 'value'
+  name = options?.name ? 'value'
 
   return
     [name]: data
