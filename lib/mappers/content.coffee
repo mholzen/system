@@ -7,6 +7,7 @@ parse = require '../parse'
 fs = require 'fs'
 isPromise = require 'is-promise'
 _ = require 'lodash'
+{join} = require 'path'
 
 # warning: async function
 get = (data, path)->
@@ -32,14 +33,38 @@ get = (data, path)->
     memo[element]
   , data
 
-fileContent = (path)->
+
+isAbsolute = (path)->
+  return true if path[0] == '/'
+  return true if path[0..1] == './'
+  return true if path[0..2] == '../'
+
+fileStream = (path, options)->
+  if options?.dirname?
+    if not isAbsolute path
+      path = options?.dirname + '/' + path
+
+  fs.createReadStream path
+
+# fileContent = (path, options)->
+#   fileStream path, options
+
+fileContent = (path, options)->
   # TODO: use promise-fs or async-file
   new Promise (resolve, reject)->
-    log.debug 'readFile', path
+    # log.debug 'readFile', {path, options}
     fs.readFile path, (err, content)->
       return if err
         return if err.code == 'EISDIR'
-          fs.readdir path, (err, files)->resolve files
+          fs.readdir path, (err, files) ->
+            if options?.recurse > 0
+              resolve files.map (name)->
+                file = join path, name
+                return
+                  name: name
+                  content: fileContent file, recurse: options.recurse-1
+            else
+              resolve files
         reject err
 
       # log.debug 'readFile', {content: typeof content}
@@ -81,7 +106,7 @@ content = (data, options)->
     if data?.type == 'directory'
       return inodes(data.path).entries()
 
-    return fileContent(data.path).then (content)->
+    return fileContent(data.path, options).then (content)->
       if options?.parse == false
         return content
       if options?.parse == 'string'

@@ -42,19 +42,8 @@ class Stat
     #   return success @
     # @stat
 
-  entries: -> stream @walker()
-
-  # for a file: parent directory
-  # for a directory: children and parent directoruy
-  #   if root directory, empty
-  adjascent: ->
-    result = stream()
-    parent = dirname @path
-    if @path != parent
-      result.push parent
-
-    await @stat
-    readdir @path   # TODO: probably not working
+  entries: ->
+    stream @walker()
 
   isDirectory: ->
     # log.debug 'isDirectory entry', {path: @path, stat: @stat}

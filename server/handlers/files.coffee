@@ -20,7 +20,8 @@ handler = (req, res, router) ->
   req.remainder = inodePath.remainder    # path contains un-matching remaining elements
   req.files =
     remainder: Array.from req.remainder
-  req.data = content inodePath.path, parse: false
+  options = Object.assign {}, parse: false, req.args.options
+  req.data = content inodePath.path, options
   req.filename = inodePath.path          # TODO: consider a scoped or different name?
   req.dirname = if inodePath.stat.isDirectory() then inodePath.path else dirname inodePath.path
   req.dirname += '/'

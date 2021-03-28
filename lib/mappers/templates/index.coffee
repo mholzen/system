@@ -13,6 +13,8 @@ map = (memo, value)->
 
 graph = new Template fileContentSync( __dirname+'/graph.html').toString()
 graph2 = new Template fileContentSync( __dirname+'/graph2.html').toString()
+scale = new Template fileContentSync( __dirname+'/scale.html').toString()
+vue = new Template fileContentSync( __dirname+'/vue.html').toString()
 
 # TODO: should be async
 module.exports =
@@ -21,6 +23,8 @@ module.exports =
 
   graph: (x)-> graph.substitute x
   graph2: (x)-> graph2.substitute x
+  scale: (x)-> scale.substitute x
+  vue: (x)-> vue.substitute x
 
 reference = (data)->
   log 'reference', {data}

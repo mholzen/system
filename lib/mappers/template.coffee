@@ -1,6 +1,7 @@
 log = require '../log'
 query = require '../query'
 args = require './args'
+parse = require './parse'
 compile = require 'es6-template-strings/compile'
 resolve = require 'es6-template-strings/resolve-to-string'
 
@@ -10,6 +11,13 @@ class Template
     @substitutions = @template.substitutions
 
   substitute: (data)->
+    if data instanceof Buffer
+      data = parse data
+
+    if data instanceof Array
+      data = {array: data}
+
+    # log.debug 'resolving template', {data}
     return resolve @template, data
 
 template = (data, options)->

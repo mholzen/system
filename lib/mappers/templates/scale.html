@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+</head>
+<body>
+  <div></div>
+  <script>
+    var data = ${JSON.stringify(array)};
+
+    var x = d3.scaleLinear()
+    .domain([Math.min(data), Math.max(data)])
+    .range([0, 960]);
+
+    var div = document.getElementsByTagName('div')[0];
+    div.appendChild(c);
+  </script>  
+</body>

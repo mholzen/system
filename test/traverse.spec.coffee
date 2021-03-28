@@ -70,11 +70,13 @@ describe 'edges, value, traverse', ->
     r = Array.from traverse s 
     expect(r).eql [s]
 
-describe.skip 'adjascent', ->
+describe.skip 'traverse inodes', ->
 
   describe 'inodes', ->
     it 'from root', ->
-      adj = inode('/').adjascent()
+
+      root = await inode '/'
+
       adj.toArray (inodes)->
         expect(inodes).length 0
 

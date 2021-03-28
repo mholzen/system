@@ -88,9 +88,9 @@ module.exports = (req, res)->
   path = objectPath args.all()
   path.follow mappers
   mapper = path.to
-  log.debug {remainder: path.remainder()}
+  # log.debug {remainder: path.remainder()}
   args = Arguments.from path.remainder()
-  log.debug {args}
+  # log.debug {args}
 
 
   if not mapper?
@@ -114,7 +114,7 @@ module.exports = (req, res)->
   Object.assign args.options, {req, res}
 
   a = args.all()
-  log.debug 'apply', {a}
+  # log.debug 'apply', {a}
   # mapper = mappers a...
   # mapper = target a...
 
@@ -122,7 +122,7 @@ module.exports = (req, res)->
   if isPromise req.data
     req.data = await req.data
 
-  # log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}" 
+  # log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}: '#{log.print req.data}'"
   # req.data = mapper.apply req.data, [ req.data ]
   a.unshift req.data
   req.data = mapper.apply req.data, a
