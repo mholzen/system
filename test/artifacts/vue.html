@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- <link rel="stylesheet" href="/files/slideshow.css"></link> -->
+<script src="https://unpkg.com/vue@next"></script>
+<body>
+  <div id="v-model-basic" class="demo">
+    <input v-model="message" placeholder="edit me" />
+    <p>Message is: {{ message }}</p>
+  </div>
+<script>
+Vue.createApp({
+  data() {
+    return {
+      message: ''
+    }
+  }
+}).mount('#v-model-basic')
+</script>
+</body>
+</html>

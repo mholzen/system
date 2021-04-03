@@ -1,6 +1,5 @@
 {fileContentSync} = require '../content'
 {Template} = require '../template'
-{Template} = require '../template'
 
 map = (memo, value)->
   log {d:Object.entries(value)}
@@ -15,6 +14,7 @@ graph = new Template fileContentSync( __dirname+'/graph.html').toString()
 graph2 = new Template fileContentSync( __dirname+'/graph2.html').toString()
 scale = new Template fileContentSync( __dirname+'/scale.html').toString()
 vue = new Template fileContentSync( __dirname+'/vue.html').toString()
+slideshow = new Template fileContentSync( __dirname+'/slideshow.html').toString()
 
 # TODO: should be async
 module.exports =
@@ -24,7 +24,7 @@ module.exports =
   graph: (x)-> graph.substitute x
   graph2: (x)-> graph2.substitute x
   scale: (x)-> scale.substitute x
-  vue: (x)-> vue.substitute x
+  slideshow: (x)-> slideshow.substitute x
 
 reference = (data)->
   log 'reference', {data}

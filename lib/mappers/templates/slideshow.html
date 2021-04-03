@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/files/slideshow.css"></link>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<body>
+  <form action="" style="visibility: hidden">
+    <label for="from">From:</label>
+    <input id="from" name="from" type="url">
+    <input type="submit" value="Submit">
+  </form>
+  <div id="slideshow">
+    {{#each images}}
+      <img src="{{this}}">
+    {{/each}}
+  </div>
+<script>
+
+// https://github.com/fengyuanchen/viewerjs
+
+(function(){
+
+  function get(name){
+     if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+        return decodeURIComponent(name[1]);
+  }
+
+  var images          = document.getElementById('slideshow').getElementsByTagName('img');
+
+  if (images.length == 0) {
+    document.getElementsByTagName('form')[0].style.visibility = 'visible';
+
+    var from = get('from');
+
+    $.get(from, function(data) {
+      // detect content
+      var html = $.parseHTML(data);
+    });
+  }
+
+// we set the 'fx' class on the first image when the page loads
+  document.getElementById('slideshow').getElementsByTagName('img')[0].className = "fx";
+
+// this calls the kenBurns function every 4 seconds
+// you can increase or decrease this value to get different effects
+  window.setInterval(kenBurns, 20000);
+
+// the third variable is to keep track of where we are in the loop
+// if it is set to 1 (instead of 0) it is because the first image is styled when the page loads
+  var images          = document.getElementById('slideshow').getElementsByTagName('img'),
+      numberOfImages  = images.length,
+      i               = 1;
+
+  function kenBurns() {
+    if ( i==numberOfImages ) { i = 0;}
+    images[i].className = "fx";
+
+    // we can't remove the class from the previous element or we'd get a bouncing effect so we clean up the one before last
+    // (there must be a smarter way to do this though)
+    if ( i===0 ) { images[numberOfImages-2].className = ""; }
+    if ( i===1 ) { images[numberOfImages-1].className = ""; }
+    if ( i>1 ) { images[i-2].className = ""; }
+    i++;
+
+  }
+})();
+
+</script>
+</body>
+</html>

@@ -90,8 +90,17 @@ function chart(data) {
     node.append("text")
         .attr("dy", ".3em")
         .style("text-anchor", "middle")
-        .text(d => d.name || d.label || d.value);
-
+        .text(function(d) {
+            if (typeof d.value == 'undefined')
+                return;
+            if (typeof d.value == 'string')
+                return d.value;
+            if (typeof d.value == 'object')
+                if (typeof d.value.name == 'string')
+                    return d.value.name;
+                if (typeof d.value.first == 'string')
+                return d.value.first;
+        });
     simulation.on("tick", () => {
         link
             .attr("x1", d => d.source.x)
