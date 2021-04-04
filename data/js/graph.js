@@ -82,6 +82,7 @@ function chart(data) {
         .attr("stroke", "#666")
         .attr("stroke-width", 1.5)
         .attr("r", 40)
+        // .attr("r", (d) => (Math.random()*100 + 40))
         .attr("fill", color);
 
     node.append("title")
@@ -96,6 +97,8 @@ function chart(data) {
             if (typeof d.value == 'string')
                 return d.value;
             if (typeof d.value == 'object')
+                if (Array.isArray(d.value))
+                    return d.value.join('\n');
                 if (typeof d.value.name == 'string')
                     return d.value.name;
                 if (typeof d.value.first == 'string')

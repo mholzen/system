@@ -10,5 +10,8 @@ module.exports = (data, options)->
 
   if typeof data == 'string'
     return table parse data, {columns: true, skip_empty_lines: true}
-  return data
-    
+
+  if Array.isArray data
+    return table data, options
+
+  throw new Error "can't create table from #{typeof data}"

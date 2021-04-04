@@ -3,10 +3,15 @@ table = require './table'
 stream = require './stream'
 requireDir = require 'require-dir'
 creator = require './creator'
+parse = require './mappers/parse'
 
 reducers =
   reduce: (data, name, opts)->
     reducer = reducers[name] opts
+
+    if typeof data == 'string'
+      data = parse data
+
     if data instanceof Array
       r = data.reduce reducer[1], reducer[0]
       if reducer[2]

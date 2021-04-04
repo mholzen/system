@@ -1,10 +1,16 @@
 log = require '../log'
 
-defaultSep = new RegExp '(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))'
+defaultSep = new RegExp '(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))' # csv
 defaultSep = ','
 
+separators =
+  dashes: new RegExp ' +- +'
+
 module.exports = (data, options)->
-  sep = options?.sep ? options?[0] ? defaultSep
+  sep = if options?.sep of separators
+    separators[options?.sep]
+  else
+    options?.sep ? options?[0] ? defaultSep
   # log.debug 'split', {data}
 
   if typeof data == 'string'

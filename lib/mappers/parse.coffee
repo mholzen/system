@@ -11,9 +11,9 @@ module.exports = (data, options)->
     if ['[', '{'].includes data?[0]
       return JSON.parse data
     
-    # if 0 < data.indexOf ','
-    #   rows = csvParse data, columns: null
-    #   return rows
+    if 0 < data.indexOf ','
+      rows = csvParse data, columns: null
+      return rows
 
   if options?.req?.filename?.endsWith '.cson'
     # TODO: require 'cson-parser', which requires coffeescript 1.2.7
