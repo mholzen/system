@@ -8,4 +8,7 @@ functions and classes.
 
 ## Key concepts
 
+* map/reduce pipelines
 * sensible defaults
+* easy to troubleshoot because logging for specific methods can easily controlled
+* easy to backtrack the data pipeline to get more data, or understand how a step is computed

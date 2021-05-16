@@ -3,6 +3,7 @@ defaultSep = ','
 
 separators =
   dashes: new RegExp ' - '
+  colon: new RegExp ':'
 
 module.exports = (data, options)->
   sep = if options?.sep of separators

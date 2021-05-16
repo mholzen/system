@@ -1,18 +1,18 @@
 amountField = require './amountField'
 
-field = (data)->
+signField = (data)->
   ['Transaction Type'].find (f)-> f of data
 
 sign = (data, opts)->
   if typeof data == 'object'
-    f = opts?.field ? field data
-    if not f?
-      if (f = amountField data)?
-        return Math.sign _.toNumber data[f]
+    field = if opts?.field? then opts.field else signField data
+    if not field?
+      if (field = amountField data)?
+        return Math.sign _.toNumber data[field]
 
       throw  new Error "no sign field in #{log.print data}"
   
-    data = data[f]
+    data = data[field]
 
   if typeof data == 'string'
     switch data.toLowerCase()
@@ -23,5 +23,5 @@ sign = (data, opts)->
       else
         throw new Error "cannot understand #{data}"
 
-sign.field = field
+sign.field = signField
 module.exports = sign

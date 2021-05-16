@@ -1,7 +1,6 @@
 sum = require '../reducers/sum'
 
 module.exports = (data, index, array)->
-  log.debug 'sum', {data}
   if data instanceof Array
     return data.reduce sum, 0
     

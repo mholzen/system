@@ -1,0 +1,1 @@
+git grep  -c '# TODO' | map split sep:colon  | reduce sum

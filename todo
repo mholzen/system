@@ -1,10 +1,7 @@
 # infrastructure, design, code quality
-  - write a README.md backwards
   - clean up mappers for single use and mappers for repeated use
-
   - define conventions to get data about arguments to a function
     Arguments.Signature
-
   - use NODE_PATH or equivalent to set test/*.spec to root
   - move /files handler to /generators/files
   - integration tests that fail should show stderr

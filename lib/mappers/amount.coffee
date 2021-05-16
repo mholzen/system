@@ -5,10 +5,11 @@ amountField = require './amountField'
 amount = (data, opts)->
   s = 1
   if typeof data == 'object'
-    f = opts?.field ? amountField data
-    if not f?
-      throw new Error "no numeric field in #{data}"
-    n = _.toNumber data[f]
+    field = if opts?.field? then opts.field else amountField data
+    if not field?
+      throw new Error "no numeric field in #{log.print data}"
+
+    n = _.toNumber data[field]
 
     s = sign data
     return n * s

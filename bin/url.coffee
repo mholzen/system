@@ -6,10 +6,7 @@
 search process.argv[2..]
 .doto console.log
 .map (x)->
-  console.log x
-  y = (get.getter 'value.0.path') x
-  console.log y
-  y
+  (get.getter 'value.0.path') x
 .map get.getter 'value.0.path'
 .map (x) -> prepend x, 'bookmarks'
 .map pop

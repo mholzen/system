@@ -83,7 +83,6 @@ parse.parseValue = (data)->
 
   number = parseInt data
   if not isNaN number
-    log.debug 'parsed number', {number}
     return number
 
   data

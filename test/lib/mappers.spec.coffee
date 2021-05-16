@@ -30,7 +30,7 @@ describe 'mappers', ->
     expect(amount '1').eql 1
     expect(amount amount:1).eql 1
     expect(amount amount:'1').eql 1
-    expect(-> amount foo:'1').throws()
+    expect(amount foo:'1').eql 1
 
   it 'columns', ->
     expect(columns 'a  b      c').eql ['a', 'b', 'c']
