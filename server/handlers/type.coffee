@@ -1,6 +1,8 @@
 type = require '../../lib/mappers/type'
 log = require '../../lib/log'
 
+{base} = require '../../lib/mappers/html'
+
 module.exports = (req, res, router)->
   name = req.remainder.shift()
   if not (name?.length > 0)
@@ -11,3 +13,7 @@ module.exports = (req, res, router)->
 
   # log.debug 'setting type', {header}
   res.type header
+
+  if header == 'text/html'
+    if req?.base?
+      req.data = base(req.base) + req.data

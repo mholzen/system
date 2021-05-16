@@ -5,6 +5,6 @@ score = (a,b) ->
 sort = (data, options)->
   if data instanceof Array
     return data.sort score
-  throw new Error 'cannot sort'
+  throw new Error "cannot sort #{log.print data}"
 
 module.exports = Object.assign sort, score

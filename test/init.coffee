@@ -8,6 +8,8 @@ global.exec = require '../lib/exec'
 global.log = require '../lib/log'
 global._ = require 'lodash'
 global.system = require "../index"
+Object.assign global, {mappers: global.system.lib.mappers}
+
 
 chai.Assertion.addChainableMethod 'log', null, ->
   log.debug 'expect.log', {object: this._obj}

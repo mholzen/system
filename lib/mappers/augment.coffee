@@ -5,6 +5,7 @@ value = require './value'
 identify = require './identify'
 
 augment = (data, addition, options)->
+  log {addition, options}
   addition = value data, addition, options
 
   name = if typeof options?.name == 'string'

@@ -1,5 +1,5 @@
 log = require '../log'
-pug = require 'pug'
+{compile}  = require 'pug'
 
 string = (data)->
   if data instanceof Buffer
@@ -13,7 +13,7 @@ content = (data)->
     return data.content
   return data
 
-toTemplate = (data, options)->
+create = (data, options)->
   # if typeof data == 'function'
   #   return data
 
@@ -30,19 +30,21 @@ toTemplate = (data, options)->
     pugOptions.filename = data.path
   if options?.self?
     pugOptions.self = options.self
-  return pug.compile string(content(data)), pugOptions
+  return compile string(content(data)), pugOptions
 
   # throw new Error "cannot make template from #{typeof data}:'#{log.print data}'"
     
 # HAVE MADE THIS ASYNC by reading the content
-mapper = (data, options)->
+pug = (data, options)->
   # log.debug 'pug', {options}
 
   if options?.template?
-    templateFn = toTemplate options?.template, options
+    templateFn = create options?.template, options
   else
     options.self = true
-    templateFn = pug.compile data, options
+    if options?.req?.filename?
+      options.filename = options?.req?.filename
+    templateFn = compile data, options
 
   if typeof templateFn != 'function'
     throw new Error "cannot get template function"
@@ -56,10 +58,11 @@ mapper = (data, options)->
   
   res
 
-mapper.post = (resource, data, options)->
-  mapper[resource] = toTemplate data, options
+pug.post = (resource, data, options)->
+  pug[resource] = create data, options
 
-mapper.create = (options)->
-  toTemplate options?.template
+pug.create = (options)->
+  create options?.template
 
-module.exports = mapper
+
+module.exports = pug

@@ -2,6 +2,18 @@ isPromise = require 'is-promise'
 {isStream} = require '../stream'
 
 defaultReplacer = (key, value)->
+  if value instanceof Error
+    return value.toString()
+
+    # TODO: toggle on/off
+    # return
+    #   message: value.toString()
+    #   stack: value.stack
+
+      # TODO: understand why these don't work
+      # fileName: value.fileName
+      # lineNumber: value.lineNumber
+
   if isStream value
     return '<Stream>'
   if isPromise value

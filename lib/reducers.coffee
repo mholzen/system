@@ -6,36 +6,6 @@ creator = require './creator'
 parse = require './mappers/parse'
 
 reducers =
-  reduce: (data, name, opts)->
-    reducer = reducers[name] opts
-
-    if typeof data == 'string'
-      data = parse data
-
-    if data instanceof Array
-      r = data.reduce reducer[1], reducer[0]
-      if reducer[2]
-        r = reducer[2] r
-      return r
-
-    if stream.isStream data
-      return data.reduce reducer[0], reducer[1]
-      .map (r)->
-        if reducer[2]
-          r = reducer[2] r
-        r
-      .toPromise Promise
-    throw new Error "can't reduce '#{typeof data}' value"
-
-  count: -> [
-    0,
-    (memo, value)->
-      # log.debug 'count', {memo, value}
-      if value?
-        memo = memo + 1
-      memo
-    ]
-
   defined: (out)->
     [
       undefined
@@ -98,7 +68,52 @@ reducers =
         table
     ]
 
-v = Object.assign reducers, requireDir './reducers'
-module.exports = creator v
+Object.assign reducers, requireDir './reducers'
 
-# module.exports = creator Object.assign reducers, requireDir './reducers'
+stuff = (reducer, options)->
+  if typeof reducer == 'function'
+    return [ , reducer, ]
+
+  if reducer instanceof Array
+    return reducer
+
+  if typeof reducer?.create == 'function'
+    res = reducer.create options
+    if res instanceof Array
+      return res
+    return [ , res, ]
+
+  throw new Error "cannot make stuff"
+
+reducers.reduce = (data, name, opts)->
+
+  # semantics of creator...?
+  log.debug 'reduce.entry', {data, name, opts}
+  if not name of reducers
+    throw new Error "cannot find '#{name}' in reducers"
+  reducer = reducers[name]
+
+  # do I have a reducer?  or a reducerCreator?
+  [memo, memoizer, finisher] = stuff reducer, opts
+
+  if typeof data == 'string'
+    data = parse data
+
+  if data instanceof Array
+    r = data.reduce memoizer, memo
+    if finisher?
+      r = finisher r
+    return r
+
+  if stream.isStream data
+    return data.reduce memo, memoizer
+    .map (r)->
+      if finisher?
+        r = finisher r
+      r
+    .toPromise Promise
+
+  throw new Error "can't reduce '#{typeof data}' value"
+
+
+module.exports = creator reducers

@@ -10,7 +10,7 @@ types =
   'txt': 'text/plain'
   'md': 'text/plain'
   'png': 'image/png'
-  'csv': 'text/csv'
+  'csv': 'text/plain'   # should technically be text/csv
   'json': 'application/json'
 
 name = (data)->

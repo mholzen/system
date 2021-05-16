@@ -1,5 +1,5 @@
 {fileContentSync} = require '../content'
-{Template} = require '../template'
+{create} = require '../template'
 
 map = (memo, value)->
   log {d:Object.entries(value)}
@@ -10,21 +10,13 @@ map = (memo, value)->
     memo
   , {}
 
-graph = new Template fileContentSync( __dirname+'/graph.html').toString()
-graph2 = new Template fileContentSync( __dirname+'/graph2.html').toString()
-scale = new Template fileContentSync( __dirname+'/scale.html').toString()
-vue = new Template fileContentSync( __dirname+'/vue.html').toString()
-slideshow = new Template fileContentSync( __dirname+'/slideshow.html').toString()
-
 # TODO: should be async
-module.exports =
-  # graph: new Template fileContentSync( __dirname+'/graph.html').toString()
-  # graph2: new Template fileContentSync( __dirname+'/graph2.html').toString()
-
-  graph: (x)-> graph.substitute x
-  graph2: (x)-> graph2.substitute x
-  scale: (x)-> scale.substitute x
-  slideshow: (x)-> slideshow.substitute x
+templates =
+  graph: create fileContentSync( __dirname+'/graph.html').toString()
+  graph2: create fileContentSync( __dirname+'/graph2.html').toString()
+  scale: create fileContentSync( __dirname+'/scale.html').toString()
+  vue: create fileContentSync( __dirname+'/vue.html').toString()
+  slideshow: create fileContentSync( __dirname+'/slideshow.html').toString()
 
 reference = (data)->
   log 'reference', {data}
@@ -34,7 +26,7 @@ reference = (data)->
 
   if typeof data == 'string'
     r = {}
-    for k, v of module.exports
+    for k, v of templates
       log 'inspecting', {k,v}
       t = v?.template?.substitutions?.some (s)->
         log {s, data, t: s.includes data}
@@ -45,7 +37,4 @@ reference = (data)->
 
   throw new Error "cannot get references from #{data}"
 
-module.exports.graph.template = graph
-module.exports.graph2.template = graph2
-
-module.exports = Object.assign module.exports, {reference}
+module.exports = Object.assign templates, {reference}

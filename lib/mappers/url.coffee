@@ -2,7 +2,10 @@
 urlNames =
   thumbnails: '/files/test/artifacts/thumbnails.css'
 
-url = (data)->
+url = (data, options)->
+  if options?.req?
+    return 'should use base'
+
   if data?.name?
     if data.name of urlNames
       return urlNames[data.name]

@@ -40,10 +40,6 @@ transformers =
   notnull: (inputStream)->
     inputStream.filter (x)->x?
 
-  head: (inputStream, options)->
-    n = options?.n ? 10
-    inputStream.take n
-
   filter: (inputStream, name, options)->
     filters =
       ok: (x)->x?

@@ -10,6 +10,21 @@ fit = (item, width)->
   # TODO: consider trimming from the right
   item[0..width-1] + Array(padding).join(' ') + ' '
 
+# TODO: refactor with mapprs.isProperty
+isProperty = (data)->
+  if typeof data == 'string'
+    if data.toLowerCase().startsWith('bank of')
+      return false
+
+    if data.match /\w+/
+      return true
+
+isHeader = (data)->
+  if Array.isArray data
+    for columnData in data
+      return false if not isProperty columnData
+    return true
+
 class Table
   constructor: (datas, options)->
     {@width = 80, @header = false} = options ? {}
@@ -17,11 +32,13 @@ class Table
 
   setData: (datas)->
     # log.debug 'table.setData', {datas}
-    @_keys = if datas?[0] instanceof Array then datas.shift() else null
+    if isHeader datas?[0]
+      @_keys = if datas?[0] instanceof Array then datas.shift() else null
+
     @datas = datas ? []
 
   keys: (newKeys)->
-    # log.debug 'table.keys', {newKeys}
+    log.debug 'table.keys', {newKeys}
     if newKey?
       @_keys = newKeys
 
@@ -48,9 +65,11 @@ class Table
     rows
 
   column: (key)->   # TODO: can column() be defined as map pick
-    index = @keys().indexOf key
+    log.debug 'column', {key}
+    index = @keys().indexOf (key ? 0)
     if index < 0
-      throw new RangeError()
+      index = 0
+      # throw new RangeError()
     data[index] for data in @datas
 
   setHeader: (row)->

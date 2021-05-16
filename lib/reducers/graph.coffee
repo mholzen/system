@@ -104,13 +104,23 @@ _ = require 'lodash'
 #       edges: edges
 #     }
 
-graph = (options)->
-  graph = new SimpleGraph null, options
-  count = 0
-  reducer = (graph, value)->
-    graph.add value
-    return graph
+# graph = (options)->
+#   graph = new SimpleGraph null, options
+#   count = 0
+#   reducer = (graph, value)->
+#     graph.add value
+#     return graph
+#
+#   return [graph, reducer]
 
-  return [graph, reducer]
+graph = (memo, value)->
+  memo ?= new SimpleGraph()
+  memo.add value
 
+graph.create = (options)->
+  firstmemo = new SimpleGraph null, options
+  (memo,value)->
+    memo ?= firstmemo
+    memo.add value
+  
 module.exports = Object.assign graph

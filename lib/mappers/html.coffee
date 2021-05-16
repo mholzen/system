@@ -125,11 +125,14 @@ html = (data, options)->
     return data.toHtml()
 
   result = outer data, options
-
-  # NOTE: idempotent side effect
-  if typeof options?.res?.type == 'function'
-    options.res.type 'text/html'
-
   return result
 
-module.exports = Object.assign html, {body, outer}
+type = (data, options)->
+  result = html data, options
+  if result?
+    # NOTE: side effect
+    if typeof options?.res?.type == 'function'
+      options.res.type 'text/html'
+  return result
+
+module.exports = Object.assign type, {body, outer, base}

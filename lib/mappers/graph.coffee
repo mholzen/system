@@ -55,6 +55,8 @@ class SimpleGraph
     if o?
       @_nodes.add o
       @_edges.add {from: s, to: o}
+    
+    @
 
   toJSON: ->
     nodes = (node for node from @_nodes.values())

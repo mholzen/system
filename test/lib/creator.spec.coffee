@@ -62,3 +62,21 @@ describe 'creator', ->
     f = factory ['a','b']
     expect f()
     .eql 1
+
+  it.skip 'handles options', ->
+    factory = creator
+      inc1: (data, options)->
+        data + options.inc
+      inc2:
+        create: (options)->
+          (data)->
+            data + options.inc
+
+    inc1 = factory 'inc1'
+    inc2 = factory 'inc2', inc: 2
+
+    expect inc1 1, inc: 2
+    .eql 3
+    
+    expect inc2 1
+    .eql 3

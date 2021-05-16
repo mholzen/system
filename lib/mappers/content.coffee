@@ -11,7 +11,6 @@ _ = require 'lodash'
 
 # warning: async function
 get = (data, path)->
-  # log.debug 'content.get', {data, path}
   if not (path instanceof Array)
     path = path.split '.'
 

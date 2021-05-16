@@ -59,9 +59,11 @@ module.exports = (map)->
     f = find name
     # if typeof map[name] == 'function'
     if typeof f == 'function'
+
+      # TODO: should pass index and array into options
       return (data, a...) ->
         if a.length > 0
-          throw new Error 'unary function called with more arguments'
+          throw new Error "unary function called with more than 1 argument '#{log.print a}'"
         # TODO: consider wrapping the error hanlding in another function
         try
           # TOFIX: this doesn't work when map[name] is a reducer function

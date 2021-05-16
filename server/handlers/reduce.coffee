@@ -9,10 +9,10 @@ module.exports = (req, res, router)->
     return
 
   args = Arguments.from segment
-  name = args.first()
 
-  if not (reducer = reducers[name])
-    return res.status(404).send "'#{name}' not found"
+  # name = args.first()
+  # if not (reducer = reducers[name])
+  #   return res.status(404).send "'#{name}' not found"
 
   if not req.data?
     return res.status(400).send 'no data'

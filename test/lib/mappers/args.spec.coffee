@@ -7,7 +7,6 @@ describe 'args', ->
     expect args {a:1}
     .eql { positional: [], options: {a:1} }
 
-
   it 'basic', ->
     expect args [1,2,3]
     .property 'positional'
@@ -19,7 +18,7 @@ describe 'args', ->
 
     expect args ['c', ':', 'a:1', 'b:b']
     .property 'positional'
-    .eql ['c', ':']
+    .eql ['c']
 
   it 'options', ->
     expect args 'a:1'
@@ -47,11 +46,10 @@ describe 'args', ->
     .property 'positional'
     .eql ['a', 'b']
 
-
   it 'positional after dictionary', ->
     expect args ['a:1', 'b:b', 'c', ':']
     .property 'positional'
-    .eql ['c', ':']
+    .eql ['c']
 
     expect args '1,2,a:1'
     .eql
@@ -64,9 +62,38 @@ describe 'args', ->
     .eql a: b: 1
 
   describe 'interpet filenames', ->
-    it.skip 'two levels with .', ->
+    it 'two levels with .', ->
       expect args ['a.b:1']   # 'a:b:1' works too
+      .property 'options'
       .eql a: b: 1
+
+describe 'terms', ->
+  
+  term = args.term
+  it 'single term', ->
+    expect term 'abc'
+    .eql 'abc'
+
+  it 'key:value', ->
+    expect term 'a:abc'
+    .eql {a: 'abc'}
+
+  it 'value with no key', ->
+    expect term ':abc'
+    .eql {0: 'abc'}
+
+  it 'key with no value', ->
+    expect term 'abc:'
+    .eql {abc: ''}
+
+  it 'key with :', ->
+    expect term 'a:b:c:abc'
+    .eql {a: {b: {c: 'abc'}}}
+
+  it 'key with .', ->
+    expect term 'a.b.c:abc'
+    .eql {a: {b: {c: 'abc'}}}
+
 
 {Arguments} = args
 describe 'Arguments', ->
@@ -123,10 +150,10 @@ describe 'Arguments', ->
     a = Arguments.from 'a,b,c,k:1'
     expect(a).property('options').eql {k:1}
 
-  describe.skip 'supports .', ->
+  describe 'supports dot', ->
     it '1. means array', ->
       a = Arguments.from 'a.b'
-      expect(a.all()).eql [['a', 'b']]
+      expect(a.all()).eql ['a.b']
 
     it '2. means array', ->
       a = Arguments.from 'a.b:1'
@@ -134,4 +161,6 @@ describe 'Arguments', ->
 
     it '3. means array', ->
       a = Arguments.from 'a.b,d.e'
-      expect(a.all()).eql [['a','b'], ['d', 'e']]
+      expect(a.all()).eql ['a.b', 'd.e']
+
+

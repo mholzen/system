@@ -9,9 +9,6 @@
     <input type="submit" value="Submit">
   </form>
   <div id="slideshow">
-    {{#each images}}
-      <img src="{{this}}">
-    {{/each}}
   </div>
 <script>
 
@@ -19,30 +16,37 @@
 
 (function(){
 
-  function get(name){
-     if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
-        return decodeURIComponent(name[1]);
-  }
+  var images = ${JSON.stringify(images)};
+  var slideshow = document.getElementById('slideshow');
+  images = images.map( function (image) {
+    var img = document.createElement('img');
+    img.setAttribute('src', encodeURIComponent(image));
+    slideshow.appendChild(img);
+  });
+  // var images = document.getElementById('slideshow').getElementsByTagName('img');
 
-  var images          = document.getElementById('slideshow').getElementsByTagName('img');
 
-  if (images.length == 0) {
-    document.getElementsByTagName('form')[0].style.visibility = 'visible';
+  // function get(name){
+  //    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+  //       return decodeURIComponent(name[1]);
+  // }
 
-    var from = get('from');
 
-    $.get(from, function(data) {
-      // detect content
-      var html = $.parseHTML(data);
-    });
-  }
+  // if (images.length == 0) {
+  //   document.getElementsByTagName('form')[0].style.visibility = 'visible';
+
+  //   var from = get('from');
+
+  //   $.get(from, function(data) {
+  //     // detect content
+  //     var html = $.parseHTML(data);
+  //   });
+  // }
 
 // we set the 'fx' class on the first image when the page loads
   document.getElementById('slideshow').getElementsByTagName('img')[0].className = "fx";
 
-// this calls the kenBurns function every 4 seconds
-// you can increase or decrease this value to get different effects
-  window.setInterval(kenBurns, 20000);
+  window.setInterval(kenBurns, 10000);
 
 // the third variable is to keep track of where we are in the loop
 // if it is set to 1 (instead of 0) it is because the first image is styled when the page loads
@@ -51,6 +55,7 @@
       i               = 1;
 
   function kenBurns() {
+    console.log(i);
     if ( i==numberOfImages ) { i = 0;}
     images[i].className = "fx";
 

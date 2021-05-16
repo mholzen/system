@@ -1,6 +1,8 @@
-{log, stream} = require '../../lib'
+{stream} = require '../../lib/mappers'
 transformers = require '../../streams/transformers'
 {Arguments} = require '../../lib/mappers/args'
+
+{log} = require '../../lib'
 Path = require 'path'
 
 getName = (remainder)->   # async
@@ -25,9 +27,13 @@ getName = (remainder)->   # async
 
   return [name, options]
 
-module.exports = (req, res)->
-  if req.data instanceof Array
+transform = (req, res)->
+  if not stream.isStream req.data
     req.data = stream req.data
+
+  # if a readStream (from content)
+  # convert to stream
+
 
   if not stream.isStream req.data
     throw new Error "need a stream"
@@ -53,3 +59,6 @@ module.exports = (req, res)->
     return
 
   req.data = req.data.through f
+
+transform.all = transformers.all
+module.exports = transform

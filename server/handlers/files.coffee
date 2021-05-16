@@ -22,13 +22,19 @@ handler = (req, res, router) ->
     remainder: Array.from req.remainder
   options = Object.assign {}, parse: false, req.args.options
   req.data = content inodePath.path, options
+
   req.filename = inodePath.path          # TODO: consider a scoped or different name?
+  req.params.filename = req.filename
+
   req.dirname = if inodePath.stat.isDirectory() then inodePath.path else dirname inodePath.path
   req.dirname += '/'
+  req.params.dirname = req.dirname     # TODO: remove duplicate
 
   req.reldirname = req.dirname.slice inodePath.root.length + 1
+
   # TODO: use previously set req.base.  perhaps use an array?
   req.base = '/files' + req.dirname.slice inodePath.root.length
+  req.params.base = req.base
 
   t = (type req) ? 'text/plain'
   res.type t

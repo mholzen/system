@@ -5,5 +5,5 @@ stream = require  'lib/stream'
 describe 'urlQueries', ->
   it 'should get content', ->
     google = urlQueries.google
-    result = google.substitute query: 'foo'
+    result = google  query: 'foo'
     expect(result).eql 'http://google.com/search?q=foo'

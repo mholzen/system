@@ -1,4 +1,7 @@
 # infrastructure, design, code quality
+  - write a README.md backwards
+  - clean up mappers for single use and mappers for repeated use
+
   - define conventions to get data about arguments to a function
     Arguments.Signature
 
@@ -17,7 +20,7 @@
     - list templates with substitutions containing a string
  
 # transform
-  - clean up use of Args in handlers
+  - [x] clean up use of Args in handlers
   - filter (eg. /files/data/people/transform/filter-out,directories )
   - head/tail, for x milliseconds
   - extract rows from html table to scrape from web page

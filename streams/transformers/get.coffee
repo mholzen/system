@@ -1,6 +1,8 @@
 stream = require '../../lib/stream'
 
 flatMapper = (path, options)->
+  # returns a mapper.get that uses the first row as containing column names 
+
   if not path?
     throw new Error 'no path to get'
 

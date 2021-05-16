@@ -1,16 +1,18 @@
 _ = require 'lodash'
+sign = require './sign'
+amountField = require './amountField'
 
-field = (x)->
-  ['amount', 'Amount'].find (f)-> f of x
-
-amount = (x, opts)->
-  if typeof x == 'object'
-    f = opts?.field ? field x
+amount = (data, opts)->
+  s = 1
+  if typeof data == 'object'
+    f = opts?.field ? amountField data
     if not f?
-      throw new Error "no numeric field in ${x}"
-    x = x[f]
+      throw new Error "no numeric field in #{data}"
+    n = _.toNumber data[f]
 
-  _.toNumber x
+    s = sign data
+    return n * s
 
-amount.field = field
+  _.toNumber data
+
 module.exports = amount

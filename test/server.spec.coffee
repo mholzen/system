@@ -127,7 +127,7 @@ describe 'server', ->
         .includes '<img'
 
     it 'list of resources', ->
-      r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html,style:name:thumbnails'  # TODO: make style a mapper
+      r.get '/files/test/artifacts/marchome/images/transform/head/map/image/reduce/html/apply/style,thumbnails'  # TODO: make style a mapper
       .then (res)->
         expect res.text
         .includes '<img'
@@ -145,8 +145,7 @@ describe 'server', ->
         .includes '7'
 
     it 'works', ->
-      pipeline = 
-      [
+      r.get [
         '/files/test/artifacts/marchome/data/logs/index.json'
         'generators/lines'
         'map/parse'
@@ -157,9 +156,6 @@ describe 'server', ->
         'apply/entries'
         'apply/sort'
       ].join '/'
-      
-      # r.get '/files/test/artifacts/marchome/data/logs/index.json/generators/lines/map/parse/map/get,log/map/words/reduce/concat/reduce/distribution/apply/entries/apply/sort'
-      r.get pipeline
       .then (res)->
         expect res.text
         .includes 'sad'

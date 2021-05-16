@@ -1,6 +1,26 @@
 _ = require 'lodash'
 log = require '../log'
 {parseValue} = require '../parse'
+isLiteral = require './isLiteral'
+
+term = (data)->
+  i = data.lastIndexOf ':'
+  if i == -1
+    # data is a value
+    return parseValue data
+  
+  key = data.slice 0, i
+  value = parseValue data.slice i+1
+
+  if key.length == 0
+    return {0: value}
+
+  keys = key.split /[\.:]/
+  res = value
+  while key = keys.pop()
+    r = {[key]: res}
+    res = r
+  return res
 
 class Arguments
   @from: (words)->
@@ -22,30 +42,24 @@ class Arguments
 
     for arg, i in data
       if typeof arg == 'object'
-        @options = Object.assign @options, arg
+        Object.assign @options, arg
         continue
 
       if typeof arg != 'string'
         @positional.push arg
         continue
 
-      elements = arg.split ':'
+      # value = parseValue elements[elements.length-1]
 
-      if elements.length == 1
-        elements.unshift i
-
-      if elements[0].length == 0
-        elements[0] = i
-        if elements[1].length == 0
-          elements[1] = ':'
-
-      path = elements[..-2]
-      value = parseValue elements[elements.length-1]
-
-      if typeof path[0] == 'number'
-        @positional.push value
+      # if typeof path[0] == 'number'
+      #   @positional.push value
+      # else
+      #   _.set @options, path, value
+      t = term arg
+      if isLiteral t
+        @positional.push t
       else
-        _.set @options, path, value
+        Object.assign @options, t
 
   first: ->
     @positional[0]
@@ -73,4 +87,4 @@ Arguments.Signature = Signature
 
 args = (x)-> Arguments.from x
 
-module.exports = Object.assign args, {Arguments}
+module.exports = Object.assign args, {Arguments, term}

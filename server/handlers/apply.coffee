@@ -24,6 +24,7 @@ paths =
   Graph2: '~/develop/mholzen/system/lib/mappers/templates/graph2.html'
   Image: '~/develop/mholzen/system/lib/mappers/templates/image.html'
   Table: '~/develop/mholzen/vonholzen.org/files/private/table.pug'
+  Element: '~/develop/mholzen/vonholzen.org/files/elements/element.pug'
 
 resolveNameOption = (options, option)->
   name = options?[option]?.name
@@ -33,8 +34,8 @@ resolveNameOption = (options, option)->
 
 resolvePathOption = (options, option, req)->
   path = options?[option]?.path
+  log.debug 'resolvePathOption', {options, option, path}
   if path?
-    # log.debug 'resolvePathOption', {option}
     if not path.startsWith '/'
       if not req?.dirname?
         throw new Error "relative path '#{path}' but no req.dirname"

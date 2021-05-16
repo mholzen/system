@@ -11,7 +11,10 @@ s = null
 r = null
 
 get = (a...)->
-  # log.debug "GET /#{a[0]}"
+  if a[0] instanceof Array
+    a[0] = a[0].join '/'
+
+  log.debug "GET #{a[0]}"
   request s.app
   .get a...
 
@@ -28,7 +31,17 @@ describe 'integration', ->
       # r.get '/files,statDirectories:true/test/artifacts/map/link/apply/html'
       # r.get '/files/test/artifacts/map/augment,stat/apply/resolve/map/link/apply/html'
       # r.get '/files/test/map/array/map/prepend,req.dirname/map/join/map/augment,stat/apply/resolve'
-      get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
+      # get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
+      get [
+        '/files/test/artifacts'
+        'map/object,name:name'
+        'map/augment,req.dirname,name:directory'
+        'map/augment,req.base,name:base'
+        'map/augment,stat,name:stat'
+        'apply/resolve'
+        'map/link'
+        'apply/html'
+      ]
       .then (res)->
         expect res.text
         .match /<li>[^<]*<a href=/
@@ -123,3 +136,15 @@ describe 'integration', ->
         .include 'non-existent'
         .include 'blurb.txt'
         .include 'marchome'
+
+  describe 'reduce to a map using any other command', ->
+    it 'works', ->
+      get [
+        '/files/test/artifacts/names.csv'
+        'reduce/map,key:0'
+        'map/keys'
+      ].join '/'
+      .then (res)->
+        expect res.text
+        .include 'Marc'
+        .not.include 'von Holzen'

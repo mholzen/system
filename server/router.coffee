@@ -1,15 +1,15 @@
+{stream, mappers, reducers, generators, streams} = require '../lib'
+handlers = require './handlers'
+
+{isStream} = stream
+content = mappers.content
+{Arguments} = mappers.args
+keys = generators.keys
+
 express = require 'express'
 log = require '../lib/log'
 _ = require 'lodash'
 isPromise = require 'is-promise'
-
-{stream, mappers, reducers, generators} = require '../lib'
-{isStream} = stream
-content = mappers.content
-{Arguments} = mappers.args
-
-keys = generators.keys
-
 {join, sep} = require 'path'
 
 id = (obj)->
@@ -55,7 +55,10 @@ root =
       frequency: 1
       measures: '/requests/logs/entries/reduce/count'
 
-root = Object.assign root, require './handlers'
+Object.assign handlers,
+  transformers: handlers.transform.all
+
+Object.assign root, handlers
 
 class RewriteRouter
   constructor: (rewrites)->
@@ -148,8 +151,7 @@ class TreeRouter
         # req.data.pipe res
         # return res.end
 
-        data = await req.data.collect().toPromise Promise
-        return res.send data
+        req.data = await req.data.collect().toPromise Promise
 
       if not isStream req.data
         # log.debug 'respond', {data: req.data}

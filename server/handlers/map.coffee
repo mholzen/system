@@ -32,22 +32,37 @@ module.exports = (req, res, router)->
     req.data = await req.data
 
   if req.data instanceof Buffer
-    req.data = stream([req.data]).through parse()
+    # req.data = stream([req.data]).through parse()
+    req.data = mappers.parse req.data
 
   if req.data instanceof Array
     req.data = stream req.data
 
+  isMap = mappers.isMap req.data
+  if isMap  
+    keys = mappers.keys req.data
+    req.data = mappers.values req.data
+    # log.debug 'map.first', {f: req.data[0]}
+
   Object.assign args.options, {req, res, resolve: mappers}
 
   catchAndLog = (f)->
-    (a...)->
+    (currentValue, index, array)->
       try
-        f a...
+        log.debug 'map', {currentValue, index, array}
+        f currentValue #, index, array
       catch e
-        log.error {e}
-        null
+        log.error 'map', {e}
+        # TODO; use a toggle to return the exception or fail
+        return e
 
   a = args.all()
   f = mappers a...
   g = catchAndLog f
   req.data = req.data.map g
+
+  if isMap
+    req.data = keys.reduce (m, k, i)->
+      m[k] = req.data[i]
+      m
+    , {}

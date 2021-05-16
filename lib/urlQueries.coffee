@@ -1,4 +1,4 @@
-{Template} = require './mappers/template'
+{create} = require './mappers/template'
 
 urls =
   google: 'http://google.com/search?q=${query}'
@@ -23,7 +23,7 @@ urlGenerators =
   items: []
 
 for key, value of urls
-  u = new Template value
+  u = create value
   urlGenerators[key] = u
   urlGenerators.items.push u
 

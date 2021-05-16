@@ -1,7 +1,8 @@
 log = require '@vonholzen/log'
 {isStream} = require './stream'
 isPromise = require 'is-promise'
-_ = require 'lodash'
+isRequest = require './mappers/isRequest'
+isResponse = require './mappers/isResponse'
 
 log.filter = (data)->
   if typeof data == 'undefined'
@@ -22,6 +23,15 @@ log.filter = (data)->
 
   if isStream data
     return '<Stream>'
+
+  if isRequest data
+    return '<Request params:' + log.print(data.params) + '>'
+
+  if isResponse data
+    return '<Response>'
+
+  if data instanceof Buffer
+    return '<Buffer>'
 
   if data instanceof Set
     return '{' + Array.from(data.values()).join(',') + '}'

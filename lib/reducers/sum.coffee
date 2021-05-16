@@ -2,11 +2,10 @@ log = require '../log'
 
 amount = require '../mappers/amount'
 
-sum = (opts)->
-  (x, y)->
-    x = amount x, opts
-    y = amount y, opts
-
-    x + y
+sum = (memo, value)->
+  log.debug 'sum', {memo, value}
+  memo ?= 0
+  memo += amount value
+  memo
 
 module.exports = sum
