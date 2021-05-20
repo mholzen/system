@@ -40,6 +40,7 @@ parse = (path)->
   (word.split ',' for word in words)
 
 root =
+  handlers: handlers
   mappers: mappers.all    # DEBUG: do we want this?
 
   reducers: reducers
