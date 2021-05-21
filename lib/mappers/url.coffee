@@ -1,20 +1,23 @@
 # TODO: this probably should come from the context
+
+{NotMapped} = require 'lib/errors'
+
 urlNames =
   thumbnails: '/files/test/artifacts/thumbnails.css'
 
 url = (data, options)->
   if options?.req?
-    return 'should use base'
+    throw new Error 'should use base'
 
   if data?.name?
     if data.name of urlNames
       return urlNames[data.name]
 
   if typeof data == 'string'
-    if data.match /https*:\/\/[^/]+/
+    if data.match /^https*:\/\/[^/]+/
       return data
-    if data.match /\w+\.\w+/
-      return "http://#{data}/"
+    if data.match /^\w+\.\w+/
+      return "https://#{data}"
 
   if data?.url?
     return data.url
@@ -22,6 +25,6 @@ url = (data, options)->
   if data?.path?
     return 'file://' + data.path
 
-  throw new Error "cannot get url from #{data}"
+  throw new NotMapped data
 
 module.exports = url

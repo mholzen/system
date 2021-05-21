@@ -1,4 +1,3 @@
-log = require '../log'
 {compile}  = require 'pug'
 
 string = (data)->
@@ -36,8 +35,6 @@ create = (data, options)->
     
 # HAVE MADE THIS ASYNC by reading the content
 pug = (data, options)->
-  # log.debug 'pug', {options}
-
   if options?.template?
     templateFn = create options?.template, options
   else

@@ -98,13 +98,6 @@ describe 'server', ->
       expect response.text
       .includes '[["First","Last"],['
 
-  it '...reduce/table', ->
-    r.get '/files/test/artifacts/names.csv/generators/lines/map/split/reducer/table'
-    .then (response)->
-      expect response.text
-      .includes '{' # JSON of a table
-
-
   it.skip 'difference between dir and dir/', ->
     r.get '/files/test/artifacts'
     .then (response)->
@@ -175,4 +168,3 @@ describe.skip 'post', ->
       .then (response)->
         expect response.text
         .includes '<p>a:1 b:2</p>'
-

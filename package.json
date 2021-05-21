@@ -5,6 +5,8 @@
   "main": "index.coffee",
   "scripts": {
     "mocha": "mocha-watch",
+    "test:once": "mocha-once",
+    "test:watch": "mocha-watch",
     "test": "mocha-watch",
     "start": "forever -a -c coffee start server/start.coffee",
     "stop": "forever -a stop server/start.coffee",

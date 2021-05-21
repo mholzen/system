@@ -6,13 +6,7 @@ omitNames = ['name', 'length']    # names that cannot be assigned to a function
 
 # TODO: rename FunctionFactory or FunctionCreator
 
-# TODO: move to global
-class NotFound extends Error
-  constructor: (message, set)->
-    super message
-    @set = set
-  toString: ->
-    @message + " in #{@set}"
+{NotFound, NotProvided} = require './errors'
 
 module.exports = (map)->
   # Returns factory function given a map of [name, factoryFunction] which passes arguments from the factory to the individual factory function
@@ -22,29 +16,29 @@ module.exports = (map)->
   # TODO: refactor to a mapper
   find = (data)->
     if typeof data == 'undefined'
-      throw new NotFound "cannot find without name", Object.keys map
+      throw new NotProvided 'data'
 
     if Array.isArray data
       m = map
       for segment in data
         if not (segment of m)
-          throw new NotFound "cannot find '#{segment}'", Object.keys map
+          throw new NotFound segment, map
         m = m[segment]
       return m
 
     if typeof data == 'string'
       if not (data of map)
-        throw new NotFound "cannot find '#{data}'", Object.keys map
+        throw new NotFound data, map
 
       return map[data]
 
-    throw new NotFound "cannot find given '#{data}'", Object.keys map
+    throw new NotFound data, map
 
   # TODO: consider warning or failing if map contains any of omitNames
   create = (name, args...)->
     # log.debug 'creator', {name, args}
     # if typeof name == 'undefined'
-    #   throw new NotFound "cannot find without name", Object.keys map
+    #   throw new NotFound "cannot find without name", map
 
     # if typeof name == 'object'
     #   # if typeof name[0] == 'undefined'

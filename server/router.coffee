@@ -1,4 +1,6 @@
 {stream, mappers, reducers, generators, streams} = require '../lib'
+{NotFound} = require '../lib/errors'
+
 handlers = require './handlers'
 
 {isStream} = stream
@@ -114,9 +116,12 @@ class TreeRouter
         await @respond req, res
     catch err
       # log.debug 'process.error', {path: req.path, err: err.stack}
-      res.type 'text/plain'
-      .status 500
-      .send err.stack
+      if err.send?
+        err.send res
+      else
+        res.type 'text/plain'
+        .status 500
+        .send err.stack
     next()
 
   respond: (req, res)->
@@ -215,7 +220,7 @@ class TreeRouter
       if isPromise req.data
         req.data = await req.data
 
-      target = (data, first, root) =>
+      find = (data, first, root) =>
         if (typeof data == 'object') and (data.hasOwnProperty first)
           # DEBUG: when first=mappers, it returns the mappers creator function
           # option 1: creator functions are handled differently
@@ -224,10 +229,9 @@ class TreeRouter
         if (first of root)
           # log.debug 'found first in root', {first}
           return root[first]
+        throw new NotFound first, data, root
 
-      target = target req.data, first, @root
-      if not target
-        return res.status(400).send("cannot find '#{first}' in req.data of '#{log.print req.data}' nor in root if '#{log.print @root}'")
+      target = find req.data, first, @root
 
       if typeof target == 'function'
         # log.debug 'calling handler', {name: first}

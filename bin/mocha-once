@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pattern=${1:-.}
+
+function test {
+  echo "started"
+  env NODE_PATH=. NODE_OPTIONS=--trace-warnings mocha --config test/mocha.yml -g $pattern
+#  istanbul report
+}
+
+test

@@ -20,23 +20,24 @@ describe 'post', ->
     expect s.isFile()
     .true
 
-it 'directory by name', ->
-    container = tempy.directory()
-    directory = await post null, container + '/directory/'
-    s = await stat directory
-    expect s.isDirectory()
-    .true
+describe 'post', ->
+  it 'directory by name', ->
+      container = tempy.directory()
+      directory = await post null, container + '/directory/'
+      s = await stat directory
+      expect s.isDirectory()
+      .true
 
-it 'directory by type', ->
-    directory = await post null, {type: 'directory'}
-    s = await stat directory
-    expect s.isDirectory()
-    .true
+  it 'directory by type', ->
+      directory = await post null, {type: 'directory'}
+      s = await stat directory
+      expect s.isDirectory()
+      .true
 
-it 'stream to file', ->
-  file = tempy.file()
-  data = stream ['da', 'ta']
-  response = await post data, file
-  expect(response).equal file
-  c = await content file
-  expect(c).equal 'data'
+  it 'stream to file', ->
+    file = tempy.file()
+    data = stream ['da', 'ta']
+    response = await post data, file
+    expect(response).equal file
+    c = await content file
+    expect(c).equal 'data'

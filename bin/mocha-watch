@@ -1,18 +1,10 @@
 #!/bin/bash
 
-pattern=${1:-.}
-
-function test {
-  echo "started"
-  env NODE_PATH=. NODE_OPTIONS=--trace-warnings mocha --config test/mocha.yml -g $pattern
-#  istanbul report
-}
-
-test
+mocha-once $1
 
 fswatch . -e .git -e coverage -o |
 while IFS='$\n' read -r line; do
 
-    test
+    mocha-once $1
 
 done

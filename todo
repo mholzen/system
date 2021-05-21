@@ -6,6 +6,9 @@
   - move /files handler to /generators/files
   - integration tests that fail should show stderr
 
+# test infrastructure
+  - mocha should default "it with no describe" to "describe <filename>"
+
 # data
   - can a graph have no edges? and only have nodes?
     what does mapping an Array of strings to a graph mean?
