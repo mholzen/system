@@ -2,6 +2,7 @@
   - prioritize by potential for compounding effect
     - so that: more people use my software
   - keep functions short
+  - minimize number of concepts
   - fail verbosily
 
 # search

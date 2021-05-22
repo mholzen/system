@@ -1,4 +1,3 @@
-log = require '../log'
 {promisify} = require 'util'
 fs = require 'fs'
 stat = promisify fs.stat
@@ -17,6 +16,7 @@ filepath = (data, options)->
     return path.join directory, data.name
 
 module.exports = (data, options)->
+  # log.debug 'stat.entry', {data}
   data = filepath data,  options
   if data?
     f = if options.symlink? then lstat else stat

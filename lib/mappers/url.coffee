@@ -1,6 +1,6 @@
 # TODO: this probably should come from the context
 
-{NotMapped} = require 'lib/errors'
+{NotMapped} = require '../errors'
 
 urlNames =
   thumbnails: '/files/cwd/test/artifacts/thumbnails.css'

@@ -34,7 +34,7 @@ resolveNameOption = (options, option)->
 
 resolvePathOption = (options, option, req)->
   path = options?[option]?.path
-  log.debug 'resolvePathOption', {options, option, path}
+  # log.debug 'resolvePathOption', {options, option, path}
   if path?
     if not path.startsWith '/'
       if not req?.dirname?
@@ -93,7 +93,6 @@ module.exports = (req, res)->
   args = Arguments.from path.remainder()
   # log.debug {args}
 
-
   if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
 
@@ -127,3 +126,7 @@ module.exports = (req, res)->
   # req.data = mapper.apply req.data, [ req.data ]
   a.unshift req.data
   req.data = mapper.apply req.data, a
+
+  # TODO: should returning undefined be ok?
+  if typeof req.data == 'undefined'
+    throw new Error "mapper '#{name}' returned undefined"

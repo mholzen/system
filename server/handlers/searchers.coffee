@@ -1,3 +1,4 @@
+# TODO: move searchers to generators in order to minimize number of concepts
 {
   searchers
   log

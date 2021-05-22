@@ -155,7 +155,7 @@ class Stat
 class Path
   constructor: (path, root)->
     if (path.startsWith? '/') and (root?.startsWith? '/')
-      throw new Error 'root overspecified'
+      throw new Error 'root ambiguous because overspecified'
 
     @setPath path
     @setRoot root
@@ -195,7 +195,7 @@ class Path
       return
     throw new Error "can't set root from #{root}"
 
-  then: (success)->
+  then: (success, fail)->
     @remainder = Array.from @segments
     @path = @root   # assumes root is accessible
     @stat = await statAsync @path
@@ -209,12 +209,17 @@ class Path
 
         # log.debug {path}
         @stat = await statAsync path
-        # s = await statAsync path
-        # @stat = s
         @path = path
         @remainder.shift()
+
+        if not @stat.isDirectory()
+          # if this file is not a directory, we know we can't further search it
+          # TODO: consider symlinks?
+          break
       catch e
-        log.error 'error', {e}
+        log.error 'inodes.Path', {e}
+        if not e.toString().startsWith 'Error: ENOENT'
+          fail e
         break
     success()
 
