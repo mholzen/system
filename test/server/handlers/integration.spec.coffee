@@ -83,7 +83,6 @@ describe 'integration', ->
       .include 'map/link/apply/html'
 
   describe.skip 'traverse directories up to N deep, display as graph'
-  describe.skip 'move /files to /generators/files'
 
   describe 'spending by accounts', ->
     it.skip 'works', ->

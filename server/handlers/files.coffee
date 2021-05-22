@@ -1,3 +1,4 @@
+# TODO: move /files handler to /generators/files in order to be consistent
 {
   inodes
   mappers: {content, type}
@@ -42,7 +43,6 @@ create = (root)->
 
     # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 
-#module.exports = handler
 module.exports =
   root: create '/'
   home: create os.homedir()

@@ -73,7 +73,6 @@
   - define conventions to get data about arguments to a function
     Arguments.Signature
   - use NODE_PATH or equivalent to set test/*.spec to root
-  - move /files handler to /generators/files in order to be consistent
   - integration tests that fail should show stderr
 
 # test infrastructure
