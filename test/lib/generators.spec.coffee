@@ -1,6 +1,9 @@
 {generators} = require  'lib'
 fs = require 'fs'
 
+requireDir = require 'require-dir'
+requireDir './generators'
+
 describe 'generators', ->
   it 'content', ->
     f = generators 'content'

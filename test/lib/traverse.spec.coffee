@@ -1,12 +1,12 @@
-{edges, value, traverse} = require  'lib/traverse'
+traverse = require  'lib/traverse'
 mappers = require  'lib/mappers'
 inodes = require  'lib/inodes'
-
+{objectValue, objectEdges} = traverse
 {stream, post, inodes: {inode}} = require  'lib'
 
-describe 'value', ->
+describe 'objectValue', ->
   it 'array', ->
-    expect value [1,2,3]
+    expect objectValue [1,2,3]
     .eql null
 
 describe 'edges, value, traverse', ->
@@ -28,8 +28,8 @@ describe 'edges, value, traverse', ->
       a: 1
       b: {b1: 1}
       c: 3
-    expect(edges(object)).eql ['b']
-    expect(value(object)).eql {a:1, c:3}
+    expect(objectEdges(object)).eql ['b']
+    expect(objectValue(object)).eql {a:1, c:3}
     it = traverse object, path:true
     result = Array.from it
     expect(result).eql [
@@ -53,7 +53,7 @@ describe 'edges, value, traverse', ->
 
   it 'array', ->
     array = [1,[21, 22],3]
-    expect(edges(array)).eql ['0', '1', '2']
+    expect(objectEdges(array)).eql ['0', '1', '2']
 
     it = traverse array, path:true
     result = Array.from it
@@ -65,10 +65,13 @@ describe 'edges, value, traverse', ->
     ]
 
   it 'stream traverse', ->
-    # a stream is considered an node, so traversing the stream simply returns that node
+    # a stream is considered a node, so traversing the stream simply returns that node
     s = stream [1,2,3]
-    r = Array.from traverse s 
-    expect(r).eql [s]
+    r = Array.from traverse s
+    expect r
+    .property '0'
+    .property 'value'
+    .eql s
 
 describe.skip 'traverse inodes', ->
 

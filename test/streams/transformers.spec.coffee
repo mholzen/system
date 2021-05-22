@@ -16,7 +16,7 @@ describe 'transformers', ->
     expect(p).eql [{a:1}, {a:2}]
 
   it 'mappers.traverse', ->
-    mapper = mappers 'traverse'
+    mapper = mappers 'traverse', noPath: true
     p = 
     stream [1,2,3]
     .through map mapper, {flat: true}

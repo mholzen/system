@@ -28,10 +28,6 @@ describe 'integration', ->
 
   describe 'navigate directories', ->
     it 'works', ->
-      # r.get '/files,statDirectories:true/test/artifacts/map/link/apply/html'
-      # r.get '/files/cwd/test/artifacts/map/augment,stat/apply/resolve/map/link/apply/html'
-      # r.get '/files/cwd/test/map/array/map/prepend,req.dirname/map/join/map/augment,stat/apply/resolve'
-      # get '/files/cwd/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
       get [
         '/files/cwd/test/artifacts'
         'map/object,name:name'

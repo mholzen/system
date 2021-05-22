@@ -1,20 +1,31 @@
+{create} = require 'lib/generators/search'
+
 query = require  'lib/query'
 {post} = require  'lib'
 
-describe 'query.searchIn', ->
+# TODO: should come before tests of 'bin/map'
+
+describe 'generators/search', ->
 
   it 'should find in array of strings', (done)->
-    q = query 'foo', recurse:false
-    o = q.searchIn ['bar', 'foo']
+    generator = create query: query 'foo', recurse:false
+    o = generator ['bar', 'foo']
     o.toArray (results)->
       expect(results).eql ['foo']
       done()
 
   it 'should find in array of numbers', (done)->
-    q = query 2, recurse:false
-    o = q.searchIn [1,2,3]
-    o.toArray (results)->
+    generator = create query: query 2, recurse:false
+    generator [1,2,3]
+    .toArray (results)->
       expect(results).eql [2]
+      done()
+
+  it 'should find in objects', (done)->
+    generator = create query: query {a:1}
+    generator [{a:1, b:1, c:{d:1}}, {c:1}]
+    .toArray (results)->
+      expect(results).eql [value:{a:1}, path:[]]
       done()
 
   it.skip 'should find recursively in file', ->
@@ -26,8 +37,3 @@ describe 'query.searchIn', ->
     o.toArray (results)->
       expect(results).eql ['bar']
 
-  it 'should find in objects', (done)->
-    query({a:1}).searchIn [{a:1, b:1, c:{d:1}}, {c:1}]
-    .toArray (results)->
-      expect(results).eql [value:{a:1}, path:[]]
-      done()
