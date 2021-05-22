@@ -11,8 +11,8 @@ describe 'generators', ->
     .then (d)->
       expect(d).eql [ ["A little text file.", "Another line."] ]
 
-  it 'stat', ->
-    f = generators 'stat'
+  it 'stats', ->
+    f = generators 'stats'
     expect(f).a 'function'
 
     s = f 'test/artifacts/blurb.txt'

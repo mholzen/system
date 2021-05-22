@@ -23,5 +23,5 @@ module.exports = (req, res, router)->
     req.data = req.data.toString()
 
   req.data = generator req.data
-  # log.debug 'generator', {output: req.data, name: req.name}
+  # log.debug 'generator', {data: req.data, name}
   req.data

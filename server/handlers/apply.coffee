@@ -126,7 +126,3 @@ module.exports = (req, res)->
   # req.data = mapper.apply req.data, [ req.data ]
   a.unshift req.data
   req.data = mapper.apply req.data, a
-
-  # TODO: should returning undefined be ok?
-  if typeof req.data == 'undefined'
-    throw new Error "mapper '#{name}' returned undefined"

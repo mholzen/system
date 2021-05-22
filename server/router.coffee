@@ -122,13 +122,15 @@ class TreeRouter
         res.type 'text/plain'
         .status 500
         .send err.stack
+
+    if not req.data?
+      res.status 404
+      .send 'req.data is not defined'
+      return
+
     next()
 
   respond: (req, res)->
-    if not req.data?
-      res.status 404
-      return res.send @root
-
     req.data = await req.data
     # log.debug 'respond', {data:req.data}
 
