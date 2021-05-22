@@ -3,7 +3,7 @@
 {NotMapped} = require 'lib/errors'
 
 urlNames =
-  thumbnails: '/files/test/artifacts/thumbnails.css'
+  thumbnails: '/files/cwd/test/artifacts/thumbnails.css'
 
 url = (data, options)->
   if options?.req?

@@ -34,7 +34,7 @@ describe 'router', ->
     it.skip 'template location', ->
       r = new router.TreeRouter()
       req =
-        path: '/literals/a:1/apply/pug,template.location:(/files/test/artifacts/template.pug)'  # template is the data or the ref to data
+        path: '/literals/a:1/apply/pug,template.location:(/files/cwd/test/artifacts/template.pug)'  # template is the data or the ref to data
       res =
         status: ->
           send: ->

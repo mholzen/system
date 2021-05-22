@@ -41,8 +41,8 @@ describe 'servers/handlers/apply', ->
     r.get '/mappers/apply/mappers,html'      # /mappers/apply/html calls function mappers.html()
     .expect 200 # processed the root document
 
-  it '/files/test/artifacts/blurb.md/apply/html', ->
-    r.get '/files/test/artifacts/blurb.md/apply/html'
+  it '/files/cwd/test/artifacts/blurb.md/apply/html', ->
+    r.get '/files/cwd/test/artifacts/blurb.md/apply/html'
     .then (response)->
       expect response.text
       .includes '<table'
@@ -57,7 +57,7 @@ describe 'servers/handlers/apply', ->
         .eql '<p></p>'
 
     it 'use mappers defined in that directory', ->
-      r.get '/files/test/artifacts/dict.json/generators/parse/apply/pug,template:path:table.pug'
+      r.get '/files/cwd/test/artifacts/dict.json/generators/parse/apply/pug,template:path:table.pug'
       .then (response)->
         expect response.text
         .includes '<table>'
@@ -65,7 +65,7 @@ describe 'servers/handlers/apply', ->
         .includes '<td>2</td>'
 
     it 'image to html', ->
-      r.get '/files/test/artifacts/image.jpg/apply/html'
+      r.get '/files/cwd/test/artifacts/image.jpg/apply/html'
       .then (response)->
         expect response.text
         .includes '<img'

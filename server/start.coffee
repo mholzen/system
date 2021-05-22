@@ -6,7 +6,7 @@ log = require '../lib/log'
 s = new server.Server
   port: 3001
   rewriteRules: [
-    [/\/team(\/|$)/, '/files/test/artifacts/marchome/data/people/my-team/Graph']
+    [/\/team(\/|$)/, '/files/cwd/test/artifacts/marchome/data/people/my-team/Graph']
     [/\/Graph(\/|$)/,  '/reduce/graph/apply/dict,name:graph/apply/template,template:name:Graph']
     [/\/Graph2(\/|$)/, '/reduce/graph/apply/dict,name:graph/apply/template,template:name:Graph2']
     [/\/Graph3(\/|$)/, '/apply/parse/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html']

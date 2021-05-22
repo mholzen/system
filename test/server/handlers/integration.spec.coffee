@@ -29,11 +29,11 @@ describe 'integration', ->
   describe 'navigate directories', ->
     it 'works', ->
       # r.get '/files,statDirectories:true/test/artifacts/map/link/apply/html'
-      # r.get '/files/test/artifacts/map/augment,stat/apply/resolve/map/link/apply/html'
-      # r.get '/files/test/map/array/map/prepend,req.dirname/map/join/map/augment,stat/apply/resolve'
-      # get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
+      # r.get '/files/cwd/test/artifacts/map/augment,stat/apply/resolve/map/link/apply/html'
+      # r.get '/files/cwd/test/map/array/map/prepend,req.dirname/map/join/map/augment,stat/apply/resolve'
+      # get '/files/cwd/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
       get [
-        '/files/test/artifacts'
+        '/files/cwd/test/artifacts'
         'map/object,name:name'
         'map/augment,req.dirname,name:directory'
         'map/augment,req.base,name:base'
@@ -48,7 +48,7 @@ describe 'integration', ->
         .includes 'image.html'
 
     it 'should have different postfix url/remainder maps depending on file type', ->
-      r.get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
+      r.get '/files/cwd/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
       .then (res)->
         expect res.text
         .match /<li>[^<]*<a href=[^<]*<img/
@@ -87,21 +87,21 @@ describe 'integration', ->
 
   describe 'spending by accounts', ->
     it.skip 'works', ->
-      r.get '/files/test/artifacts/marchome/data/accounts/mint.com/transactions.csv'
+      r.get '/files/cwd/test/artifacts/marchome/data/accounts/mint.com/transactions.csv'
       + '/reduce/table'
       + '/rowsByColumns,account:capitalOne'
       + '/valueByTime,time:daily'
 
   describe 'graph with edges', ->
     it 'works', ->
-      r.get '/files/test/artifacts/graph.json/apply/parse/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
+      r.get '/files/cwd/test/artifacts/graph.json/apply/parse/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
       .then (res)->
         expect res.text
         .match /links: \[{"source":0,"target":1}/
 
   describe 'turtle to graph', ->
     it 'works', ->
-      r.get '/files/test/artifacts/graph.ttl/generator/triples/reduce/graph'
+      r.get '/files/cwd/test/artifacts/graph.ttl/generator/triples/reduce/graph'
 
   describe 's2s traceroute', ->
     it 'works', ->
@@ -119,12 +119,12 @@ describe 'integration', ->
         'map/pick,source,target,pings,delta'
       ]
 
-      # http://localhost:3001/files/test/artifacts/s2s.csv/apply/table/apply/column,report/map/dict/map/get,traceroute/map/hops/map/get,legs/reduce/concat/map/pick,source,target,delta/Graph
+      # http://localhost:3001/files/cwd/test/artifacts/s2s.csv/apply/table/apply/column,report/map/dict/map/get,traceroute/map/hops/map/get,legs/reduce/concat/map/pick,source,target,delta/Graph
 
   describe 'graph from symlinks', ->
     it 'works', ->
       get [
-        '/files/test/artifacts'
+        '/files/cwd/test/artifacts'
         'map/object,name:name'
         'map/augment,req.dirname,name:directory'
         'map/augment,resolve.all.fs.all.readlink,name:symlink'
@@ -140,7 +140,7 @@ describe 'integration', ->
   describe 'reduce to a map using any other command', ->
     it 'works', ->
       get [
-        '/files/test/artifacts/names.csv'
+        '/files/cwd/test/artifacts/names.csv'
         'reduce/map,key:0'
         'map/keys'
       ].join '/'

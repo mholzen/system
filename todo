@@ -1,55 +1,11 @@
-# infrastructure, design, code quality
-  - clean up mappers for single use and mappers for repeated use
-  - define conventions to get data about arguments to a function
-    Arguments.Signature
-  - use NODE_PATH or equivalent to set test/*.spec to root
-  - move /files handler to /generators/files
-  - integration tests that fail should show stderr
-
-# test infrastructure
-  - mocha should default "it with no describe" to "describe <filename>"
-
-# data
-  - can a graph have no edges? and only have nodes?
-    what does mapping an Array of strings to a graph mean?
-      nodes with literals but no edges
-
-# server
-  - add ?expand or /expands/<url> to redirect (302) with rewrites expanded, to troubleshoot/modify
-  - support ?help or perhaps /help/ (might even be a rewrite rule)
-    - list templates with substitutions containing a string
- 
-# transform
-  - [x] clean up use of Args in handlers
-  - filter (eg. /files/data/people/transform/filter-out,directories )
-  - head/tail, for x milliseconds
-  - extract rows from html table to scrape from web page
-  - reduce to a set (e.g. transactions.csv/reduce/table/account-names/reduce/set )
-  - order by last modified
-  - order by most used
-  - `get` use cat or curl or open depending on type
-  - `echo google.com | transform response`.  transforms are functions that all input and can generate multiple outputs
-  - research how to convert an object into a variety of outputs.
-    - consume a graph (from csv, ttl) to node-edges or triples or (p(s,o))
-      or should we just do `reduce graph.triples`
-  - interpret input (with hints as to nature) then push results onto output
-  - see http://highlandjs.org/#consume
-
-  - $ get people | reduce graph | transform triples
-
-  f='./test.txt'
-  stream([f]).map(content).reduce(graph).transform(graph.nodeEdges)
-
-  perhaps relates to the concept of type hierarchy (starting to take form in search?)
-  - reduce accepts n items or n seconds worth
-  - use "reduce one" to display a selector and let the user pick on
-  - "reduce join, sort, unique" while retaining context so that you can get a list of unique items, while retaining where they came from. eg: "files duration:1000 data/people | map content  | sort  -u" replaced with "... | map augment content | parse content | reduce join sort unique"
-  - join streams, so that I can merge two resources together, so that I can merge remote resources
-  - replace .value with .match
-  - build mapper to replace (.match, .path) with .value
-  - integrate todo into software engineering process
+# process
+  - prioritize by potential for compounding effect
+    - so that: more people use my software
+  - keep functions short
+  - fail verbosily
 
 # search
+  - find todos in order to sort them
   - bookmarks
   - search for directories from command line
   - interface for searchers
@@ -78,6 +34,61 @@
   - order search results
     - order files based on "relevance" (eg. a query "foo" should first return names matching query entirely: ["foo", "abcfoodef"])
   - store search results in temporary files to be able to access the content again
+
+# transform
+  - sort todos based on whether they contribute towards a goal () in order to help prioritize
+  - sort todos higher if they have a location in an existing file
+  - order by most used
+  - order by last modified
+  - filter (eg. /files/data/people/transform/filter-out,directories )
+  - head/tail, for x milliseconds
+  - extract rows from html table to scrape from web page
+  - reduce to a set (e.g. transactions.csv/reduce/table/account-names/reduce/set )
+  - `get` use cat or curl or open depending on type
+  - `echo google.com | transform response`.  transforms are functions that all input and can generate multiple outputs
+  - research how to convert an object into a variety of outputs.
+    - consume a graph (from csv, ttl) to node-edges or triples or (p(s,o))
+      or should we just do `reduce graph.triples`
+  - interpret input (with hints as to nature) then push results onto output
+  - see http://highlandjs.org/#consume
+
+  - $ get people | reduce graph | transform triples
+
+  f='./test.txt'
+  stream([f]).map(content).reduce(graph).transform(graph.nodeEdges)
+
+  perhaps relates to the concept of type hierarchy (starting to take form in search?)
+  - reduce accepts n items or n seconds worth
+  - use "reduce one" to display a selector and let the user pick on
+  - "reduce join, sort, unique" while retaining context so that you can get a list of unique items, while retaining where they came from. eg: "files duration:1000 data/people | map content  | sort  -u" replaced with "... | map augment content | parse content | reduce join sort unique"
+  - join streams, so that I can merge two resources together, so that I can merge remote resources
+  - replace .value with .match
+  - build mapper to replace (.match, .path) with .value
+  - integrate todo into software engineering process
+
+
+# infrastructure, design, code quality
+  - clean up mappers for single use and mappers for repeated use
+  - define conventions to get data about arguments to a function
+    Arguments.Signature
+  - use NODE_PATH or equivalent to set test/*.spec to root
+  - move /files handler to /generators/files in order to be consistent
+  - integration tests that fail should show stderr
+
+# test infrastructure
+  - mocha should default "it with no describe" to "describe <filename>"
+
+# data
+  - can a graph have no edges? and only have nodes?
+    what does mapping an Array of strings to a graph mean?
+      nodes with literals but no edges
+
+# server
+  - add ?expand or /expands/<url> to redirect (302) with rewrites expanded, to troubleshoot/modify
+  - support ?help or perhaps /help/ (might even be a rewrite rule)
+    - list templates with substitutions containing a string
+ 
+
 
 # visualize
   - show a graph inside a node
