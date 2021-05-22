@@ -239,8 +239,8 @@ class TreeRouter
         await target req, res, @
         continue
 
-      if typeof target != 'object'
-        return res.status(500).send "lookup in non-object"
+      # if typeof target != 'object'
+      #   return res.status(500).send "lookup in non-object"
 
       req.data = target
 
