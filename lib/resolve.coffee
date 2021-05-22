@@ -1,8 +1,10 @@
 {isStream} = require './stream'
 isPromise = require 'is-promise'
-{traverse} = require '../lib/traverse'
+{create} = require './traverse'
 log = require './log'
 _ = require 'lodash'
+
+traverse = create()
 
 resolve = (data)->
   if not data?
@@ -20,7 +22,7 @@ resolve = (data)->
   new Promise (resolve)-> resolve data
 
 resolve.deep = (data)->
-  nodes = Array.from traverse data, path: true
+  nodes = Array.from traverse data
   # log.debug 'resolve.deep', {nodes}
   promises = nodes.map (match)->
     resolve match.value

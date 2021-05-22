@@ -3,7 +3,6 @@ log = require '@vonholzen/log'
 {stream, isStream} = require './stream'
 content = require './mappers/content'
 {parseValue} = require './parse'
-{items} = require './generators'
 isIterable = require './mappers/isIterable'
 {startsWith, intersect, Match, Matches} = require './match'
 {Results} = require './results'
@@ -429,16 +428,6 @@ class Query
       resultStreams.end()
 
     return mergedResults
-
-  searchIn: (data, options)->
-    if not isIterable data
-      try
-        data = items data
-      catch e
-        log.error 'query', {e}
-        return
-
-    @search data, options
 
 query = (terms, options)->
   new Query terms, options

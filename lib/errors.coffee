@@ -30,9 +30,10 @@ class NotFound extends Error
 
 
 class NotMapped extends Error
-  constructor: (data)->
-    super "Cannot use '#{log.print data}' to map"
+  constructor: (data, name)->
+    super "Cannot use '#{log.print data}' to map to '#{name}'"
     @data = data
+    @name = name
 
   send: (res)->
     res.status 500
@@ -40,6 +41,7 @@ class NotMapped extends Error
     .send
       message: @toString()
       data: @data
+      name: @name
       stack: @stack.split("\n").slice 1
 
 module.exports = {NotFound, NotProvided, NotMapped}

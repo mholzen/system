@@ -7,6 +7,7 @@
 
 # search
   - find todos in order to sort them
+    - traverse should handle async edges
   - bookmarks
   - search for directories from command line
   - interface for searchers
@@ -39,6 +40,7 @@
 # transform
   - sort todos based on whether they contribute towards a goal () in order to help prioritize
   - sort todos higher if they have a location in an existing file
+  - sort todos lower if they have a question mark or the word 'consider' in order to encourage 'defining the work'
   - order by most used
   - order by last modified
   - filter (eg. /files/data/people/transform/filter-out,directories )

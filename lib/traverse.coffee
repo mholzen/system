@@ -5,12 +5,10 @@ isPromise = require 'is-promise'
 
 isNode = (data)->
   return true if ['string', 'number', 'boolean', 'function'].includes typeof data
-
   return true if (isStream data) or (isPromise data)
-
   false
 
-edges = (data) ->
+objectEdges = (data) ->
   if (not data?) or (isNode data)
     return []
 
@@ -21,7 +19,7 @@ edges = (data) ->
     k != 'path' and
     typeof data[k] == 'object'
 
-value = (data) ->
+objectValue = (data) ->
   if not data?
     return null
  
@@ -29,39 +27,40 @@ value = (data) ->
     return data
 
   if typeof data == 'object'
-    e = edges data
+    e = objectEdges data
     # log.debug 'value.edges', {e}
     v  =_.pickBy data, (v,k) -> not (e.includes k) and data.hasOwnProperty k
     # log.debug {v}
     return if _.isEmpty v then null else v
   throw new Error "value not implemented for #{typeof data}"
 
-traverse = (data, options)->
-  # log.debug 'traverse.start', {data}
-  options ?= {}
+create = (options)->
+  log.debug 'traverse', {options}
+  value = options?.value ? objectValue
+  edges = options?.edges ? objectEdges
 
-  v = value data
+  traverse = (data)->
+    # log.debug 'traverse.start', {data}
+    v = value data
 
-  if v != null
-    if options.path
-      v = {value: v, path: []}
-    # log.debug 'traverse.yield', {value: v}
-    yield v
+    if v != null
+      if not options?.noPath
+        v = {value: v, path: []}
+      # log.debug 'traverse.yield', {value: v}
+      yield v
 
-  for e from edges data
-    # log.debug 'traverse.edge', {e}
-    for i from traverse data[e], options
-      if options.path
-        i.path.unshift e
-      # log.debug 'traverse.yield', {value: i}
-      yield i
+    for e from edges data
+      # log.debug 'traverse.edge', {e}
+      for i from traverse data[e], options
+        if not options?.noPath
+          i.path.unshift e
+        # log.debug 'traverse.yield', {value: i}
+        yield i
 
-  # WARNING: apparently, this line in needed
-  # log.debug 'traverse.returning'
-  return
+    # WARNING: apparently, this line in needed
+    # log.debug 'traverse.returning'
+    return
 
-module.exports = {
-  edges
-  value
-  traverse
-}
+  return traverse
+
+module.exports = Object.assign create(), {objectEdges, objectValue, create}

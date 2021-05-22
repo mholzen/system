@@ -1,5 +1,8 @@
 {stream} = require '../stream'
-{traverse} = require '../traverse'
+{create} = require '../traverse'
 
-module.exports = (data, options)->
-  stream traverse data, options
+module.exports =
+  create: (options)->
+    traverse = create options
+    (data)->
+      stream traverse data

@@ -1,12 +1,16 @@
-log = require '@vonholzen/log'
+{NotMapped} = require '../errors'
 
-filepath = (data)->
-  # log.debug 'filepath', data
-
+filepath = (data, options)->
   if typeof data == 'string'
-    if data.startsWith '/'
-      return data
+    return data
 
-  throw new Error "cannot get filepath from '#{data}'"
+  if typeof data?.path == 'string'
+    return data?.path
+
+  if typeof data?.name == 'string'
+    directory = data?.directory ? '.'
+    return path.join directory, data.name
+
+  throw new NotMapped data, 'filepath'
 
 module.exports = filepath

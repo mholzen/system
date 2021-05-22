@@ -1,14 +1,30 @@
+{NotMapped} = require '../errors'
+{filepath} = require '../mappers'
+
 {promisify} = require 'util'
 fs = require 'fs'
 stat = promisify fs.stat
 stream = require '../stream'
+{create} = require '../traverse'
 
-# queue.push data
-# while queue.pop
-#   if data identifies a directory or a symlink to a directory
-#     queue.push content data
-#     yield data
+edges = (data)->
+  fp = filepath data
+  if not fp?
+    throw new NotMapped data, 'filepath'
+
+# TODO: edges now async
+  s = await stat fp
+  if not s.isDirectory()
+    return
+
+  content fp
+
+value = (data)->
+  fp = filepath data
+  if not fp?
+    throw new NotMapped data, 'filepath'
+  fp
 
 module.exports = (data, options)->
-  if typeof data == 'string'
-    return stream stat data
+  traverse = create {value, edges}
+  stream traverse data

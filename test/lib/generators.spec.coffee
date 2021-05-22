@@ -14,7 +14,7 @@ describe 'generators', ->
     .then (d)->
       expect(d).eql [ ["A little text file.", "Another line."] ]
 
-  it 'stats', ->
+  it.only 'stats', ->
     f = generators 'stats'
     expect(f).a 'function'
 
