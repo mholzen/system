@@ -1,6 +1,6 @@
-{NotProvided} = require '../errors'
+{NotProvided} = require '../../lib/errors'
 {items} = require './items'
-isIterable = require '../mappers/isIterable'
+isIterable = require '../../lib/mappers/isIterable'
 
 create = (options)->
   query = options?.query ? options

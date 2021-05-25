@@ -1,7 +1,4 @@
-{
-  generators
-  log
-} = require '../../lib'
+generators = require '../../streams/generators'
 isPromise = require 'is-promise'
 
 module.exports = (req, res, router)->

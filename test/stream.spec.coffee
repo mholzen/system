@@ -27,7 +27,7 @@ describe 'stream', ->
       push null, 2
       # next()
       push null, 3
-      push null, stream.nil
+      push null, stream.nil     # TODO: file a documentation bug against highlandjs.org to: market myself
       # next()
     r = await s.collect().toPromise Promise
     expect(r).eql [1,2,3]

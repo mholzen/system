@@ -1,14 +1,15 @@
 {promisify} = require 'util'
 fs = require 'fs'
 creator = require '../creator'
+filepath = require './filepath'
 
-call = (f)->
-  pf = promisify f
+call = (func)->
+  pfunc = promisify func
   (data, options...)->
     fp = filepath data, options...
     if fp?
       # log.debug 'fs', {filepath: fp, func: f}
-      pf fp
+      pfunc fp
 
 functions = creator
   readlink: call fs.readlink

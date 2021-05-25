@@ -4,7 +4,7 @@ requireDir = require 'require-dir'
 
 require 'test/lib.spec'
 require 'test/server/router.spec'
-require 'test/lib/generators.spec'
+require 'test/streams/generators.spec'
 requireDir './server/handlers'
 
 {parse} = require 'lib/mappers'

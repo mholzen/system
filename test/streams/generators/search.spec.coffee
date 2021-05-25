@@ -1,4 +1,4 @@
-{create} = require 'lib/generators/search'
+{create} = require 'streams/generators/search'
 
 query = require  'lib/query'
 {post} = require  'lib'

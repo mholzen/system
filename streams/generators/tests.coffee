@@ -8,8 +8,8 @@ global.expect = chai.expect
 global.log = require '@vonholzen/log'
 global._ = require 'lodash'
 
-log = require '../log'
-stream = require '../stream'
+log = require '../../lib/log'
+stream = require '../../lib/stream'
 
 run = (data, options)->
   files = await glob("test/**.spec.coffee")

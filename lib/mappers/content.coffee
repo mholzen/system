@@ -3,6 +3,7 @@ log = require '../log'
 {stream, isStream} = require '../stream'
 inodes = require '../inodes'
 parse = require '../parse'
+filepath = require './filepath'
 
 fs = require 'fs'
 isPromise = require 'is-promise'
@@ -81,6 +82,8 @@ toObject = (string, context)->
     return path: string
   if string.startsWith '{'
     return JSON.stringify string
+  if (fp = filepath string)?
+    return path: fp
   throw new Error "cannot make object from string #{string}"
 
 content = (data, options)->

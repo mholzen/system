@@ -15,7 +15,8 @@ objectEdges = (data) ->
   if data instanceof Array
     return Object.keys data
 
-  Object.keys(data).filter (k) ->
+  Object.keys data
+  .filter (k) ->
     k != 'path' and
     typeof data[k] == 'object'
 
@@ -35,7 +36,7 @@ objectValue = (data) ->
   throw new Error "value not implemented for #{typeof data}"
 
 create = (options)->
-  log.debug 'traverse', {options}
+  # log.debug 'traverse', {options}
   value = options?.value ? objectValue
   edges = options?.edges ? objectEdges
 

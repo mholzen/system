@@ -1,4 +1,4 @@
-{stream, mappers, reducers, generators, streams} = require '../lib'
+{stream, mappers, reducers, streams} = require '../lib'
 {NotFound} = require '../lib/errors'
 
 handlers = require './handlers'
@@ -6,7 +6,6 @@ handlers = require './handlers'
 {isStream} = stream
 content = mappers.content
 {Arguments} = mappers.args
-keys = generators.keys
 
 express = require 'express'
 log = require '../lib/log'
@@ -170,7 +169,7 @@ class TreeRouter
       return res.send req.data
 
     if not isStream req.data
-      req.data = keys req.data
+      req.data = Object.keys req.data
 
     # log.debug {data: req.data}
     data = await reducers.reduce req.data.map(id), 'html'

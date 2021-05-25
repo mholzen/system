@@ -7,7 +7,7 @@
 
 # search
   - find todos in order to sort them
-    - traverse should handle async edges
+    - traverse should handle async edges function
   - bookmarks
   - search for directories from command line
   - interface for searchers

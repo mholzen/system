@@ -1,7 +1,7 @@
 # TODO: should this be in stream?
-{stream, isStream} = require '../stream'
-isIterable = require '../mappers/isIterable'
-parse = require './parse'
+{stream, isStream} = require '../../lib/stream'
+isIterable = require '../../lib/mappers/isIterable'
+parse = require '../../lib/parse'
 
 module.exports = (data)->
   if isStream data

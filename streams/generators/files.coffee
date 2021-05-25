@@ -1,4 +1,5 @@
-stat = require '../mappers/stat'
+# TODO: delete?
+stat = require '../../lib/mappers/stat'
 {promisify} = require 'util'
 fs = require 'fs'
 readdir = promisify fs.readdir

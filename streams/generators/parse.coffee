@@ -1,5 +1,4 @@
-parse = require '../parse'
-log = require '../log'
+parse = require '../../lib/parse'
 
 module.exports = (data, options)->
   parse data, options

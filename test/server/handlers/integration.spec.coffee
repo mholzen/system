@@ -1,6 +1,6 @@
 require '../../server.spec'
 mappers = require 'lib/mappers'
-generators = require 'lib/generators'
+generators = require 'streams/generators'
 stream = require 'lib/stream'
 inodes = require 'lib/inodes' # TODO: make it a async mapper
 

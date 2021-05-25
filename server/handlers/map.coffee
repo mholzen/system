@@ -52,7 +52,7 @@ module.exports = (req, res, router)->
         log.debug 'map', {currentValue, index, array}
         f currentValue #, index, array
       catch e
-        log.error 'map', {e}
+        log.error 'map', {e: e.stack}
         # TODO; use a toggle to return the exception or fail
         return e
 

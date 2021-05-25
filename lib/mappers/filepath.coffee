@@ -1,6 +1,8 @@
+{join} = require 'path'
 {NotMapped} = require '../errors'
 
 filepath = (data, options)->
+  # log.debug 'filepath.entry', {data, options}
   if typeof data == 'string'
     return data
 
@@ -9,7 +11,7 @@ filepath = (data, options)->
 
   if typeof data?.name == 'string'
     directory = data?.directory ? '.'
-    return path.join directory, data.name
+    return join directory, data.name
 
   throw new NotMapped data, 'filepath'
 
