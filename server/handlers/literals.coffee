@@ -1,12 +1,14 @@
-log = require '../../lib/log'
+# TODO: move to lib/mappers
+toLiteral = (data)->
+  log.debug 'toLiteral.entry', {data}
 
-toNumber = (data)->
   if Array.isArray data
-    return data.map (x)->toNumber x
+    return data.map (x)->toLiteral x
 
   if typeof data == 'string'
     if /^\d+$/.test data
       return parseInt data
+
   data
 
 module.exports = (req, res, router)->
@@ -18,4 +20,4 @@ module.exports = (req, res, router)->
   if req.data.includes ','
     req.data = req.data.split ','
 
-  req.data = toNumber req.data
+  req.data = toLiteral req.data

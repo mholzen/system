@@ -104,6 +104,7 @@ class TreeRouter
       @root.rewrites = options.rewrites
 
   process: (req, res, next)->
+    log.debug 'TreeRouter.process', {d: req.data}
     req.log = @logs.add req   # Warning: dirty `req`
     req.root = @root
     req.data = @root
@@ -157,8 +158,10 @@ class TreeRouter
         # streamable?
         # req.data.pipe res
         # return res.end
-
-        req.data = await req.data.collect().toPromise Promise
+        errorsAsData = (err, push)->
+          # log.error 'stream.send', {err}
+          push null, err
+        req.data = await req.data.errors(errorsAsData).collect().toPromise Promise
 
       if not isStream req.data
         # log.debug 'respond', {data: req.data}
