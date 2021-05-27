@@ -122,7 +122,7 @@ describe 'server', ->
         .includes '<img'
 
     it 'list of resources', ->
-      r.get '/files/cwd/test/artifacts/marchome/images/transform/head/map/image/reduce/html/apply/style,thumbnails'  # TODO: make style a mapper
+      r.get '/files/cwd/test/artifacts/transform/head/map/image/reduce/html/apply/style,thumbnails'  # TODO: make style a mapper
       .then (res)->
         expect res.text
         .includes '<img'
@@ -141,7 +141,7 @@ describe 'server', ->
 
     it 'works', ->
       r.get [
-        '/files/cwd/test/artifacts/marchome/data/logs/index.json'
+        '/files/home/data/logs/index.json'
         'generators/lines'
         'map/parse'
         'map/get,log'
