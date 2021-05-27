@@ -25,7 +25,7 @@ style = (data, options)->
   if typeof data == 'string'
     html = parse data
     h = head html # ensure there is a head
-    log.debug 'html', {html}
+    # log.debug 'html', {html}
     h.insertAdjacentHTML 'beforeend', links options
     data = html.toString()
 

@@ -104,7 +104,7 @@ class TreeRouter
       @root.rewrites = options.rewrites
 
   process: (req, res, next)->
-    log.debug 'TreeRouter.process', {d: req.data}
+    # log.debug 'TreeRouter.process', {d: req.data}
     req.log = @logs.add req   # Warning: dirty `req`
     req.root = @root
     req.data = @root

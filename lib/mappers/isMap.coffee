@@ -35,7 +35,7 @@ same = (array, f)->
   return true
 
 module.exports = (data)->
-  log.debug 'isMap', {data}
+  # log.debug 'isMap.entry', {data}
 
   if isLiteral data
     return false
@@ -51,7 +51,7 @@ module.exports = (data)->
     if same v, (x)->typeof x
       return true
 
-    log.debug 'isMap returns false'
+    # log.debug 'isMap.return false'
     return false
 
   throw new Error "cannot evaluate isMap against '#{typeof data}' '#{log.print data}'"

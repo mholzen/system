@@ -68,6 +68,7 @@ class Query
 
   _objectMatchMap: (data)->
     f = (matches, entry) =>
+
       [key, value] = entry
 
       # match key?

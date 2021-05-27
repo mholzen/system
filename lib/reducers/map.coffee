@@ -2,11 +2,10 @@ mappers = require '../mappers'
 
 map =
   create: (options)->
-    log.debug 'map.create', {options}
+    # log.debug 'map.create', {options}
     key = if options?.key? then options?.key else options[0]
 
     if typeof key == 'boolean'
-      log.here {key}
       key = if key then 1 else 0
 
     if typeof key == 'number'
@@ -21,7 +20,7 @@ map =
         key = mappers key, options
 
     (memo, data)->
-      log.debug 'map.entry', {key, memo, data}
+      # log.debug 'map.entry', {key, memo, data}
       memo ?= new Map()
       k = key data
 

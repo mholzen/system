@@ -1,6 +1,6 @@
 # TODO: move to lib/mappers
 toLiteral = (data)->
-  log.debug 'toLiteral.entry', {data}
+  # log.debug 'toLiteral.entry', {data}
 
   if Array.isArray data
     return data.map (x)->toLiteral x

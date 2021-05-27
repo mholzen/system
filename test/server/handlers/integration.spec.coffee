@@ -14,7 +14,7 @@ get = (a...)->
   if a[0] instanceof Array
     a[0] = a[0].join '/'
 
-  log.debug "GET #{a[0]}"
+  # log.debug "GET #{a[0]}"
   request s.app
   .get a...
 

@@ -12,5 +12,5 @@ module.exports = (inputStream, name, options)->
   # TODO: make mappers available to: reuse (wahoo!)
   f = filters[name] ? filters.ok
 
-  log.debug 'filter', {name, options}
+  # log.debug 'filter', {name, options}
   inputStream.filter f

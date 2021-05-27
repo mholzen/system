@@ -28,7 +28,7 @@ create = (options)->
         await traverse d, p
       return
     catch e
-      log.debug 'traverse.catch', {e}
+      # log.debug 'traverse.catch', {e}
       push e, null
 
   return traverse

@@ -6,6 +6,5 @@ module.exports = (data)->
     return field
 
   for k, v of data
-    log.debug {k,v}
     if isNumber v
       return k

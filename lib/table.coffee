@@ -38,7 +38,7 @@ class Table
     @datas = datas ? []
 
   keys: (newKeys)->
-    log.debug 'table.keys', {newKeys}
+    # log.debug 'table.keys', {newKeys}
     if newKey?
       @_keys = newKeys
 
@@ -65,7 +65,7 @@ class Table
     rows
 
   column: (key)->   # TODO: can column() be defined as map pick
-    log.debug 'column', {key}
+    # log.debug 'column', {key}
     index = @keys().indexOf (key ? 0)
     if index < 0
       index = 0

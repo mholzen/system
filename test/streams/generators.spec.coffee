@@ -13,7 +13,7 @@ describe 'generators', ->
     s = f path: 'test/artifacts/blurb.txt'
     s.collect().toPromise Promise
     .then (d)->
-      expect(d).eql [ ["A little text file.", "Another line."] ]
+      expect(d.toString()).eql "A little text file.\nAnother line."
 
   it 'stats', ->
     stats = generators 'stats'
@@ -34,7 +34,7 @@ describe 'generators', ->
     res = stats 'test/artifacts/small-directory'
     res.collect().toPromise Promise
     .then (d)->
-      log.debug {r: d.map (x)->x.path }
+      # log.debug {r: d.map (x)->x.path }
       expect d
       .length 7
       .property 0

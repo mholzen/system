@@ -87,6 +87,14 @@ toObject = (string, context)->
   throw new Error "cannot make object from string #{string}"
 
 content = (data, options)->
+
+  try
+    fp = filepath data, options
+    return fileContent fp, options
+  catch err
+    # try other things
+    log.error 'content', {err}
+
   if typeof data == 'undefined'
     return null
 

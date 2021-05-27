@@ -38,7 +38,7 @@ describe 'searchIn', ->
     name = basename file
     followAll = query true
   
-    output = search.searchIn query('Marc'), followAll, inodes(directory).entries(), {content: mappers.content}
+    output = search.searchIn query('Marc'), followAll, inodes(directory).entries(), {content: mappers.parsedContent}
     expect(stream.isStream output).true
     output = await output.collect().toPromise Promise
        

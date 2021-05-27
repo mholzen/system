@@ -11,15 +11,15 @@ module.exports = (data, options)->
   else
     options?.sep ? options?[0] ? defaultSep
   
-  log.debug 'split', {options, data, sep}
+  # log.debug 'split', {options, data, sep}
 
   if typeof data == 'string'
-    log.debug 'split return', {r: data.split sep}
+    # log.debug 'split return', {r: data.split sep}
     return data.split sep
 
   data.map (x)->
     if typeof x == 'string'
-      log.debug 'spliting array of strings', {r: x.split sep}
+      # log.debug 'spliting array of strings', {r: x.split sep}
       return x.split sep
     
     x.splitBy sep

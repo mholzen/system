@@ -40,4 +40,4 @@ describe 'post', ->
     response = await post data, file
     expect(response).equal file
     c = await content file
-    expect(c).equal 'data'
+    expect(c.toString()).equal 'data'

@@ -1,5 +1,4 @@
 module.exports = (data)->
-  log {v: parseInt data}
   if not isNaN parseInt data
     # an integer is not a property
     return false

@@ -49,7 +49,7 @@ module.exports = (req, res, router)->
   catchAndLog = (f)->
     (currentValue, index, array)->
       try
-        log.debug 'map', {currentValue, index, array}
+        # log.debug 'map', {currentValue, index, array}
         f currentValue #, index, array
       catch e
         log.error 'map', {e: e.stack}

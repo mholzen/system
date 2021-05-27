@@ -27,9 +27,9 @@ reference = (data)->
   if typeof data == 'string'
     r = {}
     for k, v of templates
-      log 'inspecting', {k,v}
+      # log.debug 'inspecting', {k,v}
       t = v?.template?.substitutions?.some (s)->
-        log {s, data, t: s.includes data}
+        # log.debug {s, data, t: s.includes data}
         s.includes data
       if t
         r[k] = v

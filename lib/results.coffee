@@ -16,7 +16,7 @@ class Results
     if not (data instanceof Array)
       throw new Error "expecting Array"
 
-    log 'Results.constructor', {data}
+    # log.debug 'Results.constructor', {data}
     @values = new Map data
 
 
@@ -33,13 +33,13 @@ class Results
         throw new Error "could not make array out of path #{path}"
       path = p
 
-    log 'prepending', {v: @values, path}
+    # log.debug 'prepending', {v: @values, path}
     @values.forEach (value, key)->
       path.reduceRight (m, element)->
         key.unshift element
       , null
 
-    log 'prepended', {v: @values}
+    # log.debug 'prepended', {v: @values}
     @
 
   toArray: ->

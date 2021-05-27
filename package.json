@@ -23,7 +23,6 @@
     "coffeescript": "^2.5.1",
     "command-line-args": "^5.0.2",
     "cson": "^7.0.0",
-    "cson-parser": "^4.0.9",
     "csv-parse": "^2.5.0",
     "datejs": "^1.0.0-rc3",
     "es6-template-strings": "^2.0.1",

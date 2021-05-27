@@ -95,12 +95,12 @@ class Stat
       .on 'error', (err)->
         push err
       .on 'end', ()->
-        log 'file.end'
+        # log.debug 'file.end'
         push null, stream.nil
 
       .on 'file', (base, stat, next) ->
         stat.path = resolve base, stat.name
-        log 'file.onFile', stat.path
+        # log.debug 'file.onFile', stat.path
         push null, stat
         # streamNext()
         next()
@@ -112,7 +112,7 @@ class Stat
         next()
       .on 'directories', (base, dirStatsArray, next) =>
         if not @recurse()
-          log 'file.directories not recursing'
+          # log.debug 'file.directories not recursing'
           dirStatsArray.length = 0
           next()
           return
