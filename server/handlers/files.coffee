@@ -23,7 +23,7 @@ create = (root)->
     req.remainder = inodePath.remainder     # path contains un-matching remaining elements
     req.files =
       remainder: Array.from req.remainder
-    options = Object.assign {}, parse: false, req.args.options
+    options = Object.assign {}, parse: false    #, req.args.options  # TODO: document need
     req.data = content inodePath.path, options
 
     req.filename = inodePath.path           # TODO: replace with req.params.filename
@@ -39,7 +39,9 @@ create = (root)->
     req.base = '/files' + req.dirname.slice inodePath.root.length
     req.params.base = req.base
 
-    res.type (type req) ? 'text/plain'
+    if typeof res?.type == 'function'
+      # TODO: consider using a req.params instead
+      res.type (type req) ? 'text/plain'
 
     # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 

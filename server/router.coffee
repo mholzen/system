@@ -2,9 +2,9 @@
 {NotFound} = require '../lib/errors'
 
 handlers = require './handlers'
+Pipe = require './pipe'
 
 {isStream} = stream
-content = mappers.content
 {Arguments} = mappers.args
 
 express = require 'express'
@@ -195,7 +195,7 @@ class TreeRouter
     # log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
 
-      # log.debug 'processPath', {remainder: req.remainder, data: req.data}
+      log.debug 'processPath', {remainder: req.remainder, data: req.data}
 
       segment = req.remainder.shift()
       if not segment?
@@ -228,10 +228,10 @@ class TreeRouter
         if (typeof data == 'object') and (data.hasOwnProperty first)
           # DEBUG: when first=mappers, it returns the mappers creator function
           # option 1: creator functions are handled differently
-          # log.debug 'found first in data', {first}
+          log.debug 'found first in data', {first}
           return data[first]
         if (first of root)
-          # log.debug 'found first in root', {first}
+          log.debug 'found first in root', {first}
           return root[first]
         throw new NotFound first, data, root
 
@@ -243,8 +243,9 @@ class TreeRouter
         await target req, res, @
         continue
 
-      # if typeof target != 'object'
-      #   return res.status(500).send "lookup in non-object"
+      if target instanceof Array
+        pipe = new Pipe target, @root
+        return pipe.process req, res, next
 
       req.data = target
 

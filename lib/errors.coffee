@@ -7,17 +7,20 @@ class NotFound extends Error
   constructor: (key, sets...)->
   # TODO: nice to have: names for sets
     if typeof key == 'undefined'
-      super "Cannot find without a key"
+      super "NotFound: cannot find without a key"
     else
-      super "Cannot find '#{key}'"
+      super "NotFound: cannot find '#{key}'"
     @key = key
     @sets = sets.map (set)->
+      if not set?
+        return set
       if not (set instanceof Array)
         set = Object.keys set
       set.sort()
+    # TODO: warn if @sets is empty
 
   toString: ->
-    @message + " in #{@sets.length} set(s)"
+    @message + " in sets #{log.print @sets}"
 
   send: (res)->
     res.status 404
@@ -31,7 +34,7 @@ class NotFound extends Error
 
 class NotMapped extends Error
   constructor: (data, name)->
-    super "Cannot use '#{log.print data}' to map to '#{name}'"
+    super "NotMapped: cannot use '#{log.print data}' to map to '#{name}'"
     @data = data
     @name = name
 

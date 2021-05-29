@@ -44,20 +44,14 @@ describe 'coffee', ()->
       expect(e.toString()).include 'foo'
   
 
-  it 'await in a function makes any caller implicitly async', ->
-    h = ->
-      throw new Error "fail"
-
+  it 'await in a function makes any caller implicitly async --- THIS IS TERRIBLE', ->
     f = ->
-      if false
-        await h()
-      2
-    
-    p = f()
-    expect p
+      return 1
+      await 2
+
+    expect f()
     .property 'then'
     .a 'function'
-    
 
   it 'finally', ->
     count = 0

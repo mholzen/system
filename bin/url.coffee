@@ -9,7 +9,7 @@ search process.argv[2..]
   (get.getter 'value.0.path') x
 .map get.getter 'value.0.path'
 .map (x) -> prepend x, 'bookmarks'
-.map pop
+.map pop    # TODO: assumes pop works on .path
 .map pop
 .map content
 .each (line)->

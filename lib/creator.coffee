@@ -37,16 +37,6 @@ module.exports = (map)->
   # TODO: consider warning or failing if map contains any of omitNames
   create = (name, args...)->
     # log.debug 'creator', {name, args}
-    # if typeof name == 'undefined'
-    #   throw new NotFound "cannot find without name", map
-
-    # if typeof name == 'object'
-    #   # if typeof name[0] == 'undefined'
-    #   #   throw new Error "cannot find without a name"
-    #   throw new Error "cannot find given a '#{name.constructor.name}'"
-
-    # if not (name of map)
-    #   return
 
     # same pattern as inodePath, in other words: return an object that represents the path and the remainder
 

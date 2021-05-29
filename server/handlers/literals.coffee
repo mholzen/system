@@ -17,7 +17,11 @@ module.exports = (req, res, router)->
 
   req.data = req.remainder.shift()
 
-  if req.data.includes ','
-    req.data = req.data.split ','
+  if typeof req.data == 'number'
+    return
+
+  if typeof req.data == 'string'
+    if req.data.includes ','
+      req.data = req.data.split ','
 
   req.data = toLiteral req.data
