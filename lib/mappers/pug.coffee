@@ -38,6 +38,7 @@ pug = (data, options)->
   if options?.template?
     templateFn = create options?.template, options
   else
+    options ?= {}
     options.self = true
     if options?.req?.filename?
       options.filename = options?.req?.filename

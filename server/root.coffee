@@ -4,7 +4,7 @@ handlers = require './handlers'
 
 root =
   handlers: handlers
-  # mappers: mappers.all    # DEBUG: do we want this?
+  mappers: mappers.all    # DEBUG: do we want this?
 
   reducers: reducers
 
@@ -22,6 +22,8 @@ root =
 # Object.assign handlers,
 #   transformers: handlers.transform.all
 
+
 Object.assign root, handlers
+Object.assign root, mappers
 
 module.exports = root

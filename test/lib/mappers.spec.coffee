@@ -11,6 +11,8 @@
   string
 } = mappers
 
+EventEmitter = require 'events'
+
 requireDir = require 'require-dir'
 requireDir './mappers'
 
@@ -88,17 +90,22 @@ describe 'mappers', ->
     validate = (entry)->
       [name, f] = entry
       try
-        # log.debug 'calling mapper', {name}
+        log.debug 'calling mapper', {name}
         r = f 'data'
         if typeof r?.catch == 'function'
           r.catch (e)->
-            log.debug 'caught1', {name, e}
+            log.debug 'caught promise rejection', {name, e}
             {}
+        if r instanceof EventEmitter
+          log.debug 'mapper returned event emitter', {name}
+          r.on 'error', ->
+            log.debug 'caught error event'
+
         return name
       catch e
-        log.debug 'caught2', {name, e}
+        log.debug 'caught synchronous exception', {name, e}
         return null
 
-    expect Object.entries(mappers.all).map(validate)
+    expect Object.entries(mappers.all).map validate
     .log
     .includes 'isLiteral'

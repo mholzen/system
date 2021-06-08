@@ -47,6 +47,24 @@ resolvePathOption = (options, option, req)->
   else
     return new Promise (resolve)-> resolve options
 
+
+getArgs = (req)->
+  if req.args.positional.length > 0
+    return req.args
+
+  part = req.remainder.shift()
+  if not (part?.length > 0)
+    throw new NotProvided 'req.remainder'
+    
+    # req.data =
+    #   data: req.data
+    #   'properties': Object.getOwnPropertyNames data
+    #   'functions': functions data
+    #   'mappers': Object.keys mappers
+    # return
+
+  args = Arguments.from part
+
 module.exports = (req, res)->
   if not req.data?
     return res.status(400).send 'no data'
@@ -56,16 +74,17 @@ module.exports = (req, res)->
 
   data = if isPromise req.data then await req.data else req.data
 
-  part = req.remainder.shift()
-  if not (part?.length > 0)
-    req.data =
-      data: req.data
-      'properties': Object.getOwnPropertyNames data
-      'functions': functions data
-      'mappers': Object.keys mappers
-    return
+  # part = req.remainder.shift()
+  # if not (part?.length > 0)
+  #   req.data =
+  #     data: req.data
+  #     'properties': Object.getOwnPropertyNames data
+  #     'functions': functions data
+  #     'mappers': Object.keys mappers
+  #   return
 
-  args = Arguments.from part
+  # args = Arguments.from part
+  args = getArgs req
 
   name = args.first()
   if typeof req.data[name] == 'function'
@@ -125,4 +144,4 @@ module.exports = (req, res)->
   # log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}: '#{log.print req.data}'"
   # req.data = mapper.apply req.data, [ req.data ]
   a.unshift req.data
-  req.data = mapper.apply req.data, a
+  req.data = await mapper.apply req.data, a

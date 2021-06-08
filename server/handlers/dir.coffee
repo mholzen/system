@@ -1,13 +1,13 @@
 # TODO: move /files handler to /generators/files in order to be consistent
 {
   inodes
-  mappers: {content, type}
+  mappers: {fileStream, type}
   log
 } = require '../../lib'
 {dirname} = require 'path'
 os = require 'os'
+fs = require 'fs/promises'
 
-# TODO: express files as a function of /dir
 create = (root)->
 
   (req, res) ->
@@ -21,11 +21,14 @@ create = (root)->
         throw err
       # log.debug 'ENOENT', {path}
 
+    req.data = if inodePath.stat.isDirectory()
+      await fs.readdir inodePath.path
+    else
+      fileStream inodePath.path
+
     req.remainder = inodePath.remainder     # path contains un-matching remaining elements
     req.files =
       remainder: Array.from req.remainder
-    options = Object.assign {}, parse: false    #, req.args.options  # TODO: document need
-    req.data = content inodePath.path, options
 
     req.filename = inodePath.path           # TODO: replace with req.params.filename
     req.params.filename = req.filename
@@ -37,9 +40,7 @@ create = (root)->
     req.reldirname = req.dirname.slice inodePath.root.length + 1
 
     # TODO: use previously set req.base.  perhaps use an array?
-    req.base ?= []
-    req.base.push 'files'
-    req.base.push req.dirname.slice inodePath.root.length + 1
+    req.base = '/files' + req.dirname.slice inodePath.root.length
     req.params.base = req.base
 
     if typeof res?.type == 'function'
@@ -48,8 +49,8 @@ create = (root)->
 
     log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 
-module.exports = create
-Object.assign create,
-  root: create '/'
-  home: create os.homedir()
-  cwd: create()
+module.exports = create os.homedir()
+# Object.assign create,
+#   root: create '/'
+#   home: 
+#   cwd: create()

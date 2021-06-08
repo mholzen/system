@@ -44,10 +44,11 @@ fileStream = (path, options)->
     if not isAbsolute path
       path = options?.dirname + '/' + path
 
+  log.debug 'creating readstream', {path}
   fs.createReadStream path
 
-# fileContent = (path, options)->
-#   fileStream path, options
+fileContent2 = (path, options)->
+  fileStream path, options
 
 fileContent = (path, options)->
   # TODO: use promise-fs or async-file
@@ -67,7 +68,7 @@ fileContent = (path, options)->
               resolve files
         reject err
 
-      # log.debug 'readFile', {content: typeof content}
+      # log.debug 'readFile', {content}
       resolve content
 
 fileContentSync = (path)->

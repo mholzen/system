@@ -1,11 +1,11 @@
-log = require '../log'
 {parse} = require 'node-html-parser'
 
 links = (data)->
   # log.debug 'links', {data}
 
-  r = '<link rel="stylesheet" type="text/css" href="/files/index.css"/>'
-  r += '<link rel="stylesheet" type="text/css" href="./index.css"/>'
+  r = ''
+  # r = '<link rel="stylesheet" type="text/css" href="/files/index.css"/>'
+  # r += '<link rel="stylesheet" type="text/css" href="./index.css"/>'
 
   if typeof data == 'string'
     r += '<link rel="stylesheet" type="text/css" href="/files/css/'+data+'.css"/>'

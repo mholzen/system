@@ -71,10 +71,14 @@ body = (value, options)->
     return '<a href="'+ encodeURI(value.a.href) + '">' + value.a.text + '</a>'
 
   type = options?.res?.get 'Content-Type'
-  if type?.startsWith 'image/'  
-    # log.debug 'detected image content-type', {type}
-    return '<img src="data:' + type + ';base64,' + value.toString('base64') + '">'
+  if type?.startsWith 'image/'
+    log.here 'foo', {path: options.req.pathname}
+    # TODO: if we get a stream, do what?
+    # TODO: fix new Buffer
+    return '<div><img src="data:' + type + ';base64,' + (new Buffer(value)).toString('base64') + '"></div>'
 
+  if value instanceof Buffer
+    value = value.toString()
 
   if typeof value == 'string'
     return marked value
@@ -92,6 +96,9 @@ body = (value, options)->
 base = (href)->
   if not href?
     return ''
+
+  if href instanceof Array
+    href = '/' + href.join '/'
 
   '<base href="' + encodeURI(href) + '">'
 
@@ -118,9 +125,6 @@ outer = (data, options)->
   </html>'
 
 html = (data, options)->
-  if data instanceof Buffer
-    data = data.toString()
-
   if typeof data?.toHtml == 'function'
     return data.toHtml()
 

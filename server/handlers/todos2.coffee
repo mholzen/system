@@ -1,4 +1,4 @@
-###
+### can a pipe be expressed more effectively (with type checking and other quality guarantees) in code? what about discoverability?
 files 'cwd', 'lib'
 .generate 'stats'
 .map (x)->

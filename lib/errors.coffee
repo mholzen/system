@@ -1,4 +1,5 @@
 class NotProvided extends Error
+  # TODO: could list available options
   constructor: (name)->
     super "'#{name}' is required but undefined"
     @name = name

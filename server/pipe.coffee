@@ -6,6 +6,8 @@ json = require '../lib/mappers/json'
 isPromise = require 'is-promise'
 # root = require './root'
 
+getFunc = require './handlers/getFunc'
+
 #TODO: consider whether Pipe should use stream to implement
 
 find = (key, data, root) =>
@@ -51,6 +53,44 @@ class Pipe
 
     next()
 
+  func: (req, res)->
+    getFunc req, res
+    segment = req.remainder.shift()
+
+    log.debug 'Pipe.processPath', {segment, remainder: req.remainder, data: req.data}
+    if not segment?
+      # log.error 'empty segment'
+      continue
+
+    if segment instanceof Array
+      p = new Pipe segment, @root
+      try
+        p.processPath req, res, next
+      catch err
+        log.error 'pipe.processPath.pipe', {pipe: @pipe, first, err}
+      continue
+
+    if typeof segment == 'string'   
+      args = Arguments.from segment
+      first = args.first()
+
+      target = find first, req.data, @root
+
+    if typeof target == 'function'
+      log.debug 'calling handler', {name: first}
+      # DEBUG: when req.data=/mappers, target calls the mappers() function here
+      if target.constructor.name == 'AsyncFunction'
+        throw new Error 'async function'
+      try
+        target req, res
+        continue
+      catch err
+        log.error 'pipe.processPath.string', {pipe: @pipe, first, err: err.stack}
+        req.error = err
+        throw err
+        break
+
+
   processPath: (req, res, next)->
     req.remainder = Array.from @pipe
 
@@ -77,22 +117,24 @@ class Pipe
 
         target = find first, req.data, @root
 
-        if typeof target == 'function'
-          log.debug 'calling handler', {name: first}
-          # DEBUG: when req.data=/mappers, target calls the mappers() function here
-          try
-            target req, res
-            continue
-          catch err
-            log.error 'pipe.processPath.string', {pipe: @pipe, first, err: err.stack}
-            req.error = err
-            throw err
-            break
+      if typeof target == 'function'
+        log.debug 'calling handler', {name: first}
 
-        req.data = target
-        continue
+        # if target.constructor.name == 'AsyncFunction'
+        #   throw new Error 'async function'
+        try
+          target req, res, @root
+          continue
+        catch err
+          log.error 'pipe.processPath.string', {pipe: @pipe, first, err: err.stack}
+          req.error = err
+          throw err
+          break
 
-      throw new Error "unknown '#{typeof segment}' segment '#{segment}'"
+      req.data = target
+
+      # continue
+      # throw new Error "unknown '#{typeof segment}' segment '#{segment}'"
 
     req.data
 

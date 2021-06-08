@@ -4,6 +4,7 @@
 handlers = require './handlers'
 Pipe = require './pipe'
 
+{ReadStream} = require 'fs'
 {isStream} = stream
 {Arguments} = mappers.args
 
@@ -128,6 +129,7 @@ class TreeRouter
       .send 'req.data is not defined'
       return
 
+    log.debug 'next'
     next()
 
   respond: (req, res)->
@@ -149,6 +151,14 @@ class TreeRouter
       # return res.type('text/plain').send 'function with properties: ' + Object.getOwnPropertyNames(req.data).join(',')
 
     if typeof req.data == 'object'
+
+      if (req.data instanceof ReadStream) or (req.data._readableState?)
+        log.debug 'router.respond: piping data'
+        s = req.data.pipe res
+        return new Promise (resolve)->
+          s.on 'finish', ->
+            resolve()
+
       if req.data instanceof Buffer
         # streamable?
         return res.send req.data.toString()
@@ -195,7 +205,7 @@ class TreeRouter
     # log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
 
-      log.debug 'processPath', {remainder: req.remainder, data: req.data}
+      # log.debug 'processPath', {remainder: req.remainder, data: req.data}
 
       segment = req.remainder.shift()
       if not segment?
@@ -220,6 +230,8 @@ class TreeRouter
 
       req.args = Arguments.from segment
       first = req.args.first()
+      if req.args.positional.length > 0
+        req.args.positional.shift()
 
       if isPromise req.data
         req.data = await req.data
@@ -228,10 +240,10 @@ class TreeRouter
         if (typeof data == 'object') and (data.hasOwnProperty first)
           # DEBUG: when first=mappers, it returns the mappers creator function
           # option 1: creator functions are handled differently
-          log.debug 'found first in data', {first}
+          # log.debug 'found first in data', {first}
           return data[first]
         if (first of root)
-          log.debug 'found first in root', {first}
+          # log.debug 'found first in root', {first}
           return root[first]
         throw new NotFound first, data, root
 
