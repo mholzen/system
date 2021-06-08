@@ -26,7 +26,7 @@ parse = (data, options)->
     if options?.req?.filename?.endsWith '.cson'
       # TODO: require 'cson-parser', which requires coffeescript 1.2.7
       # introduces a bug with line numbers in stack traces
-      # csonParser = require 'cson-parser/lib/parse'
+      csonParser = require 'cson-parser/lib/parse'
       return csonParser data
 
     if ['[', '{'].includes data?[0]

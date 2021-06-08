@@ -26,18 +26,18 @@ create = (root)->
         throw err
       # log.debug 'ENOENT', {path}
 
-    req.remainder = inodePath.remainder     # path contains un-matching remaining elements
+    req.remainder = inodePath.remainder         # path contains un-matching remaining elements
     req.files =
       remainder: Array.from req.remainder
     options = Object.assign {}, parse: false    #, req.args.options  # TODO: document need
     req.data = content inodePath.path, options
 
-    req.filename = inodePath.path           # TODO: replace with req.params.filename
+    req.filename = inodePath.path               # TODO: replace with req.params.filename
     req.params.filename = req.filename
 
     req.dirname = if inodePath.stat.isDirectory() then inodePath.path else dirname inodePath.path
     req.dirname += '/'
-    req.params.dirname = req.dirname        # TODO: remove duplicate
+    req.params.dirname = req.dirname            # TODO: remove duplicate
 
     req.reldirname = req.dirname.slice inodePath.root.length + 1
 
