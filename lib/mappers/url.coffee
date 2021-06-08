@@ -3,7 +3,7 @@
 {NotMapped} = require '../errors'
 
 urlNames =
-  thumbnails: '/files/cwd/test/artifacts/thumbnails.css'
+  thumbnails: '/files/test/artifacts/thumbnails.css'
 
 url = (data, options)->
   if options?.req?

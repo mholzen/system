@@ -12,9 +12,14 @@ create = (root)->
 
   (req, res) ->
     path = req.remainder ? []
+
+    localroot = root
+    if typeof req.data == 'string'
+      localroot = req.data
+
     # log.debug 'files entry', {path, root}
     try
-      inodePath = new inodes.Path path, root
+      inodePath = new inodes.Path path, localroot
       await inodePath
     catch err
       if not err.toString().includes 'ENOENT'
@@ -48,8 +53,5 @@ create = (root)->
 
     log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 
-module.exports = create
-Object.assign create,
-  root: create '/'
-  home: create os.homedir()
-  cwd: create()
+module.exports = create()
+Object.assign module.exports, {create}

@@ -1,6 +1,7 @@
 {mappers, reducers} = require '../lib'
 
 handlers = require './handlers'
+os = require 'os'
 
 root =
   handlers: handlers
@@ -10,6 +11,9 @@ root =
 
   measures:
     uptime: (req, res)-> req.data = process.uptime()
+
+  os:
+    homedir: (req, res)-> req.data = os.homedir()
 
   metrics:
     uptime:
@@ -22,8 +26,7 @@ root =
 # Object.assign handlers,
 #   transformers: handlers.transform.all
 
-
 Object.assign root, handlers
-Object.assign root, mappers
+# Object.assign root, mappers
 
 module.exports = root

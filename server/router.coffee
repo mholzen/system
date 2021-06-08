@@ -13,11 +13,12 @@ log = require '../lib/log'
 _ = require 'lodash'
 isPromise = require 'is-promise'
 {join, sep} = require 'path'
+root = require './root'
 
-id = (obj)->
-  if typeof obj.path == 'string'
-    return obj.path
-  obj
+# id = (obj)->
+#   if typeof obj.path == 'string'
+#     return obj.path
+#   obj
 
 get = (data, path, context)->
   if not (path?.length > 0)
@@ -41,27 +42,27 @@ parse = (path)->
   words = path.split '/'
   (word.split ',' for word in words)
 
-root =
-  handlers: handlers
-  mappers: mappers.all    # DEBUG: do we want this?
+# root =
+#   handlers: handlers
+#   mappers: mappers.all    # DEBUG: do we want this?
 
-  reducers: reducers
+#   reducers: reducers
 
-  measures:
-    uptime: (req, res)-> req.data = process.uptime()
+#   measures:
+#     uptime: (req, res)-> req.data = process.uptime()
 
-  metrics:
-    uptime:
-      period: '10s'
-      measure: '/measures/uptime'
-    load:
-      frequency: 1
-      measures: '/requests/logs/entries/reduce/count'
+#   metrics:
+#     uptime:
+#       period: '10s'
+#       measure: '/measures/uptime'
+#     load:
+#       frequency: 1
+#       measures: '/requests/logs/entries/reduce/count'
 
 Object.assign handlers,
   transformers: handlers.transform.all
 
-Object.assign root, handlers
+# Object.assign root, handlers
 
 class RewriteRouter
   constructor: (rewrites)->
@@ -250,7 +251,7 @@ class TreeRouter
       target = find req.data, first, @root
 
       if typeof target == 'function'
-        # log.debug 'calling handler', {name: first}
+        log.debug 'calling handler', {name: first}
         # DEBUG: when req.data=/mappers, target calls the mappers() function here
         await target req, res, @
         continue

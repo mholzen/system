@@ -63,9 +63,9 @@ describe 'server', ->
     r.get '/files'
     .then (response)->
       expect response.text
-      .contain 'root'
-      .contain 'home'
-      .contain 'cwd'
+      .contain 'test'
+      .contain 'bin'
+      .contain 'package.json'
 
   it '/literals/1/type/css', ->
     r.get '/literals/1/type/css'
@@ -75,15 +75,15 @@ describe 'server', ->
     r.get '/searchers'
     # .expect('Content-Type', /text\/css/)
 
-  it '/files/cwd/test/artifacts/blurb.md/apply/html', ->
-    r.get '/files/cwd/test/artifacts/blurb.md/apply/html'
+  it '/files/test/artifacts/blurb.md/apply/html', ->
+    r.get '/files/test/artifacts/blurb.md/apply/html'
     .then (response)->
       expect response.text
       .includes '<table'
 
   # TODO: what should be expected?
-  it.skip '/files/cwd/test/artifacts/image.jpg/apply/html', ->
-    r.get '/files/cwd/test/artifacts/image.jpg/apply/html'
+  it.skip '/files/test/artifacts/image.jpg/apply/html', ->
+    r.get '/files/test/artifacts/image.jpg/apply/html'
     .then (response)->
       expect response.text
       .includes '<img'
@@ -94,19 +94,19 @@ describe 'server', ->
       expect response.text
       .includes '"path":'
 
-  it '/files/cwd/test/artifacts/names.csv/generators/lines/map/split', ->
-    r.get '/files/cwd/test/artifacts/names.csv/generators/lines/map/split'
+  it '/files/test/artifacts/names.csv/generators/lines/map/split', ->
+    r.get '/files/test/artifacts/names.csv/generators/lines/map/split'
     .then (response)->
       expect response.text
       .includes '[["First","Last"],['
 
   it.skip 'difference between dir and dir/', ->
-    r.get '/files/cwd/test/artifacts'
+    r.get '/files/test/artifacts'
     .then (response)->
       expect response.text
       .includes '["file1", "file2"]'
 
-    r.get '/files/cwd/test/artifacts/'
+    r.get '/files/test/artifacts/'
     .then (response)->
       expect response.text
       .includes '[{"name:"file1",'
@@ -116,13 +116,13 @@ describe 'server', ->
       # should mappers.html handle requests?
       # if so, mappers.html should realize the data is an image, and but the response type to html
       # how would a mapper function affect the outgoing headers?
-      r.get '/files/cwd/test/artifacts/image.png/type/png/apply/html'
+      r.get '/files/test/artifacts/image.png/type/png/apply/html'
       .then (response)->
         expect response.text
         .includes '<img'
 
     it 'list of resources', ->
-      r.get '/files/cwd/test/artifacts/transform/head/map/image/reduce/html/apply/style,thumbnails'  # TODO: make style a mapper
+      r.get '/files/test/artifacts/transform/head/map/image/reduce/html/apply/style,thumbnails'  # TODO: make style a mapper
       .then (res)->
         expect res.text
         .includes '<img'
@@ -131,7 +131,7 @@ describe 'server', ->
 
   describe 'count words in logs', ->
     it '.../pick,a,b,c', ->
-      r.get '/files/cwd/test/artifacts/array.json/apply/parse/map/pick,a,c'
+      r.get '/files/test/artifacts/array.json/apply/parse/map/pick,a,c'
       .then (res)->
         expect res.text
         .includes '1'
@@ -141,7 +141,8 @@ describe 'server', ->
 
     it 'works', ->
       r.get [
-        '/files/home/data/logs/index.json'
+        '/os/homedir'
+        'files/data/logs/index.json'
         'generators/lines'
         'map/parse'
         'map/get,log'
@@ -157,7 +158,7 @@ describe 'server', ->
 
 describe.skip 'post/put a redirect (301/302)', ->
   it '', ->
-    r.post '/artifacts', '/files/cwd/test/artifacts'
+    r.post '/artifacts', '/files/test/artifacts'
     r.get '/artifacts'
 
 describe.skip 'directory to index-page'
@@ -166,7 +167,7 @@ describe.skip 'post', ->
   it 'path with function (apply) takes one path argument (a template function)', ->
     r.post '/mappers/pug/example', 'p a:#{a} b:#{b}'
     .then (response)->
-      r.get '/files/cwd/test/artifacts/dict.json/apply/pug/example'
+      r.get '/files/test/artifacts/dict.json/apply/pug/example'
       .then (response)->
         expect response.text
         .includes '<p>a:1 b:2</p>'
