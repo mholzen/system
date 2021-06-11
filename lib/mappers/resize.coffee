@@ -5,7 +5,7 @@ module.exports = (data, options)->
   if type?.startsWith 'image/'
 
     gm data
-    .resize('400', '400')
+    .resize('300', '300')
     # .size {bufferStream: true}, (err, size)->
     #   if err?
     #     throw err

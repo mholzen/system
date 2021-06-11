@@ -65,14 +65,13 @@ body = (value, options)->
     return ul value, options
 
   if value?.image?.src?
-    return '<img src="'+ encodeURI(value.image.src) + '"></img>'
+    return '<div><img src="'+ encodeURI(value.image.src) + '"></img></div>'
 
   if value?.a?.href?
     return '<a href="'+ encodeURI(value.a.href) + '">' + value.a.text + '</a>'
 
   type = options?.res?.get 'Content-Type'
   if type?.startsWith 'image/'
-    log.here 'foo', {path: options.req.pathname}
     # TODO: if we get a stream, do what?
     # TODO: fix new Buffer
     return '<div><img src="data:' + type + ';base64,' + (new Buffer(value)).toString('base64') + '"></div>'

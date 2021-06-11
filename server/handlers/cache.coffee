@@ -20,9 +20,12 @@ module.exports = (req, res, router)->
   await router.processPath req, res #, next
   value = await req.data
 
-  log.debug 'caching', {key}
+  if res.headersSent
+    return # Don't cache if we've already responded (eg. redirect)
 
-  if value._readableState?
+  # log.debug 'caching', {key, value}
+
+  if value?._readableState?
     return new Promise (resolve, reject)->
       value.pipe concat (buffer)->
         cache[key] =

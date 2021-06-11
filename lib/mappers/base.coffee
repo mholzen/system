@@ -1,16 +1,13 @@
-log = require '@vonholzen/log'
-{isStream} = require '../stream'
 
-isLiteral = (data)->
-  if isStream data
-    return false
+module.exports = (data, options)->
+  base = undefined
 
-  if ['string', 'number', 'boolean', 'symbol'].includes typeof data
-    return true
+  if options?.req?
+    base = '/' + options.req.base.join '/'
+    base += options.req.filename
 
-  if typeof data[Symbol.iterator] == 'function'
-    return false
+  if options?.res?
+    options.res.type 'text/plain'
 
-  true
+  return base
 
-module.exports = isLiteral

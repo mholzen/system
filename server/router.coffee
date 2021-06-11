@@ -110,6 +110,9 @@ class TreeRouter
     req.log = @logs.add req   # Warning: dirty `req`
     req.root = @root
     req.data = @root
+    req.params ?= {}
+    req.params.segments = []
+
     if @rewriter
       @rewriter.process req, res, next
     try
@@ -117,7 +120,7 @@ class TreeRouter
       if req.data? and (not res.headersSent)
         await @respond req, res
     catch err
-      # log.debug 'process.error', {path: req.path, err: err.stack}
+      log.debug 'process.error', {path: req.path, err: err.stack}
       if err.send?
         err.send res
       else
@@ -125,12 +128,12 @@ class TreeRouter
         .status 500
         .send err.stack
 
-    if not req.data?
+    if not req.data? and (not res.headersSent)
       res.status 404
       .send 'req.data is not defined'
       return
 
-    log.debug 'next'
+    # log.debug 'next'
     next()
 
   respond: (req, res)->
@@ -213,6 +216,9 @@ class TreeRouter
         # log.debug 'empty segment'
         continue
 
+      # log.debug 'processPath', {segment}
+      req.params?.segments?.push segment
+
       if segment.length == 0
         # log.debug 'trailing(or empty) slash', {data: req.data}
         # return req.data as a collection
@@ -251,7 +257,7 @@ class TreeRouter
       target = find req.data, first, @root
 
       if typeof target == 'function'
-        log.debug 'calling handler', {name: first}
+        # log.debug 'calling handler', {name: first}
         # DEBUG: when req.data=/mappers, target calls the mappers() function here
         await target req, res, @
         continue

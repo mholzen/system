@@ -13,6 +13,6 @@ module.exports = (data, options)->
     path = '/' + path.join '/'
 
   if path.endsWith '/'
-    path += 'Book'    # TODO: too specific
+    path += 'Book'    # TODO: way too specific
   
   options.res.redirect fullUrl options.req, path

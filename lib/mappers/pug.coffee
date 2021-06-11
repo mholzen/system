@@ -13,28 +13,16 @@ content = (data)->
   return data
 
 create = (data, options)->
-  # if typeof data == 'function'
-  #   return data
-
-  # if data?.content instanceof Buffer
-  #   data.content = data.content.toString()
-
-  # if typeof data == 'string'
-  #   data =
-  #     content: data
-
-  # if typeof data?.content == 'string'
   pugOptions = {}
   if data?.path?
     pugOptions.filename = data.path
   if options?.self?
     pugOptions.self = options.self
-  return compile string(content(data)), pugOptions
 
-  # throw new Error "cannot make template from #{typeof data}:'#{log.print data}'"
+  compile string(content(data)), pugOptions
     
-# HAVE MADE THIS ASYNC by reading the content
 pug = (data, options)->
+  templateFn = ''
   if options?.template?
     templateFn = create options?.template, options
   else
@@ -42,13 +30,15 @@ pug = (data, options)->
     options.self = true
     if options?.req?.filename?
       options.filename = options?.req?.filename
+    # log.debug 'creating template function from data', {data}
     templateFn = compile data, options
 
   if typeof templateFn != 'function'
     throw new Error "cannot get template function"
 
-  # log.debug 'applying template function with', {data}
-  res = templateFn data
+  # log.debug 'applying template function with', {options}
+  locals = Object.assign {}, data, options
+  res = templateFn locals
 
   # TODO: function with side effects?
   if typeof options?.res?.type == 'function'

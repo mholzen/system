@@ -40,6 +40,7 @@ create = (root)->
     req.params.dirname = req.dirname            # TODO: remove duplicate
 
     req.reldirname = req.dirname.slice inodePath.root.length + 1
+    req.params.segments.push inodePath.path.slice inodePath.root.length + 1
 
     # TODO: use previously set req.base.  perhaps use an array?
     req.base ?= []

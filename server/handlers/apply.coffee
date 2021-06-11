@@ -7,6 +7,7 @@ Path = require 'path'
 {isStream} = require '../../lib/stream'
 expandTilde = require 'expand-tilde'
 objectPath = require '../../lib/path'
+{NotProvided} = require '../../lib/errors'
 
 functions = (obj) ->
   properties = new Set()

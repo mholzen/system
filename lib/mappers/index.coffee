@@ -35,5 +35,5 @@ module.exports = (data, index, options)->
     throw new NotFound i, root.querySelectorAll('*[id]').map (x)-> x.toString()
 
   redirect = item.attributes.href
-  log.debug {url, i, redirect}
+  log.debug 'redirecting', {url, i, redirect}
   options.res.redirect redirect

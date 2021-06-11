@@ -1,5 +1,4 @@
 # TODO: this probably should come from the context
-
 {NotMapped} = require '../errors'
 
 urlNames =
@@ -7,7 +6,9 @@ urlNames =
 
 url = (data, options)->
   if options?.req?
-    throw new Error 'should use base'
+    options.res.type 'text/plain'
+    log.debug 'url', {segments: options.req.params.segments}
+    return '/' + options.req.params.segments.slice(0,-1).join '/'
 
   if data?.name?
     if data.name of urlNames

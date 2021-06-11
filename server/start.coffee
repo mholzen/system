@@ -11,7 +11,6 @@ s = new server.Server
     [/\/Graph2(\/|$)/, '/reduce/graph/apply/dict,name:graph/apply/template,template:name:Graph2']
     [/\/Graph3(\/|$)/, '/apply/parse/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html']
     [/\/directory(\/|$)/, '/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html,style:name:thumbnails']
-    [/\/Book(\/|$)/, '/index.pug/apply/pug/apply/html,style:url:book-light.css']
     [/\/Symlinks(?=\/|$)/,
       [
         '/map/object,name:name'
