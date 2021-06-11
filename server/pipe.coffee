@@ -60,7 +60,7 @@ class Pipe
     log.debug 'Pipe.processPath', {segment, remainder: req.remainder, data: req.data}
     if not segment?
       # log.error 'empty segment'
-      continue
+      return
 
     if segment instanceof Array
       p = new Pipe segment, @root
@@ -68,7 +68,7 @@ class Pipe
         p.processPath req, res, next
       catch err
         log.error 'pipe.processPath.pipe', {pipe: @pipe, first, err}
-      continue
+      return
 
     if typeof segment == 'string'   
       args = Arguments.from segment
@@ -83,12 +83,11 @@ class Pipe
         throw new Error 'async function'
       try
         target req, res
-        continue
+        return
       catch err
         log.error 'pipe.processPath.string', {pipe: @pipe, first, err: err.stack}
         req.error = err
         throw err
-        break
 
 
   processPath: (req, res, next)->
