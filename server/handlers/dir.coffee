@@ -47,7 +47,7 @@ create = (root)->
       # TODO: consider using a req.params instead
       res.type (type req) ? 'text/plain'
 
-    log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
+    # log.debug 'files return', {path: inodePath.stat, remainder: req.remainder, data: req.data}
 
 module.exports = create os.homedir()
 # Object.assign create,

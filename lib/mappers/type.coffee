@@ -27,7 +27,7 @@ type = (data, context)->
         extension = extension.slice(1)
 
       if extension of types
-        log.debug {type: types[extension]}
+        # log.debug {type: types[extension]}
         return types[extension]
 
 type.types = types
