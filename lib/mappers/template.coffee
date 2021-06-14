@@ -110,7 +110,7 @@ createTemplate = (options)->
 
 template = (data, options)->
   t = createTemplate options
-  return t data
+  return t Object.assign {}, data, options
 template.create = createTemplate
 
 module.exports = template

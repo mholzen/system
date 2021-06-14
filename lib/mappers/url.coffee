@@ -7,7 +7,7 @@ urlNames =
 url = (data, options)->
   if options?.req?
     options.res.type 'text/plain'
-    log.debug 'url', {segments: options.req.params.segments}
+    # log.debug 'url', {segments: options.req.params.segments}
     return '/' + options.req.params.segments.slice(0,-1).join '/'
 
   if data?.name?

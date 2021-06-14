@@ -36,8 +36,8 @@ pug = (data, options)->
   if typeof templateFn != 'function'
     throw new Error "cannot get template function"
 
-  # log.debug 'applying template function with', {options}
   locals = Object.assign {}, data, options
+  # log.debug 'applying template function with', {options}
   res = templateFn locals
 
   # TODO: function with side effects?

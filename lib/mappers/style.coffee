@@ -1,8 +1,6 @@
 {parse} = require 'node-html-parser'
 
 links = (data)->
-  # log.debug 'links', {data}
-
   r = ''
   # r = '<link rel="stylesheet" type="text/css" href="/files/index.css"/>'
   # r += '<link rel="stylesheet" type="text/css" href="./index.css"/>'

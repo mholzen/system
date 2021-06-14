@@ -1,3 +1,4 @@
+
 {NotMapped, NotFound} = require '../errors'
 content = require './content'
 {parse} = require 'node-html-parser'
@@ -5,7 +6,7 @@ content = require './content'
 {format} = require 'url'
 
 fullUrl = (req, path)->
-  format 
+  format
     protocol: req.protocol,
     host: req.get 'host'
     pathname: path
@@ -35,5 +36,5 @@ module.exports = (data, index, options)->
     throw new NotFound i, root.querySelectorAll('*[id]').map (x)-> x.toString()
 
   redirect = item.attributes.href
-  log.debug 'redirecting', {url, i, redirect}
-  options.res.redirect redirect
+  # log.debug 'redirecting', {url, i, redirect}
+  # options.res.redirect redirect

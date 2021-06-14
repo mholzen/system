@@ -111,8 +111,8 @@ style = (data)->
 
 head = (data)->
   result = ''
-  if data?.req?.base
-    result += base data.req.base
+  # if data?.req?.base
+  #   result += base data.req.base
   if data?.style?
     result += style data.style
   result

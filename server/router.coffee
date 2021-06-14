@@ -140,6 +140,9 @@ class TreeRouter
     req.data = await req.data
     # log.debug 'respond', {data:req.data}
 
+    if req.query.redirect?
+      return res.redirect req.data
+
     if ['boolean', 'number'].includes typeof req.data
       req.data = req.data.toString()
 

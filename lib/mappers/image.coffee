@@ -9,8 +9,7 @@ image = (data)->
   if typeof data == 'string'
     return
       image:
-        src: './' + data
-    # return '<img src="./' + escape data + "}'/>"   # TODO: htmlescape
+        src: data
 
   if (n = name data)?
     return
