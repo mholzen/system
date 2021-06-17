@@ -1,8 +1,8 @@
 amount = require '../mappers/amount'
 
 module.exports =
-  create: ->
+  create: (options)->
     (memo, data)->
       memo ?= 0
-      memo += amount data
+      memo += amount data, options
       memo

@@ -1,6 +1,6 @@
 module.exports = (value)->
   if typeof value == 'string'
-    return number.parseFloat value
+    return Number.parseFloat value
     
   value
 

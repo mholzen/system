@@ -4,12 +4,13 @@ defaultSep = ','
 separators =
   dashes: new RegExp ' - '
   colon: new RegExp ':'
+  spaces: /\s+/
 
 module.exports = (data, options)->
   sep = if options?.sep of separators
     separators[options?.sep]
   else
-    options?.sep ? options?[0] ? defaultSep
+    options?.sep ? defaultSep
   
   # log.debug 'split', {options, data, sep}
 

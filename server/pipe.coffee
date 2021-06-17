@@ -8,6 +8,7 @@ isPromise = require 'is-promise'
 
 getFunc = require './handlers/getFunc'
 
+# TODO: implement pipe to: introspect handlers in browser to: use friends
 #TODO: consider whether Pipe should use stream to implement
 
 find = (key, data, root) =>

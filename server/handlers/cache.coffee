@@ -2,10 +2,13 @@ concat = require 'concat-stream'
 
 cache = {}
 
-
-module.exports = (req, res, router)->
+get = (req, res, router)->
   req.base ?= []
   req.base.push 'cache'
+
+  if req.remainder.length == 0
+    req.data = ([k, v.data.length, v.type] for k, v of cache)
+    return req.data
 
   key = req.remainder.join '/'
   if key of cache
@@ -39,5 +42,8 @@ module.exports = (req, res, router)->
     type: res.get 'content-type'
   
   return req.data
-  
 
+module.exports = {
+  cache
+  get
+}
