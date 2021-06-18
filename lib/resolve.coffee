@@ -7,18 +7,28 @@ _ = require 'lodash'
 traverse = create()
 
 resolve = (data)->
+  # log.debug 'resolve.entry', {data}
   if not data?
     return null
+
   if isPromise data
-    return data.then (d)-> resolve d
+    # log.debug 'resolve promise'
+    return data.then (d)->
+      # log.debug 'resolve promise resolved'
+      resolve d
+
   if isStream data
     return data.fork().collect().toPromise Promise
+
   if typeof data == 'object'
+    log.debug 'resolve object'
     return Promise.all Object.keys(data).map (key)->
       if isPromise data[key]
         return data[key].then (value)->data[key] = value
     .then ->
       data
+
+  # log.debug 'resolve returning promise'
   new Promise (resolve)-> resolve data
 
 resolve.deep = (data)->
@@ -27,12 +37,15 @@ resolve.deep = (data)->
   promises = nodes.map (match)->
     resolve match.value
     .then (value)->
+      # log.debug 'resolve setting value', {value}
       _.set data, match.path, value
     .catch (error)->    # TODO: make this behaviour depend on options
+      # log.debug 'resolve setting error', {error}
       _.set data, match.path, error
 
   Promise.all promises
   .then ->
+    # log.debug 'all resolved'
     data
 
 

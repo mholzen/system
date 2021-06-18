@@ -7,7 +7,7 @@ files 'cwd', 'lib'
 ###
 
 module.exports = [
-  'files', 'cwd',
+  'files',
   # 'lib',   # TEST only
   'test/artifacts/small-directory/a',   # DEBUG only
 
