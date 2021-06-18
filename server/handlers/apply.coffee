@@ -50,7 +50,8 @@ resolvePathOption = (options, option, req)->
 
 
 getArgs = (req)->
-  if req.args.positional.length > 0
+  if req.args?.positional?.length > 0
+    # log.debug 'getArgs return using req.args', {args: req.args}
     return req.args
 
   part = req.remainder.shift()
