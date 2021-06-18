@@ -55,54 +55,20 @@ getArgs = (req)->
     return req.args
 
   part = req.remainder.shift()
+  # log.debug 'getArgs consuming req.remainder', {part, remainder: req.remainder}
   if not (part?.length > 0)
     throw new NotProvided 'req.remainder'
     
-    # req.data =
-    #   data: req.data
-    #   'properties': Object.getOwnPropertyNames data
-    #   'functions': functions data
-    #   'mappers': Object.keys mappers
-    # return
-
   args = Arguments.from part
 
 module.exports = (req, res)->
-  if not req.data?
-    return res.status(400).send 'no data'
-
-  if isStream req.data
-    req.data = req.data.collect().toPromise Promise
-
-  data = if isPromise req.data then await req.data else req.data
-
-  # part = req.remainder.shift()
-  # if not (part?.length > 0)
-  #   req.data =
-  #     data: req.data
-  #     'properties': Object.getOwnPropertyNames data
-  #     'functions': functions data
-  #     'mappers': Object.keys mappers
-  #   return
-
-  # args = Arguments.from part
   args = getArgs req
-
   name = args.first()
-  if typeof req.data[name] == 'function'
+
+  # log.debug 'apply.enter', {name}
+  if typeof req.data?[name] == 'function'
+    # log.debug 'apply calling function of req.data'
     args.positional.shift() # remove name
-    # if args.positional[0]?   # TODO: do this for all positional
-    #   args.positional[0] = value req.data, args.positional[0], args.options
-
-    # if a[0] == 'score'   # TODO: do this for all positional
-    #   a[0] = req.root.reducers.sort.score
-
-    # log.debug "applying req.data['#{name}'] function", {f: req.data[name], args: args.positional}
-    # DEBUG: this is calling mappers.all.html
-    # a.unshift req.data # applies the function on req.data
-    # DEBUG: but passing req.data as first argument (as apply requires) doesn't work for Array.sort()
-    
-    # req.data = req.data[name].apply req.data, args.positional
     aa = [args.positional, args.options]
     req.data = req.data[name].apply req.data, aa...
     return
@@ -110,13 +76,12 @@ module.exports = (req, res)->
   path = objectPath args.all()
   path.follow mappers
   mapper = path.to
-  # log.debug {remainder: path.remainder()}
   args = Arguments.from path.remainder()
-  # log.debug {args}
 
   if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"
 
+  # log.debug 'apply found', {mapper}
   if typeof mapper != 'function'
     req.data = mapper
     return
@@ -140,10 +105,16 @@ module.exports = (req, res)->
   # mapper = target a...
 
   # perhaps mapper can handle that?
-  if isPromise req.data
-    req.data = await req.data
+  # if isPromise req.data
+  #   log.debug 'apply awaiting'
+  #   req.data = await req.data
 
-  # log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}: '#{log.print req.data}'"
+  log.debug "applying mapper '#{name}' to req.data of type #{typeof req.data}: '#{log.print req.data}'"
   # req.data = mapper.apply req.data, [ req.data ]
   a.unshift req.data
-  req.data = await mapper.apply req.data, a
+  # req.data = await mapper.apply req.data, a
+  req.data = mapper.apply req.data, a
+  log.debug "apply.exit", {data: req.data}
+  req.data
+
+module.exports.description = 'handlers/apply'

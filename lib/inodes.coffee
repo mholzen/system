@@ -198,6 +198,7 @@ class Path
   then: (success, fail)->
     @remainder = Array.from @segments
     @path = @root   # assumes root is accessible
+    # WARN: this `await` returns a Promise that doesn't contain the result
     @stat = await statAsync @path
     while @remainder.length > 0
       try
@@ -207,7 +208,7 @@ class Path
         else
           join @path, next
 
-        # log.debug {path}
+        # log.debug 'inodes.then', {path}
         @stat = await statAsync path
         @path = path
         @remainder.shift()
@@ -222,6 +223,7 @@ class Path
           fail e
         break
     success()
+    return @stat
 
 inodes = (path, options)->
   new Stat path, options

@@ -54,7 +54,7 @@ class Pipe
 
     next()
 
-  func: (req, res)->
+  _func: (req, res)->
     getFunc req, res
     segment = req.remainder.shift()
 
@@ -71,7 +71,7 @@ class Pipe
         log.error 'pipe.processPath.pipe', {pipe: @pipe, first, err}
       return
 
-    if typeof segment == 'string'   
+    if typeof segment == 'string'
       args = Arguments.from segment
       first = args.first()
 
@@ -90,7 +90,6 @@ class Pipe
         req.error = err
         throw err
 
-
   processPath: (req, res, next)->
     req.remainder = Array.from @pipe
 
@@ -100,7 +99,6 @@ class Pipe
     
       log.debug 'Pipe.processPath', {segment, remainder: req.remainder, data: req.data}
       if not segment?
-        # log.error 'empty segment'
         continue
 
       if segment instanceof Array
@@ -114,18 +112,19 @@ class Pipe
       if typeof segment == 'string'   
         args = Arguments.from segment
         first = args.first()
-
         target = find first, req.data, @root
 
       if typeof target == 'function'
-        log.debug 'calling handler', {name: first}
+        log.debug 'calling handler', {id: first, desc: target.description, type: target.constructor.name}
 
         # if target.constructor.name == 'AsyncFunction'
         #   throw new Error 'async function'
         try
           target req, res, @root
+          log.debug 'pipe.processPath.handler continue', {data: req.data}
           continue
         catch err
+          log.debug 'error'
           log.error 'pipe.processPath.string', {pipe: @pipe, first, err: err.stack}
           req.error = err
           throw err

@@ -24,7 +24,7 @@ describe.skip 'pipe', ->
       .eql 'a'
 
     it 'apply', ->
-      p = new Pipe ['literals', 2, 'applySync', 'isLiteral'], root
+      p = new Pipe ['literals', 2, 'apply', 'isLiteral'], root
       expect p.processPath {}
       .eql true
 
@@ -58,20 +58,32 @@ describe.skip 'pipe', ->
       .eql 1
 
   describe 'async', ->
-    it 'object path', ->
+    it 'files', ->
       expect root
       .property 'files'
-      .property 'cwd'
-      p = new Pipe ['files', 'cwd', 'apply', 'resolve'], root
-      expect await p.processPath {}
-      .property 'then'
+      p = new Pipe ['files'], root
+      r = await p.processPath {}
+      expect r
+      # r is undefined because `files` has a first `await` that returns nothing
+      # that's the first promise returned and it returns nothing
+      .includes 'lib'
 
-  describe.skip 'async', ->
+    it 'files resolve', ->
+      expect root
+      .property 'files'
+      p = new Pipe ['files'], root
+      r = await p.processPath {}
+      p1 = new Pipe ['apply', 'count'], root
+      expect p1.processPath {data: r}
+      .log
+      .eql 10
+      .includes 'lib'
+
     it 'async', ->
-      p = new Pipe ['files', 'cwd', 'test', 'artifacts' ], root
+      p = new Pipe ['files', 'test', 'artifacts', 'apply', 'resolve' ], root
       req = { params: {} }
       res = {}
-      await p.processPath req, res
+      r = await p.processPath req, res
       log.debug {d: req.data}
       expect await req.data
       .log
