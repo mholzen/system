@@ -2,13 +2,6 @@
 content = require './content'
 
 module.exports = (data, options)->
-  # TODO: content if filepath
-  try
-    data = await content data, options
-  catch err
-    # log.debug 'lines', {stack: err.stack}
-    # try something else
-
   if data instanceof Buffer
     data = data.toString()
 

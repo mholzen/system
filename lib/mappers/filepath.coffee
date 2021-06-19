@@ -1,19 +1,27 @@
 {join} = require 'path'
 {NotMapped} = require '../errors'
 
+base = (data)->
+  data?.base ? data?.req?.dirname
+
 filepath = (data, options)->
-  # log.debug 'filepath.entry', {data, p:data?.path, options}
+  # log {data, p:data?.path, options}
   if data?.path?
     data = data.path
 
   if data instanceof Array
     data = join data...
-    # log.debug 'filepath.data was array', {data}
+
+  if not data?
+    b = base options
+    if b?
+      return b
 
   if typeof data == 'string'
-    if options?.req?.dirname?
-      if not data.startsWith '/'
-        data = join options.req.dirname, data
+    if not data.startsWith '/'
+      b = base options
+      if b?
+        data = join b, data
     return data
 
   if typeof data?.name == 'string'

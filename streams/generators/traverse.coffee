@@ -1,34 +1,38 @@
 {objectEdges, objectValue} = require '../../lib/traverse'
 stream = require '../../lib/stream'
-{join} = require 'path'
+
+objectNode = (data)->
+  v = objectValue data
+  e = objectEdges data
+  return [v,e]
+
+# TODO: dedup with lib/traverse
 
 create = (options)->
-  # log.debug 'traverse', {options}
-  value = options?.value ? objectValue
-  edges = options?.edges ? objectEdges
+  node = options?.node ? objectNode
+  # node(data) where data is a node or a node identifier
+  # node() should returns [value, edges]
   push = options?.push
-  next = options?.next
 
   traverse = (data, path)->
     path ?= []
-    # log.debug 'traverse.start', {data}
+    # log 'start', {data, path}
     try
-      v = await value data
+      [v,edges] = await node data
 
       if v != null
         if not options?.noPath
           v = {value: v, path}
         push null, v
-        # log.debug 'traverse.push', {value: v}
+        # log 'push', {value: v}
 
-      for e from await edges data
-        d = join data, e
-        p = path.concat e
-        # log.debug 'traverse.edges', {e, d}
+      for e from edges
+        [d,p] = e
+        # log 'edges', {data: d, path: p}
         await traverse d, p
       return
     catch e
-      # log.debug 'traverse.catch', {e}
+      # log 'catch', {e}
       push e, null
 
   return traverse

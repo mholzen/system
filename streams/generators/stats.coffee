@@ -3,46 +3,46 @@
 
 {promisify} = require 'util'
 fs = require 'fs'
+{join} = require 'path'
 stat = promisify fs.stat
 lstat = promisify fs.lstat
 stream = require '../../lib/stream'
 {create} = require './traverse'
 
-# TODO: move to mappers
-edges = (options)->
+node = (start, options)->
   statFunc = if options?.followSymlinks? then stat else lstat
 
-  (data)->
-    # TODO: edges now async
-    fp = filepath data
-    s = await statFunc fp
-    if not s.isDirectory()
-      # log.debug 'edges.exit', {data}
-      return []
-
-    res = await content fp
-    # log.debug 'edges.exit', {res}
-    return res
-
-# TODO: move to mappers
-value = (options)->
-  statFunc = if options?.followSymlinks? then stat else lstat
-
-  (data)->
-    fp = filepath data
+  (data, path)->
+    fp = filepath data, base: start
     if not fp?
       throw new NotMapped data, 'filepath'
-    await statFunc fp
+    try
+      value = await statFunc fp
+    catch e
+      log.error 'stat', {e}
+      value = null
+
+    path ?= []
+    if value? and not value.isDirectory()
+      return [value, path]
+
+    if data?
+      path = path.concat data
+    edges = for e from await content fp
+      d = join (data ? ''), e
+      p = path.concat e
+      [d, p]
+
+    return [value, edges]
 
 module.exports = (data, options)->
   if options?.req.dirname?
     data = options.req.dirname
 
-  stream (push, next)->
+  stream (push)->
     traverse = create
-      value: value options
-      edges: edges options
+      node: node data, options
       push: push
-      next: next
-    await traverse data
+
+    await traverse()
     push null, stream.nil

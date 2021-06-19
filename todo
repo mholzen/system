@@ -1,6 +1,9 @@
 # process
   - prioritize by potential for compounding effect
     - so that: more people use my software
+    - by: generating source files | map augment content | grep -E '#\ TODO:.*(so|to):'
+    - see: server/handlers/todos2.coffee
+    - need: composable handler pipes
   - keep functions short
   - minimize number of concepts
   - fail verbosily

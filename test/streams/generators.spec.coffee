@@ -1,10 +1,5 @@
 generators = require  'streams/generators'
 
-requireDir = require 'require-dir'
-requireDir './generators'
-
-fs = require 'fs'
-
 describe 'generators', ->
   it 'content', ->
     f = generators 'content'
@@ -34,9 +29,9 @@ describe 'generators', ->
     res = stats 'test/artifacts/small-directory'
     res.collect().toPromise Promise
     .then (d)->
-      # log.debug {r: d.map (x)->x.path }
+      # log {r: d.map (x)->x.path }
       expect d
-      .length 7
+      .length 8
       .property 0
       .property 'value'
       .respondsTo 'isFile'

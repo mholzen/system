@@ -44,7 +44,7 @@ fileStream = (path, options)->
     if not isAbsolute path
       path = options?.dirname + '/' + path
 
-  log.debug 'creating readstream', {path}
+  # log 'creating readstream', {path}
   fs.createReadStream path
 
 fileContent2 = (path, options)->
@@ -53,7 +53,7 @@ fileContent2 = (path, options)->
 fileContent = (path, options)->
   # TODO: use promise-fs or async-file
   new Promise (resolve, reject)->
-    # log.debug 'readFile', {path, options}
+    # log 'readFile', {path, options}
     fs.readFile path, (err, content)->
       return if err
         return if err.code == 'EISDIR'
@@ -68,7 +68,7 @@ fileContent = (path, options)->
               resolve files
         reject err
 
-      # log.debug 'readFile', {content}
+      # log 'readFile', {content}
       resolve content
 
 fileContentSync = (path)->
@@ -88,7 +88,7 @@ toObject = (string, context)->
   throw new Error "cannot make object from string #{string}"
 
 content = (data, options)->
-
+  # log {data, options}
   try
     fp = filepath data, options
     return fileContent fp, options
