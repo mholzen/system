@@ -1,13 +1,22 @@
 gm = require 'gm'
+amount = require './amount'
+
+getSize = (data)->
+  try
+    return amount data
+  catch e
+    # ignore
+    log.error {e}
+
+  300
 
 module.exports = (data, options)->
   type = options?.res?.get 'Content-Type'
   if type?.startsWith 'image/'
 
+    size = getSize options
+    log.debug {size}
+    
     gm data
-    .resize('300', '300')
-    # .size {bufferStream: true}, (err, size)->
-    #   if err?
-    #     throw err
-    #   @resize size.width / 10, size.height / 10
+    .resize size, size
     .stream()
