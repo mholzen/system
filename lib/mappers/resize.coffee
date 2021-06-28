@@ -15,7 +15,6 @@ module.exports = (data, options)->
   if type?.startsWith 'image/'
 
     size = getSize options
-    log.debug {size}
     
     gm data
     .resize size, size

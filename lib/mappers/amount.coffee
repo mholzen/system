@@ -1,6 +1,6 @@
-_ = require 'lodash'
-sign = require './sign'
 amountField = require './amountField'
+sign = require './sign'
+_ = require 'lodash'
 
 amount = (data, opts)->
   s = 1

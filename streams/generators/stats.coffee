@@ -36,7 +36,7 @@ node = (start, options)->
     return [value, edges]
 
 module.exports = (data, options)->
-  if options?.req.dirname?
+  if options?.req?.dirname?
     data = options.req.dirname
 
   stream (push)->
