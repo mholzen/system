@@ -2,7 +2,7 @@
 
 mocha-once $1
 
-fswatch . -e .git -e coverage -o |
+fswatch . -e .git -e data -e coverage -o |
 while IFS='$\n' read -r line; do
 
     mocha-once $1

@@ -60,7 +60,7 @@ mappers =
   response: request
 
   post: (resource, opts)->
-    r = request(resource)
+    r = request resource
     r.method = 'POST'
     r.payload = opts.payload
     await r.send()

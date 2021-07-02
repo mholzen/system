@@ -4,16 +4,16 @@ tempy = require 'tempy'
 {stat} = require  'lib/inodes'
 
 describe 'post', ->
-  it 'string', ->
+  it 'string to anonymous file', ->
     response = await post 'data'
     expect(response.startsWith '/').true
 
-  it 'string to file', ->
+  it 'string to named file', ->
     file = tempy.file()
     response = await post 'data', file
     expect(response).equal file
 
-  it 'string to directory', ->
+  it 'string to named directory', ->
     directory = tempy.directory()
     file = await post 'data', directory
     s = await stat file

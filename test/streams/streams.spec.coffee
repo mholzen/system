@@ -167,3 +167,13 @@ describe 'streams', ->
     res = await collect s
     expect res
     .length 3
+
+describe.skip 'save logs', ->
+  describe.skip 'use streams to post to a directory to save ', ->
+    it 'stream segment /files should use filesystem', ->
+      s = builder 'test/artifacts/small-directory/apply/count'
+
+    it 'post to a directory', ->
+      mappers.post data, {type: 'directory'}
+
+      s = builder 'test/artifacts/small-directory/apply/post,name:foo'

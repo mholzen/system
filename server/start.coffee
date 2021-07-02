@@ -2,6 +2,7 @@
 
 server = require '../server'
 log = require '../lib/log'
+logHandler = require './handlers/log'
 
 s = new server.Server
   port: 3001
@@ -21,6 +22,8 @@ s = new server.Server
       ].join '/'
     ]
   ]
+
+s.app.use logHandler
 
 process.on 'unhandledRejection', (error) =>
   console.log 'unhandledRejection', error
