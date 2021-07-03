@@ -94,8 +94,8 @@ describe 'server', ->
       expect response.text
       .includes '"path":'
 
-  it '/files/test/artifacts/names.csv/generators/lines/map/split', ->
-    r.get '/files/test/artifacts/names.csv/generators/lines/map/split'
+  it '/files/test/artifacts/names.csv/generate/lines/map/split', ->
+    r.get '/files/test/artifacts/names.csv/generate/lines/map/split'
     .then (response)->
       expect response.text
       .includes '[["First","Last"],['
@@ -143,7 +143,7 @@ describe 'server', ->
       r.get [
         '/apply,os,homedir'
         'files/data/logs/index.json'
-        'generators/lines'
+        'generate/lines'
         'map/parse'
         'map/get,log'
         'map/words'

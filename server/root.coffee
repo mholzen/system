@@ -1,4 +1,5 @@
 {mappers, reducers} = require '../lib'
+generators = require '../streams/generators'
 
 handlers = require './handlers'
 os = require 'os'
@@ -6,8 +7,8 @@ os = require 'os'
 root =
   handlers: handlers
   mappers: mappers.all    # DEBUG: do we want this?
-
-  reducers: reducers
+  generators: generators.all
+  reducers: reducers.all
 
   metrics:
     uptime:

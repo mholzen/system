@@ -5,7 +5,7 @@ query = require  'lib/query'
 
 # TODO: should come before tests of 'bin/map'
 
-describe 'generators/search', ->
+describe 'generate/search', ->
 
   it 'should find in array of strings', (done)->
     generator = create query: query 'foo', recurse:false

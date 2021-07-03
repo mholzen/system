@@ -1,4 +1,4 @@
-# TODO: move /files handler to /generators/files in order to be consistent
+# TODO: move /files handler to /generate/files in order to be consistent
 {
   inodes
   mappers: {fileStream, type}

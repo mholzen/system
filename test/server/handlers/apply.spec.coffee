@@ -57,7 +57,7 @@ describe 'servers/handlers/apply', ->
         .eql '<p></p>'
 
     it 'use mappers defined in that directory', ->
-      r.get '/files/test/artifacts/dict.json/generators/parse/apply/pug,template:path:table.pug'
+      r.get '/files/test/artifacts/dict.json/generate/parse/apply/pug,template:path:table.pug'
       .then (response)->
         expect response.text
         .includes '<table>'
