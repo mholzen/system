@@ -1,4 +1,4 @@
-requestPromise = require 'request-promise'
+requestPromise = require 'request-promise'    # TODO: replace with node-fetch so:modern
 inodes = require '../inodes'
 url = require './url'
 filepath = require './filepath'
@@ -14,12 +14,13 @@ request = (data)->
   if isStream data
     return data.each (i)-> request i
 
-  try
-    # log.debug 'request', {data}
-    return requestPromise
-      uri: url data
-      simple: false # reject only if the request failed without a response
-      resolveWithFullResponse: true
+  # try
+
+  log 'request', {url: url data}
+  return requestPromise
+    uri: url data
+    simple: false # reject only if the request failed without a response
+    resolveWithFullResponse: true
 
   # catch e
   #   try
@@ -27,7 +28,7 @@ request = (data)->
   #   catch
   #     throw new Error "cannot make a filepath from 1'#{log.print data}'"
   # throw new Error "cannot make a request from 2'#{log.print data}'"
-  inodes filepath data
+  # inodes filepath data
 
 request.request = request
 

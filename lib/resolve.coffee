@@ -21,7 +21,7 @@ resolve = (data)->
     return data.fork().collect().toPromise Promise
 
   if typeof data == 'object'
-    log.debug 'resolve object'
+    # log.debug 'resolve object'
     return Promise.all Object.keys(data).map (key)->
       if isPromise data[key]
         return data[key].then (value)->data[key] = value

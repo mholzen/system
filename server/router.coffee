@@ -113,11 +113,12 @@ class TreeRouter
 
     if typeof req.data == 'object'
 
-      if (req.data instanceof ReadStream) or (req.data._readableState?)
-        log.debug 'router.respond: piping data'
-        s = req.data.pipe res
+      if (req.data instanceof ReadStream) # or (req.data._readableState?)
+        log 'router.respond: piping data'
         return new Promise (resolve)->
+          s = req.data.pipe res
           s.on 'finish', ->
+            log 'finished'
             resolve()
 
       if req.data instanceof Buffer
