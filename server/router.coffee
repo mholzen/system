@@ -1,5 +1,5 @@
 {stream, mappers, reducers, streams} = require '../lib'
-{NotFound} = require '../lib/errors'
+{NotFound, NotProvided} = require '../lib/errors'
 
 handlers = require './handlers'
 Pipe = require './pipe'
@@ -14,55 +14,6 @@ _ = require 'lodash'
 isPromise = require 'is-promise'
 {join, sep} = require 'path'
 root = require './root'
-
-# id = (obj)->
-#   if typeof obj.path == 'string'
-#     return obj.path
-#   obj
-
-get = (data, path, context)->
-  if not (path?.length > 0)
-    return data
-
-  matches = path.match new RegExp '/*([^/]*)(.*)'
-  if not (matches?[1]?.length > 0)
-    return data
-
-  [, first, remainder] = matches
-  resource = _.get data, first
-
-  if not resource?
-    resource = _.get context, first
-
-  # log.debug 'returning', {resource, context, first}
- 
-  return resource
-
-parse = (path)->
-  words = path.split '/'
-  (word.split ',' for word in words)
-
-# root =
-#   handlers: handlers
-#   mappers: mappers.all    # DEBUG: do we want this?
-
-#   reducers: reducers
-
-#   measures:
-#     uptime: (req, res)-> req.data = process.uptime()
-
-#   metrics:
-#     uptime:
-#       period: '10s'
-#       measure: '/measures/uptime'
-#     load:
-#       frequency: 1
-#       measures: '/requests/logs/entries/reduce/count'
-
-Object.assign handlers,
-  transformers: handlers.transform.all
-
-# Object.assign root, handlers
 
 class RewriteRouter
   constructor: (rewrites)->
@@ -138,7 +89,7 @@ class TreeRouter
 
   respond: (req, res)->
     req.data = await req.data
-    # log.debug 'respond', {data:req.data}
+    log.debug 'respond', {data:req.data}
 
     if req.query.redirect?
       return res.redirect req.data
@@ -150,6 +101,9 @@ class TreeRouter
       return res.send req.data
 
     if typeof req.data == 'function'
+      res.type 'text/plain'
+      return res.send mappers.string req.data
+
       data = req.data.apply()
       if isStream data
         return res.send await data.collect().toPromise Promise
@@ -198,6 +152,8 @@ class TreeRouter
     res.send data
 
   processPath: (req, res, next)->
+    decodedPath = decodeURI req.path
+
     if not req.remainder?
       if req.path[0] != '/'
         throw new Error "path doesn't start with / #{log.print req.path}"
@@ -206,8 +162,8 @@ class TreeRouter
         req.data = @root
         return
 
-      decodedPath = decodeURI req.path
-      req.remainder = decodedPath.substr(1).split '/'
+      # req.remainder = decodedPath.substr(1).split '/'
+      req.remainder = decodedPath.split '/'
 
     # log.debug 'processPath', {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
@@ -215,8 +171,10 @@ class TreeRouter
       # log.debug 'processPath', {remainder: req.remainder, data: req.data}
 
       segment = req.remainder.shift()
-      if not segment?
+      if not segment? or segment.length == 0
         # log.debug 'empty segment'
+        if req.data?
+          req.data = Object.keys req.data
         continue
 
       # log.debug 'processPath', {segment}
@@ -246,6 +204,10 @@ class TreeRouter
       if isPromise req.data
         req.data = await req.data
 
+      if (typeof req.data == 'object') and (req.data.hasOwnProperty first)
+        req.data = req.data[first]
+        continue
+
       find = (data, first, root) =>
         if (typeof data == 'object') and (data.hasOwnProperty first)
           # DEBUG: when first=mappers, it returns the mappers creator function
@@ -260,7 +222,22 @@ class TreeRouter
       target = find req.data, first, @root
 
       if typeof target == 'function'
-        # log.debug 'calling handler', {name: first}
+        ###
+        TODO: what should `GET /a/b/c/<function>` do?
+
+        /literals,123/apply,isLiteral   -> apply is called because it's a handler
+        /literals,123/apply/isLiteral   -> apply is called because it's a handler
+        /os/homedir                     -> returns an object describing the function
+        /os/homedir/apply,<func>        -> <func> is called on the object
+        /apply,os.homedir               -> call
+        /apply,os.homedir/files         -> handler files on homedir value
+
+        /os/homedir/exec               -> TODO: could this call homedir()?
+
+        ###
+
+
+        # log.debug 'calling handler', {name: first, data: req.data}
         # DEBUG: when req.data=/mappers, target calls the mappers() function here
         await target req, res, @
         continue
@@ -279,6 +256,5 @@ router = (options)->
 
 router.TreeRouter = TreeRouter
 router.root = root
-router.get = get
 
 module.exports = router

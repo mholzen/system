@@ -4,6 +4,8 @@ score = (a,b) ->
 
 sort = (data, options)->
   if data instanceof Array
+    if typeof data[0] == 'string'
+      return data.sort()    # TODO: generalize sort order to:semantic
     return data.sort score
   throw new Error "cannot sort #{log.print data}"
 

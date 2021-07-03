@@ -1,8 +1,28 @@
+keys = (sets)->
+  sets.map (set)->
+    if not set?
+      return set
+    if not (set instanceof Array)
+      set = Object.keys set
+    set.sort()
+
 class NotProvided extends Error
-  # TODO: could list available options
-  constructor: (name)->
-    super "'#{name}' is required but undefined"
+  constructor: (name, sets...)->
+    super "'#{name}' is required but was not provided"
     @name = name
+    @sets = keys sets
+
+  toString: ->
+    @message + ". Available choices are: #{log.print @sets}"
+
+  send: (res)->
+    res.status 404
+    .type 'application/json'
+    .send
+      message: @toString()
+      name: @name
+      sets: @sets
+      stack: @stack.split("\n").slice 1
 
 class NotFound extends Error
   constructor: (key, sets...)->
@@ -12,13 +32,8 @@ class NotFound extends Error
     else
       super "NotFound: cannot find '#{key}'"
     @key = key
-    @sets = sets.map (set)->
-      if not set?
-        return set
-      if not (set instanceof Array)
-        set = Object.keys set
-      set.sort()
-    # TODO: warn if @sets is empty
+    @sets = keys sets
+    # TODO: should fail/warn if @sets is empty to:discover
 
   toString: ->
     @message + " in sets #{log.print @sets}"

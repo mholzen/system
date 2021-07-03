@@ -43,6 +43,7 @@ module.exports = (data, options)->
     traverse = create
       node: node data, options
       push: push
+      valueName: 'stat'
 
     await traverse()
     push null, stream.nil

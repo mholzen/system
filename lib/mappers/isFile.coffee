@@ -1,4 +1,4 @@
 
 module.exports = (data)->
-  stat = data?.value ? data
+  stat = data?.stat ? data
   stat?.isFile()

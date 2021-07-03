@@ -68,44 +68,33 @@ getArgs = (req)->
   args = Arguments.from part
 
 module.exports = (req, res)->
-  if not req.data?
-    return res.status(400).send 'no data'
+  # if not req.data?
+  #   return res.status(400).send 'no data'
 
   if isStream req.data
     req.data = req.data.collect().toPromise Promise
 
   data = if isPromise req.data then await req.data else req.data
 
-  # part = req.remainder.shift()
-  # if not (part?.length > 0)
-  #   req.data =
-  #     data: req.data
-  #     'properties': Object.getOwnPropertyNames data
-  #     'functions': functions data
-  #     'mappers': Object.keys mappers
-  #   return
-
   # args = Arguments.from part
-  args = getArgs req
+  # args = getArgs req
+  args = req.args
+  if not args?
+    throw new InternalError 'req.args expects to always be defined'   # process would have had to do that to determine the handler name
 
   name = args.first()
-  if typeof req.data[name] == 'function'
-    args.positional.shift() # remove name
-    # if args.positional[0]?   # TODO: do this for all positional
-    #   args.positional[0] = value req.data, args.positional[0], args.options
+  if not name?    # TODO: consider requiring /apply,<function> instead of /apply/<function>  to:consistent
+    args = Arguments.from req.remainder.shift()
+    name = args.first()
 
-    # if a[0] == 'score'   # TODO: do this for all positional
-    #   a[0] = req.root.reducers.sort.score
+  if not name?
+    throw new NotProvided 'name', mappers
 
-    # log.debug "applying req.data['#{name}'] function", {f: req.data[name], args: args.positional}
-    # DEBUG: this is calling mappers.all.html
-    # a.unshift req.data # applies the function on req.data
-    # DEBUG: but passing req.data as first argument (as apply requires) doesn't work for Array.sort()
-    
-    # req.data = req.data[name].apply req.data, args.positional
-    aa = [args.positional, args.options]
-    req.data = req.data[name].apply req.data, aa...
-    return
+  # if typeof req.data[name] == 'function'
+  #   args.positional.shift() # remove name
+  #   aa = [args.positional, args.options]
+  #   req.data = req.data[name].apply req.data, aa...
+  #   return
 
   path = objectPath args.all()
   path.follow mappers

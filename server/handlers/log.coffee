@@ -17,7 +17,6 @@ create = (options)->
 
   (req, res)->
     logs.add req
-    log 'appending'
     append req
     # next()
     req.data

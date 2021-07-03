@@ -7,11 +7,11 @@ require '../../streams/transformers.spec'
 
 r = null
 
-describe 'servers/handlers/apply', ->
-  before ->
-    s = new server.Server()
-    r = request s.app
+beforeEach ->
+  s = new server.Server()
+  r = request s.app
 
+describe 'servers/handlers/apply', ->
   it '/literals/123/apply/html', ->
     r.get '/literals/123/apply/html'
     .then (response)->

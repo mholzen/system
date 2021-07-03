@@ -9,12 +9,6 @@ root =
 
   reducers: reducers
 
-  measures:
-    uptime: (req, res)-> req.data = process.uptime()
-
-  os:
-    homedir: (req, res)-> req.data = os.homedir()
-
   metrics:
     uptime:
       period: '10s'
@@ -23,10 +17,6 @@ root =
       frequency: 1
       measures: '/requests/logs/entries/reduce/count'
 
-# Object.assign handlers,
-#   transformers: handlers.transform.all
-
 Object.assign root, handlers
-# Object.assign root, mappers
 
 module.exports = root

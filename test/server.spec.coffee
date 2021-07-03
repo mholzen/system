@@ -10,23 +10,23 @@ requireDir './server/handlers'
 {parse} = require 'lib/mappers'
 r = null
 
-describe 'server', ->
-  beforeEach ->
-    s = server()
-    r = request s.app
+beforeEach ->
+  s = server()
+  r = request s.app
 
-  it '/measures', ->
-    r.get '/measures'
+describe 'server', ->
+  it '/mappers/process', ->
+    r.get '/mappers/process'
     .then (response)->
       expect response.text
       .includes 'uptime'
 
-    r.get '/measures/uptime'
+    r.get '/apply,process,uptime'
     .then (response)->
       expect parseInt response.text
       .above 0
 
-    r.get '/measures/'
+    r.get '/mappers/process/'
     .then (response)->
       expect parse response.text
       .property 'length'
@@ -141,7 +141,7 @@ describe 'server', ->
 
     it 'works', ->
       r.get [
-        '/os/homedir'
+        '/apply,os,homedir'
         'files/data/logs/index.json'
         'generators/lines'
         'map/parse'

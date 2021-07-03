@@ -19,7 +19,7 @@ describe 'generators', ->
     .then (d)->
       expect d
       .property 0
-      .property 'value'
+      .property 'stat'
       .respondsTo 'isFile'
 
   it 'stats', ->
@@ -33,5 +33,5 @@ describe 'generators', ->
       expect d
       .length 8
       .property 0
-      .property 'value'
+      .property 'stat'
       .respondsTo 'isFile'

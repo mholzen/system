@@ -1,4 +1,6 @@
+{NotMapped} = require '../../lib/errors'
 stream = require '../../lib/stream'
+mappers = require '../../lib/mappers'
 
 module.exports = (inputStream, name, options)->
   filters =
@@ -10,7 +12,11 @@ module.exports = (inputStream, name, options)->
       typeof data == 'string'
 
   # TODO: make mappers available to: reuse (wahoo!)
-  f = filters[name] ? filters.ok
+  # f = filters[name] ? filters.ok
+
+  f = mappers name
+  if not f?   # TODO: encapsulate into mappers.get to:reuse
+    throw new NotMapped name, mappers
 
   # log.debug 'filter', {name, options}
   inputStream.filter f

@@ -6,7 +6,7 @@ module.exports =
 
     (source)->
       items = new Array n
-      log {nil: source.nil}
+
       source.consume (err, x, push, next)->
         if err?
           push err

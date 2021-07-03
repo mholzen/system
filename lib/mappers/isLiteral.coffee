@@ -6,4 +6,7 @@ isLiteral = (data)->
 
   false
 
+isLiteral.returns =
+  type: 'Boolean'
+
 module.exports = isLiteral

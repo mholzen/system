@@ -8,6 +8,26 @@
 ## functional, as much as possible
 
 
+## Embrace semantics through the Principle of least astonishment (POLA)
+
+By embracing conventions for commonly used software and data patterns, we can
+increase development velocity.  We already do this for frequently used concepts
+such as files, directory, http requests.  Let's embrace it further for concepts
+such as searching, people, organizations, addresses, ...
+
+Examples:
+  filenames:
+  search semantics: query, sources, matches, location, path
+
+Derived concepts such as ordering, filtering become easier (TODO: justify)
+
+We won't get them right the first time around, so they need to be easily modifiable
+with well understood consequences
+
+## Observability
+
+We need to be able to discover the semantics, change them easily, and understand the
+impact of the changes.
 
 # Functions
 

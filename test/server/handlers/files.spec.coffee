@@ -9,7 +9,7 @@ describe 'servers/handlers/files', ->
     r = request s.app
 
   it 'accepts root as input', ->
-    r.get '/os/homedir/files'
+    r.get '/apply,os,homedir/files'
     .then (response)->
       expect response.text
       .includes '.bash'

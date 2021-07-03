@@ -1,3 +1,4 @@
+{NotProvided} = require '../../lib/errors'
 {
   mappers
   stream
@@ -10,6 +11,10 @@ isPromise = require 'is-promise'
 
 module.exports = (req, res, router)->
   segment = req.remainder.shift()
+
+  if not segment?
+    throw new NotProvided 'mapper', Object.keys(mappers).sort()
+
   args = Arguments.from segment
   name = args.first()
 

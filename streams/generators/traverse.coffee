@@ -6,13 +6,14 @@ objectNode = (data)->
   e = objectEdges data
   return [v,e]
 
-# TODO: dedup with lib/traverse
+# TODO: dedup with lib/traverse to:efficient
 
 create = (options)->
   node = options?.node ? objectNode
   # node(data) where data is a node or a node identifier
   # node() should returns [value, edges]
   push = options?.push
+  valueName = options?.valueName ? 'value'
 
   traverse = (data, path)->
     path ?= []
@@ -22,7 +23,7 @@ create = (options)->
 
       if v != null
         if not options?.noPath
-          v = {value: v, path}
+          v = {[valueName]: v, path}
         push null, v
         # log 'push', {value: v}
 

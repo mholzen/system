@@ -18,7 +18,7 @@ describe 'streams', ->
     s = generators.stats 'test/artifacts/small-directory'
     .through stream.pipeline(
       # stream.doto log
-      stream.filter (x)-> x.value.isFile()
+      stream.filter (x)-> x.stat.isFile()
       stream.map (x)-> mappers.content x, base: 'test/artifacts/small-directory'
       stream.flatMap stream
       # stream.doto log
@@ -40,7 +40,7 @@ describe 'streams', ->
     s = stream ['test/artifacts/small-directory']
     .through stream.pipeline(
       stream.flatMap generators.stats
-      stream.filter (x)-> x.value.isFile()
+      stream.filter (x)-> x.stat.isFile()
       stream.map (x)-> mappers.content x, base: 'test/artifacts/small-directory'
       stream.flatMap stream
       stream.map mappers.lines
@@ -96,7 +96,7 @@ describe 'streams', ->
     pipe = stream.pipeline(
       stream.doto (x)->context.base = x
       stream.flatMap generators.stats
-      stream.filter (x)-> x.value.isFile()
+      stream.filter (x)-> x.stat.isFile()
       stream.map (x)-> mappers.content x, context
       stream.flatMap stream
       stream.map mappers.lines
