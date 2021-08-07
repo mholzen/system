@@ -10,6 +10,6 @@ module.exports = (data, options)->
   # log.debug 'stat.entry', {data}
   data = filepath data,  options
   if data?
-    f = if options.symlink? then lstat else stat
+    f = if options?.symlink? then lstat else stat
     # log.debug 'stat', {data, f}
     f data

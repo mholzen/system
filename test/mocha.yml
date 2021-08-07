@@ -1,4 +1,5 @@
 bail: true
+#ignoreOnly: true
 spec: test/**/**.spec.coffee
 recursive: true
 #inspect-brk: true

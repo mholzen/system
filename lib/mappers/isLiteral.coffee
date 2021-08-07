@@ -1,12 +1,20 @@
-{isStream} = require '../stream'
-
 isLiteral = (data)->
   if ['string', 'number', 'boolean', 'symbol'].includes typeof data
     return true
 
   false
 
-isLiteral.returns =
-  type: 'Boolean'
+Object.assign isLiteral,
+  parameters: [
+    name: '0'
+    type: ['null', 'boolean', 'object', 'array', 'number', 'string']
+  ]
+  responses:
+    default:
+      description: "a boolean value representing whether the argument is a literal"
+      content:
+        "text/plain": {}
+        "application/json":
+          type: 'boolean'
 
 module.exports = isLiteral

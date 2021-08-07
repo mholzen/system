@@ -1,5 +1,7 @@
 {parse} = require 'node-html-parser'
 
+# TODO: implement using augment
+
 links = (data)->
   r = ''
   # r = '<link rel="stylesheet" type="text/css" href="/files/index.css"/>'
@@ -23,7 +25,6 @@ style = (data, options)->
   if typeof data == 'string'
     html = parse data
     h = head html # ensure there is a head
-    # log.debug 'html', {html}
     h.insertAdjacentHTML 'beforeend', links options
     data = html.toString()
 

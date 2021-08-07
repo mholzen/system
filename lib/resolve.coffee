@@ -1,6 +1,6 @@
 {isStream} = require './stream'
 isPromise = require 'is-promise'
-{create} = require './traverse'
+{create} = require './iterators/traverse'
 log = require './log'
 _ = require 'lodash'
 
@@ -18,7 +18,7 @@ resolve = (data)->
       resolve d
 
   if isStream data
-    return data.fork().collect().toPromise Promise
+    return data.fork().collect().toPromise(Promise).then (d)->resolve d
 
   if typeof data == 'object'
     # log.debug 'resolve object'
@@ -33,7 +33,7 @@ resolve = (data)->
 
 resolve.deep = (data)->
   nodes = Array.from traverse data
-  # log.debug 'resolve.deep', {nodes}
+  log.debug 'resolve.deep', {nodes}
   promises = nodes.map (match)->
     resolve match.value
     .then (value)->

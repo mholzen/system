@@ -1,9 +1,8 @@
 server = require '../../../server/'
 request = require 'supertest'
 
-# TODO: why do we need these here?
-require '../../stream.spec'    # test ordering based on dependencies
-require '../../streams/transformers.spec'    # test ordering based on dependencies
+# test ordering
+require '../handlers.spec'
 
 r = null
 

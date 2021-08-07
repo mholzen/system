@@ -1,3 +1,5 @@
+log = require './log'
+
 keys = (sets)->
   sets.map (set)->
     if not set?
@@ -59,7 +61,7 @@ class NotMapped extends Error
     .type 'application/json'
     .send
       message: @toString()
-      data: @data
+      data: log.print @data
       name: @name
       stack: @stack.split("\n").slice 1
 

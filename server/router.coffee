@@ -42,6 +42,21 @@ class RequestLogs
       @entries.pop()
     @entries[0]
 
+class Response
+  constructor: ->
+    @headers = {}
+    @code = undefined
+    @body = undefined
+  type: (data)->
+    @headers['Content-type'] = data
+    @
+  status: (code)->
+    @code = code
+    @
+  send: (data)->
+    @body = data
+    @
+
 class TreeRouter
   constructor: (aRoot, options)->
     @root = aRoot ? root
@@ -56,6 +71,36 @@ class TreeRouter
       @rewriter = new RewriteRouter options.rewrites
       @root.rewrites = options.rewrites
 
+  path: (data)->
+    if data instanceof Array
+      return data.join '/'
+    if typeof data == 'string'
+      return data
+    throw new NotMapped data, 'router.path'
+
+  request: (data)->
+    {
+      path: @path data
+      params: {}
+      args: null
+      root: @root
+      query: {}
+    }
+
+  response: ->
+    new Response()
+
+  subprocess: (data)->
+    req = @request data
+    res = @response()
+    data = await @process req, res, ->
+    # log {data, req_data: req.data}
+
+    # if req.status != 200
+    #   throw new Error "non-success status (#{req.status}) with data (#{req.data})"
+
+    req.data
+
   process: (req, res, next)->
     # log.debug 'TreeRouter.process', {d: req.data}
     req.log = @logs.add req   # Warning: dirty `req`
@@ -63,6 +108,8 @@ class TreeRouter
     req.data = @root
     req.params ?= {}
     req.params.segments = []
+    req.params.router = @
+    req.params.root = @root
 
     if @rewriter
       @rewriter.process req, res, next
@@ -71,13 +118,17 @@ class TreeRouter
       if req.data? and (not res.headersSent)
         await @respond req, res
     catch err
-      log.debug 'process.error', {path: req.path, err: err.stack}
+      log.error 'process.error', {error: err.toString(), stack: err.stack, path: req.path}
       if err.send?
-        err.send res
-      else
-        res.type 'text/plain'
-        .status 500
-        .send err.stack
+        try
+          err.send res
+          return
+        catch err2
+          log.error 'second error sending an exception', {err2, res}
+      
+      res.type 'text/plain'
+      .status 500
+      .send err.stack
 
     if not req.data? and (not res.headersSent)
       res.status 404
@@ -89,7 +140,7 @@ class TreeRouter
 
   respond: (req, res)->
     req.data = await req.data
-    log.debug 'respond', {data:req.data}
+    # log.debug 'respond', {data:req.data}
 
     if req.query.redirect?
       return res.redirect req.data
@@ -113,12 +164,12 @@ class TreeRouter
 
     if typeof req.data == 'object'
 
-      if (req.data instanceof ReadStream) # or (req.data._readableState?)
-        log 'router.respond: piping data'
+      if (req.data instanceof ReadStream) or (req.data._readableState?)
+        # log 'router.respond: piping data'
         return new Promise (resolve)->
           s = req.data.pipe res
           s.on 'finish', ->
-            log 'finished'
+            # log 'finished'
             resolve()
 
       if req.data instanceof Buffer
@@ -153,8 +204,10 @@ class TreeRouter
     res.send data
 
   processPath: (req, res, next)->
-    decodedPath = decodeURI req.path
-
+    # decodedPath = decodeURI req.path
+    decodedPath = decodeURIComponent req.path
+    # log {decodedPath}
+    
     if not req.remainder?
       if req.path[0] != '/'
         throw new Error "path doesn't start with / #{log.print req.path}"
@@ -166,14 +219,15 @@ class TreeRouter
       # req.remainder = decodedPath.substr(1).split '/'
       req.remainder = decodedPath.split '/'
 
-    # log.debug 'processPath', {path: req.path, remainder: req.remainder}
+    # log {path: req.path, remainder: req.remainder}
     while req.remainder?.length > 0
 
-      # log.debug 'processPath', {remainder: req.remainder, data: req.data}
+      # log {remainder: req.remainder, data: req.data}
 
       segment = req.remainder.shift()
+      req.params.segment = segment
       if not segment? or segment.length == 0
-        # log.debug 'empty segment'
+        # log 'empty segment'
         if req.data?
           req.data = Object.keys req.data
         continue
@@ -181,23 +235,25 @@ class TreeRouter
       # log.debug 'processPath', {segment}
       req.params?.segments?.push segment
 
-      if segment.length == 0
-        # log.debug 'trailing(or empty) slash', {data: req.data}
-        # return req.data as a collection
-        toCollection = (data)->
-          if Array.isArray data
-            return data
-          if typeof data?.entries == 'function'
-            return data.entries()
-          if typeof data?.keys == 'function'
-            return data.keys()
-          if data?.values == 'function'
-            return data.values()
-          Object.keys data
-        req.data = await toCollection req.data
-        continue
+      # if segment.length == 0
+      #   # log.debug 'trailing(or empty) slash', {data: req.data}
+      #   # return req.data as a collection
+      #   toCollection = (data)->
+      #     if Array.isArray data
+      #       return data
+      #     if typeof data?.entries == 'function'
+      #       return data.entries()
+      #     if typeof data?.keys == 'function'
+      #       return data.keys()
+      #     if data?.values == 'function'
+      #       return data.values()
+      #     Object.keys data
+      #   req.data = await toCollection req.data
+      #   continue
 
       req.args = Arguments.from segment
+      Object.assign req.args, {req, res}
+      # log {args: req.args, segment}
       first = req.args.first()
       if req.args.positional.length > 0
         req.args.positional.shift()
@@ -227,7 +283,7 @@ class TreeRouter
         TODO: what should `GET /a/b/c/<function>` do?
 
         /literals,123/apply,isLiteral   -> apply is called because it's a handler
-        /literals,123/apply/isLiteral   -> apply is called because it's a handler
+        /literals,123/apply,mappers.isLiteral   -> apply is called because it's a handler
         /os/homedir                     -> returns an object describing the function
         /os/homedir/apply,<func>        -> <func> is called on the object
         /apply,os.homedir               -> call

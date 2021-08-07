@@ -2,6 +2,7 @@ isRequest = require './isRequest'
 _ = require 'lodash'
 dayjs = require 'dayjs'
 lines = require './lines'
+json = require './json'
 
 module.exports = (data)->
   if typeof data == 'function'
@@ -23,5 +24,6 @@ module.exports = (data)->
     if data instanceof Set
       data = data.values()
 
-    data = JSON.stringify data
+    # data = JSON.stringify data
+    data = json data
   data

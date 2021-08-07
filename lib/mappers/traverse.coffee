@@ -1,8 +1,7 @@
-{stream} = require '../stream'
-{create} = require '../traverse'
+{create} = require '../iterators/traverse'
 
 module.exports =
   create: (options)->
     traverse = create options
     (data)->
-      stream traverse data
+      Array.from traverse data

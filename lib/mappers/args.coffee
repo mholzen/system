@@ -1,13 +1,16 @@
 _ = require 'lodash'
 log = require '../log'
-{parseValue} = require '../parse'
+{parseValue, parsePath} = require '../parse'
 isLiteral = require './isLiteral'
+isArray = require './isArray'
 
 term = (data)->
+  # log {data}
+
   i = data.lastIndexOf ':'
   if i == -1
-    # data is a value
-    return parseValue data
+    # data is a value or a path
+    return parsePath parseValue data
   
   key = data.slice 0, i
   value = parseValue data.slice i+1
@@ -24,6 +27,7 @@ term = (data)->
 
 class Arguments
   @from: (words)->
+    # log {words}
     new Arguments words
 
   constructor: (data)->
@@ -49,14 +53,8 @@ class Arguments
         @positional.push arg
         continue
 
-      # value = parseValue elements[elements.length-1]
-
-      # if typeof path[0] == 'number'
-      #   @positional.push value
-      # else
-      #   _.set @options, path, value
       t = term arg
-      if isLiteral t
+      if isLiteral(t) or isArray(t)
         @positional.push t
       else
         Object.assign @options, t

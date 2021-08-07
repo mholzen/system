@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cross-env NODE_PATH=. forever --debug -v -a -w \
+	--watchIgnore 'data/**' \
+	--watchIgnore 'css/**' \
+	--watchIgnore 'test/artifacts/marchome/**' \
+	--watchIgnore 'node_modules/**' \
+	-c coffee server/start.coffee 2>&1 \
+	| tee data/run-watch.log

@@ -109,12 +109,14 @@ class Table
     header = @keys().map (key)-> "<th>#{key}</th>"
       .join '\n'
 
+    "<body>" +
     "<table>" +
       "<tr>" + header +
       "</tr>" +
       @rows().map((row)->"<tr>" + row.map((value)->
-        "<td>#{html(value)}</td>").join('\n') + "</tr>").join('\n') +
-    "</table>"
+        "<td>#{html.body(value)}</td>").join('\n') + "</tr>").join('\n') +
+    "</table>" +
+    "</body>"
 
 table = (datas, options)->
   new Table datas, options

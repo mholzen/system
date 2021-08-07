@@ -87,6 +87,20 @@ parse.parseValue = (data)->
 
   data
 
+parse.parsePath = (data)->
+  if typeof data != 'string'
+    return data
+
+  isPath = /^([\w\.]+)$/g
+  # log v: data.match isPath
+  if not data.match isPath
+    return data
+
+  if 0 <= data.indexOf '.'
+    data = data.split '.'
+
+  data
+
 parse.delimiter = delimiter
 
 module.exports = parse

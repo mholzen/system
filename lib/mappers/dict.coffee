@@ -1,7 +1,3 @@
-log = require '../log'
-
-
-
 module.exports = (data, options)->
   # NOTE: idempotent side effect
   if typeof options?.res?.type == 'function'

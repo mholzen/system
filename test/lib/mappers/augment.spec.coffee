@@ -2,16 +2,18 @@ mappers = require 'lib/mappers'
 augment = mappers.augment
 
 describe 'lib/mappers/augment', ->
-  it 'accepts an object,function,string', ->
+  it 'accepts a function', ->
     expect augment {a:1}, Object.keys
-    .eql {a:1, Array: ['a']}
-
-    expect augment {a:1}, Object.keys, name:'keys'
     .eql {a:1, keys: ['a']}
 
+    expect augment {a:1}, Object.keys, name:'foo'
+    .eql {a:1, foo: ['a']}
+
+  it.skip 'accepts a number', ->
     expect augment {a:1}, 2, name:'b'
     .eql {a:1, b: 2}
 
+  it.skip 'accepts a string', ->
     expect augment {a:1}, 'marc', name:'name'
     .eql {a:1, name: 'marc'}
 
@@ -22,8 +24,8 @@ describe 'lib/mappers/augment', ->
     .eql {a: 1, keys:['a']}
 
   it 'using fs', (done)->
-    resolve = mappers
-    mapper = mappers 'augment', 'resolve.all.fs.all.readlink', {resolve, name: 'readlink'}    # TODO: a mouthful
+    root = mappers.all
+    mapper = mappers 'augment', 'fs.readlink', {root, name: 'readlink'}    # TODO: a mouthful
 
     res = mapper '/'
     expect res
@@ -35,5 +37,8 @@ describe 'lib/mappers/augment', ->
 
     null
 
-    # expect -> await res.readlink
-    # .throws()
+  it 'from object', ->
+    expect augment {}, 'a.b.c', {a:{b:{c:1}}}
+    .eql
+      'a.b.c': 1
+

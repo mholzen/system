@@ -1,4 +1,4 @@
-
+#TODO: rename to:avoid confusion with index.coffee as directory description
 {NotMapped, NotFound} = require '../errors'
 content = require './content'
 {parse} = require 'node-html-parser'
@@ -23,7 +23,7 @@ module.exports = (data, index, options)->
     path = '/' + path.join '/'
 
   if path.endsWith '/'
-    path += 'index.pug/apply/pug'
+    path += 'index.pug/apply,mappers.pug'
   
   url = fullUrl options.req, path
   collection = await content {url}

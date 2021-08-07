@@ -1,12 +1,11 @@
 {NotMapped} = require '../../lib/errors'
 stream = require '../../lib/stream'
+getFunction = require '../../lib/mappers/function'
 
 module.exports =
   create: (name, options)->
 
-    f = options.resolve name
-    if not f?   # TODO: encapsulate into mappers.get to:reuse
-      throw new NotMapped name, mappers
+    f = getFunction name, options
 
     key = options?.name ? name
 

@@ -220,7 +220,24 @@ class Path
         log.error 'inodes.Path', {e}
         if not e.toString().startsWith 'Error: ENOENT'
           fail e
+
+        # try file extension
+        if @remainder.length < 1
+          break
+
+        try
+          file = @remainder[0] + '.' + @remainder[1]
+          path = join @path, file
+          @stat = await statAsync path
+          @path = path
+          @remainder.shift()
+          @remainder.shift()
+        catch e2
+          log.error 'inodes.Path', {e2}
+          if not e2.toString().startsWith 'Error: ENOENT'
+            fail e2
         break
+
     success()
 
 inodes = (path, options)->

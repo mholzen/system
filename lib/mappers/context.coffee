@@ -1,5 +1,3 @@
-log = require '../log'
-
 module.exports = (data, options)->
   # TODO: could accept named contexts, such as "url", "person", etc...
   # will need to look at options.root to determine true context

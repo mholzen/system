@@ -1,25 +1,30 @@
+log = require './log'
+
 class Path
-  constructor: (path)->
-    log 
+  constructor: (path, data)->
+    if typeof path == 'string'
+      path = path.split '.'
+
     @path = path
     @position = undefined
-  follow: (data)->
+    @_follow data
+
+  _follow: (data)->
+    # log {path: @path, data}
     for segment, i in @path
-      # if typeof data != 'object'
-      #   break
-      # if not (segment of data)
-      #   break
       if not (data?[segment]?)
         break
-
+      # log "found segment in data.", {segment, data}
       @position = i
       @to = data[segment]
       if typeof @to != 'object'
-        break
+        return @to
       data = @to
-    return @reached()
+    @
+
   reached: ->
     @position == @path.length - 1
+
   remainder: ->
     @path.slice @position + 1
 

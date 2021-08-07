@@ -1,4 +1,4 @@
-# process
+# develop faster
   - prioritize by potential for compounding effect
     - so that: more people use my software
     - by: generating source files | map augment content | grep -E '#\ TODO:.*(so|to):'
@@ -41,6 +41,8 @@
   - store search results in temporary files to be able to access the content again
 
 # transform
+  - use directory structure to define imports
+    - eg: `.import.coffee|json|cson` contains statements that import mappers, reducers, etc...
   - sort todos based on whether they contribute towards a goal () in order to help prioritize
   - sort todos higher if they have a location in an existing file
   - sort todos lower if they have a question mark or the word 'consider' in order to encourage 'defining the work'

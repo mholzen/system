@@ -2,6 +2,10 @@
 stream = require '../../lib/stream'
 mappers = require '../../lib/mappers'
 
+create = (name, options)->
+  f = mappers name
+  stream.filter f
+
 module.exports = (inputStream, name, options)->
   filters =
     ok: (data) -> data?
@@ -20,3 +24,6 @@ module.exports = (inputStream, name, options)->
 
   # log.debug 'filter', {name, options}
   inputStream.filter f
+
+module.exports.create = create
+

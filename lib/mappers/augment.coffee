@@ -1,21 +1,56 @@
 _ = require 'lodash'
+{NotFound} = require '../errors'
 log = require '../log'
 
 value = require './value'
 identify = require './identify'
+getFunction = require './function'
 
-augment = (data, addition, options)->
-  # log.debug 'augment.entry', {addition, options}
-  addition = value data, addition, options
+getObject = (name, options)->
+  if name instanceof Array
+    name = name.join '.'
+  if typeof name == 'string'
+    object = _.get options, name
+    if object?
+      return object
+  if typeof name == 'object'
+    return name
 
-  name = if typeof options?.name == 'string'
-    options.name
-  else
-    identify addition
+  throw new NotFound name, options
+
+getNewName = (name, newData, options)->
+  if typeof options?.name == 'string'
+    return options.name
+
+  if typeof name == 'string'
+    return name
+
+  if typeof name == 'function'
+    return name.name
+
+  identify newData
+
+augment = (data, name, options)->
+  # log {data, name, options}
+
+  try
+    newData = getObject name, options
+  catch e
+    if not e instanceof NotFound
+      throw e
+    log.warn 'unnessary lookup', {name, options}
+    fn = getFunction name, options
+    newData = fn data #, options
+
+  newName = getNewName name, newData, options
 
   if typeof data != 'object'
-    data = [identify data]: data
+    currentName = identify data, options
+    data = [currentName]: data
 
-  Object.assign data, [name]: addition
+  if data instanceof Array
+    data =
+      array: data
+  Object.assign data, [newName]: newData
 
 module.exports = Object.assign augment

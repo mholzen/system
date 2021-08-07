@@ -1,42 +1,53 @@
+log = require '../log'
+isLiteral = require '../mappers/isLiteral'
+isStream = require '../mappers/isStream'
+isPromise = require '../mappers/isPromise'
 _ = require 'lodash'
-log = require './log'
-isPromise = require 'is-promise'
-{isStream} = require './stream'
 
-isNode = (data)->
-  return true if ['string', 'number', 'boolean', 'function'].includes typeof data
+isValue = (data)->
+  return true if isLiteral data
+  return true if typeof data == 'function'
   return true if (isStream data) or (isPromise data)
   false
 
+class Edge
+  constructor: (edge, target)->
+    @edge = edge
+    @target = target
+
 objectEdges = (data) ->
-  if (not data?) or (isNode data)
+  if (not data?) or (isValue data)
     return []
 
   if data instanceof Array
-    return Object.keys data
+    # TODO: return an object rather than an array
+    return Object.keys(data).map (k)->[data[k], k]
 
   Object.keys data
   .filter (k) ->
     k != 'path' and
     typeof data[k] == 'object'
+  .map (k)->
+    # TODO: return an object rather than an array
+    [data[k], k]
 
 objectValue = (data) ->
   if not data?
     return null
  
-  if isNode data
+  if isValue data
     return data
 
   if typeof data == 'object'
     e = objectEdges data
-    # log.debug 'value.edges', {e}
+    e = e.map (x)->x[1]   # get paths only
     v  =_.pickBy data, (v,k) -> not (e.includes k) and data.hasOwnProperty k
-    # log.debug {v}
+    # log 'objectValue', {value: v, edges: e}
     return if _.isEmpty v then null else v
   throw new Error "value not implemented for #{typeof data}"
 
 create = (options)->
-  # log.debug 'traverse', {options}
+  # log 'traverse', {options}
   value = options?.value ? objectValue
   edges = options?.edges ? objectEdges
 
@@ -50,9 +61,11 @@ create = (options)->
       # log.debug 'traverse.yield', {value: v}
       yield v
 
-    for e from edges data
-      # log.debug 'traverse.edge', {e}
-      for i from traverse data[e], options
+    # log {edges: edges data}
+    for edge from edges data
+      # log.debug 'traverse.edge', {edge}
+      [d,e] = edge
+      for i from traverse d, options
         if not options?.noPath
           i.path.unshift e
         # log.debug 'traverse.yield', {value: i}

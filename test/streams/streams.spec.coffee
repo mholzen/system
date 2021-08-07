@@ -1,5 +1,9 @@
 stream = require 'lib/stream'
+mappers = require 'lib/mappers'
 generators = require  'streams/generators'
+
+requireDir = require 'require-dir'
+requireDir './generators'
 
 collect = (s)->
   s.collect().toPromise Promise
@@ -139,12 +143,12 @@ describe 'streams', ->
 
     s = stream ['test/artifacts/small-directory']
     .through pipe
-    .doto log
+    # .doto log
 
     res = await collect s
-    log res
+    # log {res}
     l = await collect res[0].lines
-    log l
+    # log {l}
     expect l
     .length 3
 
@@ -171,9 +175,9 @@ describe 'streams', ->
 describe.skip 'save logs', ->
   describe.skip 'use streams to post to a directory to save ', ->
     it 'stream segment /files should use filesystem', ->
-      s = builder 'test/artifacts/small-directory/apply/count'
+      s = builder 'test/artifacts/small-directory/apply,mappers.count'
 
     it 'post to a directory', ->
       mappers.post data, {type: 'directory'}
 
-      s = builder 'test/artifacts/small-directory/apply/post,name:foo'
+      s = builder 'test/artifacts/small-directory/apply,mappers.post,name:foo'

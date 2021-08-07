@@ -89,7 +89,7 @@ reducers.reduce = (data, name, opts)->
 
   # semantics of creator...?
   # log.debug 'reduce.entry', {data, name, opts}
-  if not name of reducers
+  if not ( name of reducers )
     throw new Error "cannot find '#{name}' in reducers"
   reducer = reducers[name]
 

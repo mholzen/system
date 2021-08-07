@@ -1,4 +1,3 @@
-log = require '../log'
 marked = require 'marked'
 url = require './url'
 json = require './json'

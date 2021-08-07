@@ -15,6 +15,7 @@ describe 'generators', ->
     expect(stats).a 'function'
 
     res = stats 'test/artifacts/blurb.txt'
+    log {res}
     res.collect().toPromise Promise
     .then (d)->
       expect d

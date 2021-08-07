@@ -1,5 +1,9 @@
 isPromise = require 'is-promise'
 {isStream} = require '../stream'
+isSocket = require './isSocket'
+{Arguments} = require './args'
+
+isServerResponse = require './isServerResponse'
 
 defaultReplacer = (key, value)->
   if value instanceof Error
@@ -14,12 +18,20 @@ defaultReplacer = (key, value)->
       # fileName: value.fileName
       # lineNumber: value.lineNumber
 
+  if isServerResponse value
+    return '<ServerResponse>'
+  if isSocket value
+    return '<Socket>'
   if isStream value
     return '<Stream>'
   if isPromise value
     return '<Promise>'
+  if typeof value?.emit == 'function'
+    return '<EventEmitter>'
   if typeof value == 'function'
-    return '<function>'
+    return '<fn>'
+  if value instanceof Arguments
+    return '<Arguments>'
 
   if value instanceof Array
     return value

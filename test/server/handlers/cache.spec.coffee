@@ -1,9 +1,8 @@
 server = require '../../../server/'
 request = require 'supertest'
 
-# test ordering based on known dependencies of `apply`
-require '../../stream.spec'
-require '../../streams/transformers.spec'
+# test ordering
+require '../handlers.spec'
 
 r = null
 

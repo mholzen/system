@@ -2,9 +2,7 @@
 
 describe 'path', ->
   it 'find path', ->
-    path = new Path ['a']
-    expect path.follow {a:1}
-    .eql true
+    path = new Path ['a'], {a:1}
     expect path.to
     .eql 1
     expect path.remainder()
@@ -12,9 +10,7 @@ describe 'path', ->
     expect path.position
     .eql 0
 
-    path = new Path ['a', 'b', 'c']
-    expect path.follow {a:{b:{c:1}}}
-    .eql true
+    path = new Path ['a', 'b', 'c'], {a:{b:{c:1}}}
     expect path.to
     .eql 1
     expect path.remainder()
@@ -23,13 +19,13 @@ describe 'path', ->
     .eql 2
 
   it 'non object data', ->
-    path = new Path ['a']
-    expect path.follow 'data'
-    .eql false
+    path = new Path ['a'], 'data'
+    expect path.to
+    .eql undefined
 
   it 'not find full path', ->
-    path = new Path ['a', 'b', 'c']
-    expect path.follow {a:{b:1}}
+    path = new Path ['a', 'b', 'c'], {a:{b:1}}
+    expect path.reached()
     .eql false
     expect path.position
     .eql 1

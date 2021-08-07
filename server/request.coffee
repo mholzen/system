@@ -1,4 +1,5 @@
 {request} = require '../lib/mappers'
+
 module.exports = (data)->
   if data instanceof Array
     data = data.join '/'

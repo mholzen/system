@@ -3,6 +3,8 @@ log = require '../../lib/log'
 
 {base} = require '../../lib/mappers/html'
 
+# TODO: rewrite using a `header` handler to:generalize
+
 module.exports = (req, res, router)->
   name = req.remainder.shift()
   # log.debug 'type entry', {name}

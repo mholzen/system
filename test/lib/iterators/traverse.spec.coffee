@@ -1,6 +1,4 @@
-traverse = require  'lib/traverse'
-mappers = require  'lib/mappers'
-inodes = require  'lib/inodes'
+traverse = require  'lib/iterators/traverse'
 {objectValue, objectEdges} = traverse
 {stream, post, inodes: {inode}} = require  'lib'
 
@@ -20,7 +18,7 @@ describe 'edges, value, traverse', ->
 
   it 'array', ->
     a = ['a','b','c']
-    r = Array.from traverse a
+    r = Array.from traverse a, noPath:true
     expect(a).eql a
 
   it 'object', ->
@@ -28,8 +26,11 @@ describe 'edges, value, traverse', ->
       a: 1
       b: {b1: 1}
       c: 3
-    expect(objectEdges(object)).eql ['b']
-    expect(objectValue(object)).eql {a:1, c:3}
+    expect objectEdges object
+    .eql [[{b1: 1}, 'b']]
+    expect objectValue object
+    .eql {a:1, c:3}
+
     it = traverse object, path:true
     result = Array.from it
     expect(result).eql [
@@ -51,11 +52,16 @@ describe 'edges, value, traverse', ->
       {value: {val:3}, path: ['children', '1']}
     ]
 
-  it 'array', ->
+  it 'array with array', ->
     array = [1,[21, 22],3]
-    expect(objectEdges(array)).eql ['0', '1', '2']
+    expect objectEdges array
+    .eql [
+      [1,'0'],
+      [[21,22],'1'],
+      [3,'2']
+    ]
 
-    it = traverse array, path:true
+    it = traverse array
     result = Array.from it
     expect(result).eql [
       {value: 1, path: ['0']}
@@ -72,28 +78,3 @@ describe 'edges, value, traverse', ->
     .property '0'
     .property 'value'
     .eql s
-
-describe.skip 'traverse inodes', ->
-
-  describe 'inodes', ->
-    it 'from root', ->
-
-      root = await inode '/'
-
-      adj.toArray (inodes)->
-        expect(inodes).length 0
-
-    it 'from a file', ->
-      file = await post 'data'
-      inodes = inode(file).adjascent()
-      inodes.toArray (inodes)->
-        expect(inodes).length 2
-
-    it 'filename in file', ->
-      file = await post '/tmp/', '/tmp/foo'
-
-    it 'references from content', ->
-      refs = references '/'
-      refs = references '.'
-      refs = references './file'
-      refs = references 'http://google.com'

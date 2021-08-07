@@ -68,7 +68,6 @@ describe 'args', ->
       .eql a: b: 1
 
 describe 'terms', ->
-  
   term = args.term
   it 'single term', ->
     expect term 'abc'
@@ -93,6 +92,18 @@ describe 'terms', ->
   it 'key with .', ->
     expect term 'a.b.c:abc'
     .eql {a: {b: {c: 'abc'}}}
+
+  it.skip 'value with .', ->
+    expect term 'a:a.b'
+    .eql {a: ['a', 'b']}
+
+  it.skip 'key and value with .', ->
+    expect term 'a.b:a.b'
+    .eql {a: {b: ['a', 'b']}}
+
+  it 'value with #', ->
+    expect term 'pug:p%23{options.a}'
+    .eql {pug: 'p%23{options.a}'}
 
 
 {Arguments} = args
@@ -120,6 +131,12 @@ describe 'Arguments', ->
 
     expect(a.positional)
     .eql ['a', 'b', 'c']
+
+  it.skip 'turns value with . into positional array', ->
+    a = Arguments.from ['a.b']
+
+    expect(a.all())
+    .eql [ ['a', 'b'] ]
 
   it 'validates a signature', ->
     s = Arguments.Signature.from ['a', 'b', 'c']
@@ -153,7 +170,7 @@ describe 'Arguments', ->
   describe 'supports dot', ->
     it '1. means array', ->
       a = Arguments.from 'a.b'
-      expect(a.all()).eql ['a.b']
+      expect(a.all()).eql [['a', 'b']]
 
     it '2. means array', ->
       a = Arguments.from 'a.b:1'
@@ -161,6 +178,6 @@ describe 'Arguments', ->
 
     it '3. means array', ->
       a = Arguments.from 'a.b,d.e'
-      expect(a.all()).eql ['a.b', 'd.e']
+      expect(a.all()).eql [['a','b'], ['d','e']]
 
 

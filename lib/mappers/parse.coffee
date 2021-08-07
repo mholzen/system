@@ -3,7 +3,6 @@ isProperty = require './isProperty'
 # {isStream} = require './stream'
 csvParse = require 'csv-parse/lib/sync'
 
-
 line = (data)->
   data.slice 0, data.indexOf "\n"
 
@@ -22,7 +21,6 @@ parse = (data, options)->
     return data
 
   if typeof data == 'string'
-
     if options?.req?.filename?.endsWith '.cson'
       # TODO: require 'cson-parser', which requires coffeescript 1.2.7
       # introduces a bug with line numbers in stack traces

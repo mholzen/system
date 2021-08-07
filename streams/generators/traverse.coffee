@@ -1,4 +1,4 @@
-{objectEdges, objectValue} = require '../../lib/traverse'
+{objectEdges, objectValue} = require '../../lib/iterators/traverse'
 stream = require '../../lib/stream'
 
 objectNode = (data)->
@@ -12,30 +12,39 @@ create = (options)->
   node = options?.node ? objectNode
   # node(data) where data is a node or a node identifier
   # node() should returns [value, edges]
-  push = options?.push
   valueName = options?.valueName ? 'value'
 
-  traverse = (data, path)->
-    path ?= []
-    # log 'start', {data, path}
-    try
-      [v,edges] = await node data
+  (data, options)->
+    stream (push, next)->
+      traverse = (data, path)->
+        path ?= []
+        # log 'start' , {data, path}
+        try
+          [v,edges] = await node data
 
-      if v != null
-        if not options?.noPath
-          v = {[valueName]: v, path}
-        push null, v
-        # log 'push', {value: v}
+          if v != null
+            if not options?.noPath
+              v = {[valueName]: v, path}
+            push null, v
+            # log 'push', {value: v}
 
-      for e from edges
-        [d,p] = e
-        # log 'edges', {data: d, path: p}
-        await traverse d, p
-      return
-    catch e
-      # log 'catch', {e}
-      push e, null
+          for edge from edges
+            if edge instanceof Array
+              [d,p] = edge
+            else
+              d = edge
+              p = edge
+              p = path.concat p
+            # log 'edges', {data: d, path: p}
+            await traverse d, p
+          return
+        catch e
+          log 'catch', {e}
+          push e, null
 
-  return traverse
+      await traverse data
+      push null, stream.nil
 
-module.exports = Object.assign create(), {objectEdges, objectValue, create}
+  # return traverse
+
+module.exports = Object.assign {}, {objectEdges, objectValue, create}

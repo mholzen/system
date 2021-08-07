@@ -36,14 +36,11 @@ node = (start, options)->
     return [value, edges]
 
 module.exports = (data, options)->
-  if options?.req?.dirname?
-    data = options.req.dirname
+  # if options?.req?.dirname?
+  #   data = options.req.dirname
 
-  stream (push)->
-    traverse = create
-      node: node data, options
-      push: push
-      valueName: 'stat'
+  generator = create
+    node: node data, options
+    valueName: 'stat'
 
-    await traverse()
-    push null, stream.nil
+  generator '', options   # TODO: passing '' to indicate start is odd

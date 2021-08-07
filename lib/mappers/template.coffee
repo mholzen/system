@@ -58,56 +58,6 @@ createTemplate = (options)->
   f.template = t
   return f
 
-# class Template
-#   constructor: (template, options)->
-#     if not template?
-#       if not (template = defaultTemplate options)?
-#         throw new Error "don't know how to create a template without one"
-
-#     @content = template.content ? template
-#     if not @content?
-#       throw new Error "don't know how to create a template without a content"
-
-#     if template.path?.endsWith '.pug'
-#       # throw new Error "don't know how to compile pug template"
-#       @compile = pug.compile
-#       @resolve = pug.render
-#     else
-#       @compile = es6.compile
-#       @resolve = es6.resolve
-
-#     try
-#       log 'compiling', {content: @content}
-#       @template = @compile @content
-#       @substitutions = @template.substitutions
-#     catch e
-#       log.error {content: @content}
-#       throw e
-
-
-#   substitute: (data)->
-#     if data instanceof Buffer
-#       data = parse data
-
-#     if data instanceof Array
-#       data = {array: data}
-
-#     # log.debug 'resolving template', {data}
-#     return @resolve @template, data
-
-# template = (data, options)->
-#   if typeof options?.res?.type == 'function'
-#     options.res.type 'text/html'
-
-#   t = new Template options?.template, options
-#   t.substitute data
-
-# template.create = (options)->
-#   t = new Template options?.template
-#   (data)-> t.substitute data
-
-# template.Template = Template
-
 template = (data, options)->
   t = createTemplate options
   return t Object.assign {}, data, options

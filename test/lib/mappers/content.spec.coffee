@@ -1,4 +1,4 @@
-{post, mappers: {content}, searchers} = require 'lib'
+{post, mappers: {content, augment, resolve}, searchers} = require 'lib'
 
 require '../../searchers.spec.coffee'
 
@@ -16,3 +16,17 @@ describe 'content', ->
     r = new Buffer(3)
     r.asciiWrite 'foo'
     expect(c).eql r
+
+  it 'from object', ->
+    file = path: 'test/artifacts/3chars.txt'
+    file = await resolve augment file, content
+    expect file
+    .property 'content'
+    .eql Buffer.from 'abc'
+
+  it.skip 'handles . for extension', ->
+    file = path: 'test.artifacts.3chars.txt'
+    file = await resolve augment file, content
+    expect file
+    .property 'content'
+    .eql Buffer.from 'abc'

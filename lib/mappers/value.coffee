@@ -7,7 +7,7 @@ module.exports = (data, value, options)->
 
   if typeof value == 'string'
     r = _.get options, value
-    # log.debug 'options?', {r, value, resolve: options?.resolve}
+    log.debug 'options?', {r, value, resolve: options?.resolve}
     if typeof r == 'function'
       return r data, options
     if r?

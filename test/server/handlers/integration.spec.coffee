@@ -30,13 +30,13 @@ describe 'integration', ->
     it 'works', ->
       get [
         '/files/test/artifacts'
-        'map/object,name:name'
-        'map/augment,req.dirname,name:directory'
-        'map/augment,req.base,name:base'
-        'map/augment,stat,name:stat'
-        'apply/resolve'
-        'map/link'
-        'apply/html'
+        'map,mappers.object,name:name'
+        'map,mappers.augment,req.dirname,name:directory'  # TODO: 'cannot find req.dirname' should throw
+        'map,mappers.augment,req.base,name:base'
+        'map,mappers.augment,mappers.stat,name:stat'
+        'apply,mappers.resolve'
+        'map,mappers.link'
+        'apply,mappers.html'
       ]
       .then (res)->
         expect res.text
@@ -44,7 +44,15 @@ describe 'integration', ->
         .includes 'image.html'
 
     it 'should have different postfix url/remainder maps depending on file type', ->
-      r.get '/files/test/artifacts/map/object,name:name/map/augment,req.dirname,name:directory/map/augment,req.base,name:base/map/augment,stat,name:stat/apply/resolve/map/link/apply/html'
+      get [ '/files/test/artifacts'
+        'map,mappers.object,name:name'
+        'map,mappers.augment,req.dirname,name:directory'
+        'map,mappers.augment,req.base,name:base'
+        'map,mappers.augment,mappers.stat,name:stat'
+        'apply,mappers.resolve'
+        'map,mappers.link'
+        'apply,mappers.html'
+      ]
       .then (res)->
         expect res.text
         .match /<li>[^<]*<a href=[^<]*<img/
@@ -76,7 +84,7 @@ describe 'integration', ->
       dir = await inode '/tmp'
       expect mappers 'link', dir
       .property 'href'
-      .include 'map/link/apply/html'
+      .include 'map/link/apply,mappers.html'
 
   describe.skip 'traverse directories up to N deep, display as graph'
 
@@ -89,7 +97,12 @@ describe 'integration', ->
 
   describe 'graph with edges', ->
     it 'works', ->
-      r.get '/files/test/artifacts/graph.json/apply/parse/apply/graph/apply/dict,name:graph/apply/template,template:name:Graph/type/html'
+      get [ '/files/test/artifacts/graph.json'
+        'apply,mappers.parse'
+        'apply,mappers.graph'
+        'apply,mappers.dict,name:graph'
+        'apply,reducers.inject,.files.lib.mappers.templates.graph.html'
+      ]
       .then (res)->
         expect res.text
         .match /links: \[{"source":0,"target":1}/
@@ -102,29 +115,29 @@ describe 'integration', ->
     it 'works', ->
       [
         'files/test/artifacts/s2s.csv'
-        'apply/table'
-        'apply/column,report'
+        'apply,mappers.table'
+        'apply,mappers.column,report'
         'map/dict'
         'map/get,traceroute'
         'map/hops'
         'map/get,legs'
-        'apply/get,0' # DEBUG, TEST
+        'apply,mappers.get,0' # DEBUG, TEST
         # 'reduce/concat' # PROD
         'reduce/graph'
         'map/pick,source,target,pings,delta'
       ]
 
-      # http://localhost:3001/files/test/artifacts/s2s.csv/apply/table/apply/column,report/map/dict/map/get,traceroute/map/hops/map/get,legs/reduce/concat/map/pick,source,target,delta/Graph
+      # http://localhost:3001/files/test/artifacts/s2s.csv/apply,mappers.table/apply,mappers.column,report/map/dict/map/get,traceroute/map/hops/map/get,legs/reduce/concat/map/pick,source,target,delta/Graph
 
   describe 'graph from symlinks', ->
     it 'works', ->
       get [
         '/files/test/artifacts'
-        'map/object,name:name'
-        'map/augment,req.dirname,name:directory'
-        'map/augment,resolve.all.fs.all.readlink,name:symlink'
-        'apply/resolve'
-        'transform/filter,string,path:symlink'
+        'map,mappers.object,name:name'
+        'map,mappers.augment,req.dirname,name:directory'
+        'map,mappers.augment,mappers.fs.readlink,name:symlink'
+        'apply,mappers.resolve'
+        'transform,transformers.filter,string,path:symlink'
       ].join '/'
       .then (res)->
         expect res.text
@@ -137,7 +150,7 @@ describe 'integration', ->
       get [
         '/files/test/artifacts/names.csv'
         'reduce/map,key:0'
-        'map/keys'
+        'map,mappers.keys'
       ].join '/'
       .then (res)->
         expect res.text

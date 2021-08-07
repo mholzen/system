@@ -11,7 +11,7 @@ call = (func)->
       # log.debug 'fs', {filepath: fp, func: f}
       pfunc fp
 
-functions = creator
+functions = # creator
   readlink: call fs.readlink
   stat: call fs.stat
   lstat: call fs.lstat

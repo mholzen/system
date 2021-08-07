@@ -1,13 +1,21 @@
 {router} = require 'server'
+root = require 'server/root'
 get = router.get
+
+mockReq = (path)->
+  {
+    path
+    params: {}
+    args: null
+    root
+  }
 
 describe 'router', ->
 
   describe 'arguments', ->
     it 'arrays', ->
       r = new router.TreeRouter()
-      req =
-        path: '/literals/a,b,c'
+      req = mockReq '/literals/a,b,c'
       res =
         status: ->
           send: ->
@@ -19,8 +27,7 @@ describe 'router', ->
 
     it 'args mapper', ->
       r = new router.TreeRouter()
-      req =
-        path: '/literals/a:1/apply/args/apply/pug,template:p #{options.a}'
+      req = mockReq '/literals/a:1/apply,mappers.args/apply,mappers.get,options/apply,reducers.inject,p #{a}'
       res =
         status: ->
           send: ->
@@ -33,8 +40,7 @@ describe 'router', ->
 
     it.skip 'template location', ->
       r = new router.TreeRouter()
-      req =
-        path: '/literals/a:1/apply/pug,template.location:(/files/test/artifacts/template.pug)'  # template is the data or the ref to data
+      req = mockReq '/literals/a:1/apply,mappers.pug,template.location:(/files/test/artifacts/template.pug)'  # template is the data or the ref to data
       res =
         status: ->
           send: ->

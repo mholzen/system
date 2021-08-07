@@ -1,3 +1,4 @@
+requireDir = require 'require-dir'
 {fileContentSync} = require '../content'
 {create} = require '../template'
 
@@ -11,13 +12,14 @@ map = (memo, value)->
   , {}
 
 # TODO: should be async
-templates =
-  graph: create fileContentSync( __dirname+'/graph.html').toString()
-  graph2: create fileContentSync( __dirname+'/graph2.html').toString()
-  scale: create fileContentSync( __dirname+'/scale.html').toString()
-  vue: create fileContentSync( __dirname+'/vue.html').toString()
-  slideshow: create fileContentSync( __dirname+'/slideshow.html').toString()
+templates = requireDir '.'
+  # graph: create fileContentSync( __dirname+'/graph.html').toString()
+  # graph2: create fileContentSync( __dirname+'/graph2.html').toString()
+  # scale: create fileContentSync( __dirname+'/scale.html').toString()
+  # vue: create fileContentSync( __dirname+'/vue.html').toString()
+  # slideshow: create fileContentSync( __dirname+'/slideshow.html').toString()
 
+# TODO: refactor as a search function of a collection of templates
 reference = (data)->
   log 'reference', {data}
   if typeof data == 'object'
