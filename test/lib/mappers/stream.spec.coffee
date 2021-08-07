@@ -18,12 +18,12 @@ describe 'stream', ->
     s = stream [1,2,3]
     r = s.doto (x)->
       if x == 1 then s.write 11
-   
+
     r = await r.collect().toPromise Promise
     expect(r).eql [11, 1, 2, 3]
-  
+
   it 'generator functions', ->
-    next = 
+    next =
     s = stream (push, next)->
       push null, 1
       # next()

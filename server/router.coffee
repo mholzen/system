@@ -125,7 +125,7 @@ class TreeRouter
           return
         catch err2
           log.error 'second error sending an exception', {err2, res}
-      
+
       res.type 'text/plain'
       .status 500
       .send err.stack
@@ -207,7 +207,7 @@ class TreeRouter
     # decodedPath = decodeURI req.path
     decodedPath = decodeURIComponent req.path
     # log {decodedPath}
-    
+
     if not req.remainder?
       if req.path[0] != '/'
         throw new Error "path doesn't start with / #{log.print req.path}"
@@ -234,22 +234,6 @@ class TreeRouter
 
       # log.debug 'processPath', {segment}
       req.params?.segments?.push segment
-
-      # if segment.length == 0
-      #   # log.debug 'trailing(or empty) slash', {data: req.data}
-      #   # return req.data as a collection
-      #   toCollection = (data)->
-      #     if Array.isArray data
-      #       return data
-      #     if typeof data?.entries == 'function'
-      #       return data.entries()
-      #     if typeof data?.keys == 'function'
-      #       return data.keys()
-      #     if data?.values == 'function'
-      #       return data.values()
-      #     Object.keys data
-      #   req.data = await toCollection req.data
-      #   continue
 
       req.args = Arguments.from segment
       Object.assign req.args, {req, res}

@@ -1,2 +1,2 @@
-module.exports = (data)-> 
+module.exports = (data)->
   typeof data?.connect == 'function'

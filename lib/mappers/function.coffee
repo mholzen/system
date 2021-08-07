@@ -34,9 +34,9 @@ getResolveFn = (data)->
       if not r.to?
         # log.debug {root}
         throw new NotFound data, root
-      
+
       if r.remainder().length > 0
-        throw new Error "not specific enough (#{data})" 
+        throw new Error "not specific enough (#{data})"
 
       if typeof r.to == 'function'
         return r.to
@@ -81,7 +81,7 @@ module.exports = (data, options)->
 
       # # log 'function.exit', {args}
       # return (data)-> r data, args...
-      
+
     if typeof r?.create == 'function'
       return r.create options
 
@@ -90,4 +90,3 @@ module.exports = (data, options)->
       throw new NotFound data, Object.keys r
 
   throw new NotMapped data, 'function'
-  

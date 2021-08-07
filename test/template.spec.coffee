@@ -17,7 +17,7 @@ describe 'template', ->
 
     expect t.substitute {a:1, b:2}
     .eql '<p>a:1 b:2</p>'
-    
+
   it.skip 'injects', ->
     expect await inject {a:1, b:2}, {path: 'test/artifacts/template.pug'}
     .eql '<p>a:1 b:2</p>'

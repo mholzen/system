@@ -117,7 +117,7 @@ describe 'coffee', ()->
   it 'apply', ->
     f = (a,b,c)->
       return [a,b,c]
-    
+
     a = [1,2,3]
     expect f.apply @, a
     .eql [1,2,3]

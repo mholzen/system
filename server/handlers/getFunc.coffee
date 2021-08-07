@@ -58,10 +58,6 @@ module.exports = (req, res, root)->
       
       return target   
 
-    # Object.assign args.options, {req, res}
-    # a = args.all()
-    # func = mappers a...                 # TODO: make mappers accept an array of all args
-
   if func instanceof Array
     pipe = new Pipe func, req.root
     func = pipe.mapper req, res
