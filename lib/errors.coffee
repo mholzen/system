@@ -65,4 +65,21 @@ class NotMapped extends Error
       name: @name
       stack: @stack.split("\n").slice 1
 
-module.exports = {NotFound, NotProvided, NotMapped}
+class NotSpecific extends Error
+  constructor: (data, name, choices)->
+    super "NotSpecific: '#{log.print data}' is not specific enough to get a '#{name}'"
+    @data = data
+    @name = name
+    @choices = choices
+
+  send: (res)->
+    res.status 500
+    .type 'application/json'
+    .send
+      message: @toString()
+      data: log.print @data
+      name: @name
+      choices: @choices
+      stack: @stack.split("\n").slice 1
+
+module.exports = {NotFound, NotProvided, NotMapped, NotSpecific}

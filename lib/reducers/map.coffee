@@ -2,8 +2,11 @@ mappers = require '../mappers'
 
 map =
   create: (options)->
-    # log.debug 'map.create', {options}
+    # log 'map.create', {key: options.key}
     key = if options?.key? then options?.key else options[0]
+
+    if not key?
+      key = 0
 
     if typeof key == 'boolean'
       key = if key then 1 else 0
@@ -20,7 +23,7 @@ map =
         key = mappers key, options
 
     (memo, data)->
-      # log.debug 'map.entry', {key, memo, data}
+      # log 'map.entry', {key, memo, data}
       memo ?= new Map()
       k = key data
 
@@ -28,7 +31,7 @@ map =
       values.push data
       memo.set k, values
 
-      # log.debug 'map.exit', {entries: Object.fromEntries memo?.entries()}
+      # log 'map.exit', {entries: Object.fromEntries memo?.entries()}
       return memo
 
 module.exports = map

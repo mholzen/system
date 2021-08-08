@@ -1,4 +1,3 @@
-log = require '../log'
 path = require 'path'
 
 types =
@@ -10,7 +9,7 @@ types =
   'txt': 'text/plain'
   'md': 'text/plain'
   'png': 'image/png'
-  'csv': 'text/plain'   # should technically be text/csv
+  'csv': 'text/csv'
   'json': 'application/json'
 
 name = (data)->

@@ -149,7 +149,9 @@ describe 'integration', ->
     it 'works', ->
       get [
         '/files/test/artifacts/names.csv'
-        'reduce/map,key:0'
+        'generate,generators.lines'
+        'map,mappers.split'
+        'reduce,reducers.map,key:0'
         'map,mappers.keys'
       ].join '/'
       .then (res)->

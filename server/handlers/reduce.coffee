@@ -1,18 +1,21 @@
-{reducers, log} = require '../../lib'
-{Arguments} = require '../../lib/mappers/args'
-isPromise = require 'is-promise'
+{NotMapped} = require '../../lib/errors'
+isPromise = require '../../lib/mappers/isPromise'
+isStream = require '../../lib/mappers/isStream'
+augmentArgsMapper = require './augmentArgsMapper'
+
+reduce = (data, func)->
+  if data instanceof Array
+    return data.reduce func, null
+
+  if isStream data
+    return data.reduce null, func
+
+  throw new NotMapped data, 'reduce function'
 
 module.exports = (req, res, router)->
-  segment = req.remainder.shift()
-  if not (segment?.length > 0)
-    req.data = Object.keys(reducers).sort()
-    return
-
-  args = Arguments.from segment
-
-  # name = args.first()
-  # if not (reducer = reducers[name])
-  #   return res.status(404).send "'#{name}' not found"
+  augmentArgsMapper req, res
+  func = req.mapper
+  args = req.args
 
   if not req.data?
     return res.status(400).send 'no data'
@@ -22,9 +25,11 @@ module.exports = (req, res, router)->
     req.data = await req.data
 
   if req.data instanceof Buffer
-    req.data = req.data.toString()
-
-  Object.assign args.options, {req, res}
+    if res.get('Content-Type').startsWith 'text/csv'
+      # TODO: generalize type "inference"
+      req.data = req.data.toString().split '\n'
 
   a = args.all()
-  req.data = reducers.reduce req.data, a...
+  # log 'reduce', {data: req.data}
+  req.data = reduce req.data, func
+  # req.data = reducers.reduce @, a...

@@ -124,7 +124,7 @@ describe 'server', ->
         .includes '<img'
 
     it 'list of resources', ->
-      r.get '/files/test/artifacts/transform,transformers.head/map,mappers.image/reduce/html/apply,mappers.style,thumbnails'  # TODO: make style a mapper
+      r.get '/files/test/artifacts/transform,transformers.head/map,mappers.image/apply,mappers.html/apply,mappers.style,thumbnails'  # TODO: make style a mapper
       .then (res)->
         expect res.text
         .includes '<img'
@@ -149,8 +149,8 @@ describe 'server', ->
         'map,mappers.parse'
         'map,mappers.get,log'
         'map,mappers.words'
-        'reduce/concat'
-        'reduce/distribution'
+        'reduce,reducers.concat'
+        'reduce,reducers.distribution'
         'apply,mappers.entries'
         'apply,mappers.sort'
       ].join '/'

@@ -16,13 +16,13 @@ module.exports = (req, res)->
   if not name?
     throw new NotProvided 'name', mappers
 
+  # log 'found function', {name}
+
   options = Object.assign {}, {req, res}
   Object.assign req.args.options, {req, res}
   args.positional.shift() # remove name
-  # log {req_args: req.args, options_req_args: options.req.args}
-  req.mapper = getFunction name, options
+  req.mapper = getFunction name, req.args.options
 
   if req.mapper?.type == 'reducer'
     if not (args.positional.length >= 1)
       log.warn "2nd argument missing; (#{args.positional}) for #{name}"
-      # throw new NotProvided "2nd argument missing; (#{args.positional}) for #{name}"

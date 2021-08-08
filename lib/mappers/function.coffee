@@ -1,6 +1,6 @@
 _ = require 'lodash'
 path = require './path'
-{NotFound, NotProvided, NotMapped} = require '../errors'
+{NotFound, NotProvided, NotMapped, NotSpecific} = require '../errors'
 isStream = require './isStream'
 
 ###
@@ -44,15 +44,12 @@ getResolveFn = (data)->
       if typeof r.to.create == 'function'
         return r.to
 
-
-      throw new NotMapped data, 'function '
+      throw new NotSpecific data, 'function', r.to
 
   throw new NotMapped data, 'resolveFn'
 
 
 module.exports = (data, options)->
-  # log.here {data, options}
-
   if typeof data == 'function'
     return data
 

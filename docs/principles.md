@@ -1,35 +1,44 @@
-# Expected Principles
+# Principles
 
-Principles that help improve the velocity of feature development.
+Here are the principles I used to develop the System Web Server.
 
-## Tested
+## Discoverable
 
-## Observable
-
-## Consistent
+This System should be easy to discover, learn and use.
 
 
-# New Principles
 ## REST
 
-Everything is a resource:
-  /files
-  /handlers
-  /functions
+Everything is a resource.  Standard REST operations are useable everywhere. (GET to describe, POST to add to a collection, etc...#TODO: elaborate)
 
-Important handlers:
-  apply: applies a function to the data as a single object
-  transform: applies a function to the data as a collection
+All functions are discovered and inspected at /functions.
 
-Important functions:
-  generators.homedir
-  mappers.stat, mappers.content
-  reducers.augment
+They are organized by the number of arguments they expect:
 
-Combine handlers into _pipes_:
-  /<resource>/<handler>/<handler>/...
+  * Generators expect no arguments: they generate data from scratch.
+  * Mappers expect 1: they take one argument and produce another.  They map the input data onto the output data.
+  * Reducers expect 2: they take one argument (the data) and incorporate it into another (the memo).
+  * Handlers expect 3: a request (the data) and a response (the memo), and a callback used by the function to indicate its work is complete.
+
+Here is one example for each category:  # TODO
+  /functions/generators/os/homedir    - returns the home directory of the user running the server
+  /functions/mappers/increment        - add 1 to the input
+  /functions/reducers/count           - count the number of items in a collection
+  /functions/handlers/files           - navigates directories and streams file contents
+
+Specific handlers are used to combine functions:
+  apply: applies a function to data as a single object
+  transform: applies a function to data as a collection
 
 Examples:
+  - (http://localhost:3001/files/apply,mappers.yaml)[directory content in yaml]
+  - (http://localhost:3001/files/transform,transformers.head)[10 first files]
+  - (http://localhost:3001/files/test/artifacts/names.csv)[10 first lines]
+
+
+Handlers can be combined to create _pipes_:
+  /<resource>/<handler>/<handler>/...
+
   http://localhost:3001/apply,root2.functions.generators.homedir/apply,mappers.content/transform,functions.mappers.streams.count
 
   Each step is a equivalent to an http request (with full headers that can be used for type or error handling, an advantage over regular Unix pipes)
@@ -54,8 +63,6 @@ Other important handlers:
   redirect
   cache
 
-## Discoverable
-
 ### Consistent way to find what is possible given a resource
 
 Search for ... in a resource:  `.../generate,search`
@@ -75,6 +82,8 @@ function.coffee should use path lookup to find dir handler and pass it .json
 ## Extensible
 
 ## Observability
+
+  - TODO: visualize logs in browser
 
 Observe behavior, change code easily, and understand the effects of a change.
 
@@ -107,6 +116,9 @@ with well understood consequences
 
 ## functional, as much as possible
 
+## Tested
+
+## Consistent
 
 
 # Functions
