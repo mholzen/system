@@ -14,26 +14,27 @@ Everything is a resource.  Standard REST operations are useable everywhere. (GET
 All functions are discovered and inspected at /functions.
 
 They are organized by the number of arguments they expect:
-
   * Generators expect no arguments: they generate data from scratch.
-  * Mappers expect 1: they take one argument and produce another.  They map the input data onto the output data.
-  * Reducers expect 2: they take one argument (the data) and incorporate it into another (the memo).
-  * Handlers expect 3: a request (the data) and a response (the memo), and a callback used by the function to indicate its work is complete.
+  * Mappers expect 1: they take one argument (the input data) and produce another.  They map the input data onto the output data.
+  * Reducers expect 2: they take one argument (the data), incorporate it into the second argument (the memo) and return result
+  * Handlers expect 3: a request (the data) and a response (the memo), and a callback used to indicate its work is complete.
 
-Here is one example for each category:  # TODO
-  /functions/generators/os/homedir    - returns the home directory of the user running the server
-  /functions/mappers/increment        - add 1 to the input
-  /functions/reducers/count           - count the number of items in a collection
-  /functions/handlers/files           - navigates directories and streams file contents
+Here is one example for each category:
+  - `/functions/generators/os/homedir`    - returns the home directory of the user running the server   # TODO: transform markdown with templates to avoid repeating localhost:3001
+  - `/functions/mappers/increment`        - add 1 to the input
+  - `/functions/reducers/count`           - count the number of items in a collection
+  - `/functions/handlers/files`           - navigates directories and streams file contents
 
-Specific handlers are used to combine functions:
-  apply: applies a function to data as a single object
-  transform: applies a function to data as a collection
+Specific handlers are used to call functions on data:
+  - call: executes a resource, if it is a function
+  - apply: applies a function to data as a single object
+  - transform: applies a function to data as a collection
 
 Examples:
-  - (http://localhost:3001/files/apply,mappers.yaml)[directory content in yaml]
-  - (http://localhost:3001/files/transform,transformers.head)[10 first files]
-  - (http://localhost:3001/files/test/artifacts/names.csv)[10 first lines]
+  - `/functions/generators/os/homedir/call`    - executes the function os.homedir()
+  - [`/files/apply,mappers.yaml`](http://localhost:3001/files/apply,mappers.yaml) - directory content in yaml
+  - [`/files/transform,transformers.head`](http://localhost:3001/files/transform,transformers.head) - 10 first files
+  - TODO: [`/files/test/artifacts/names.csv/`](http://localhost:3001/files/test/artifacts/names.csv) - 10 first lines of a file
 
 
 Handlers can be combined to create _pipes_:

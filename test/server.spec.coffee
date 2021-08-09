@@ -143,7 +143,7 @@ describe 'server', ->
 
     it 'works', ->
       r.get [
-        '/apply,mappers.os.homedir'
+        '/apply,generators.os.homedir'
         'files/data/logs/index.json'
         'generate,generators.lines'
         'map,mappers.parse'

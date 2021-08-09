@@ -3,6 +3,7 @@
 cross-env NODE_PATH=. forever --debug -v -a -w \
 	--watchIgnore 'data/**' \
 	--watchIgnore 'css/**' \
+	--watchIgnore 'docs/**' \
 	--watchIgnore 'test/artifacts/marchome/**' \
 	--watchIgnore 'node_modules/**' \
 	-c coffee server/start.coffee 2>&1 \

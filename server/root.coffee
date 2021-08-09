@@ -1,23 +1,27 @@
-{mappers, reducers} = require '../lib'
-{generators, transformers} = require '../streams'
-
+lib = require '../lib'
+streams = require '../streams'
 handlers = require './handlers'
-os = require 'os'
+
+generators = Object.assign {}, lib.generators, streams.generators.all
+mappers = lib.mappers.all
+reducers = lib.reducers.all
+transformers = streams.transformers.all
 
 root =
   handlers: handlers
-  mappers: mappers.all    # DEBUG: do we want this?
-  generators: generators.all
-  reducers: reducers.all
-  transformers: transformers.all
+  mappers: mappers    # DEBUG: do we want this?
+  generators: generators
+  reducers: reducers
+  transformers: transformers
 
   functions:
-    generators: generators.all
+    generators: generators
     mappers:
-      streams: transformers.all
-      any: mappers.all
-      asyn: mappers.all
-    reducers: reducers.all
+      streams: transformers
+      any: mappers
+      asyn: mappers
+    reducers: reducers
+    handlers: handlers
 
   metrics:
     uptime:
@@ -33,8 +37,7 @@ root =
       apply: handlers.apply
       transform: handlers.transform
     functions:
-      generators:
-        homedir: mappers.os.homedir
+      generators: generators
       mappers:
         stat: mappers.stat
       reducers:
