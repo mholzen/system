@@ -11,7 +11,7 @@ This System should be easy to discover, learn and use.
 
 Everything is a resource.  Standard REST operations are useable everywhere. (GET to describe, POST to add to a collection, etc...#TODO: elaborate)
 
-All functions are discovered and inspected at /functions.
+All functions are discovered and inspected at `/functions`.
 
 They are organized by the number of arguments they expect:
   * Generators expect no arguments: they generate data from scratch.
@@ -19,23 +19,22 @@ They are organized by the number of arguments they expect:
   * Reducers expect 2: they take one argument (the data), incorporate it into the second argument (the memo) and return result
   * Handlers expect 3: a request (the data) and a response (the memo), and a callback used to indicate its work is complete.
 
-Here is one example for each category:
+Here are examples for each category:
   - `/functions/generators/os/homedir`    - returns the home directory of the user running the server   # TODO: transform markdown with templates to avoid repeating localhost:3001
   - `/functions/mappers/increment`        - add 1 to the input
   - `/functions/reducers/count`           - count the number of items in a collection
   - `/functions/handlers/files`           - navigates directories and streams file contents
 
 Specific handlers are used to call functions on data:
-  - call: executes a resource, if it is a function
-  - apply: applies a function to data as a single object
-  - transform: applies a function to data as a collection
+  - `call`: executes a resource, if it is a function
+  - `apply`: applies a function to data as a single object
+  - `transform`: applies a function to data as a collection
 
 Examples:
   - `/functions/generators/os/homedir/call`    - executes the function os.homedir()
   - [`/files/apply,mappers.yaml`](http://localhost:3001/files/apply,mappers.yaml) - directory content in yaml
   - [`/files/transform,transformers.head`](http://localhost:3001/files/transform,transformers.head) - 10 first files
-  - TODO: [`/files/test/artifacts/names.csv/`](http://localhost:3001/files/test/artifacts/names.csv) - 10 first lines of a file
-
+  - [`/files/docs/principles.md/apply,mappers.html`](http://localhost:3001/files/docs/principles.md/apply,mappers.html) - this file
 
 Handlers can be combined to create _pipes_:
   /<resource>/<handler>/<handler>/...
@@ -46,6 +45,7 @@ Handlers can be combined to create _pipes_:
 
 Write function calls in the URL:
   /resource/apply,<function>,<argument>, ... /
+
 
 Resolve arguments from strings to objects
   foo.path:files.bar
@@ -82,6 +82,11 @@ function.coffee should use path lookup to find dir handler and pass it .json
 
 ## Extensible
 
+Files in the same directory as a resource modify the context for that resource.
+
+Examples:
+  - `/files/test/artifacts/names.ext`  - uses .ext in `/files/test/artifacts/` or above   # TODO
+
 ## Observability
 
   - TODO: visualize logs in browser
@@ -110,12 +115,19 @@ Derived concepts such as ordering, filtering become easier (TODO: justify)
 We won't get them right the first time around, so they need to be easily modifiable
 with well understood consequences
 
-## data driven, as much as possible
+### Type "expansion"
+
+Examples:
+  - `/files/test/artifacts/names.csv/transform,transformers.head` - apply `transform,transformers.lines` because of the content-type
+
+
+## Data driven
 
 - data should drive behaviour: e.g. name -> resource list -> stat list -> link link -> html
 
+- JSON schema describes everything
 
-## functional, as much as possible
+## Functional
 
 ## Tested
 
