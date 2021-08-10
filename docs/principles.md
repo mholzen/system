@@ -6,6 +6,17 @@ Here are the principles I used to develop the System Web Server.
 
 This System should be easy to discover, learn and use.
 
+### Everything is a resource
+
+The resource should describe itself.
+
+### Consistent way to find what is possible given a resource
+
+Search for ... in a resource:  `.../generate,search`
+
+Examples:
+- search for html vizualization (tables, graphs) for a csv file: `/test/artifacts/data.csv/generate,search,html`
+
 
 ## REST
 
@@ -37,15 +48,21 @@ Examples:
   - [`/files/docs/principles.md/apply,mappers.html`](http://localhost:3001/files/docs/principles.md/apply,mappers.html) - this file
 
 Handlers can be combined to create _pipes_:
+  ```
   /<resource>/<handler>/<handler>/...
+  ```
 
-  http://localhost:3001/apply,root2.functions.generators.homedir/apply,mappers.content/transform,functions.mappers.streams.count
+Arguments can be passed to a function using this syntax:
 
-  Each step is a equivalent to an http request (with full headers that can be used for type or error handling, an advantage over regular Unix pipes)
+  ```
+  /<handler>[,<argument1>[,<argument2>,...]]/
+  ```
 
-Write function calls in the URL:
-  /resource/apply,<function>,<argument>, ... /
+Example:
 
+  `http://localhost:3001/functions/generators/process/cwd/call/apply,mappers.content/map,mappers.stat/apply,mappers.resolve/map,mappers.get,size/reduce,reducers.sum`
+
+Each step is a equivalent to an http request (with full headers that can be used for type or error handling, an advantage over regular Unix pipes)
 
 Resolve arguments from strings to objects
   foo.path:files.bar
@@ -64,14 +81,17 @@ Other important handlers:
   redirect
   cache
 
-### Consistent way to find what is possible given a resource
 
-Search for ... in a resource:  `.../generate,search`
+## Configurable
 
-Examples:
-- search for html vizualization (tables, graphs) for a csv file: `/test/artifacts/data.csv/generate,search,html`
+List of imported collections define namespaces:
 
-### Data and the code to process it should be close
+`/handlers/apply/imports`
+
+
+## Extensible
+
+### Related Data and Code should be close
 
 Use code in data directories
 
@@ -80,12 +100,11 @@ Examples:
 function.coffee should use path lookup to find dir handler and pass it .json
 
 
-## Extensible
-
 Files in the same directory as a resource modify the context for that resource.
 
 Examples:
   - `/files/test/artifacts/names.ext`  - uses .ext in `/files/test/artifacts/` or above   # TODO
+  - `/files/docs/principles.md/apply,urls`  - uses urls.coffee in that directory or above   # TODO: search for an item in a list of locations (find)
 
 ## Observability
 

@@ -32,7 +32,6 @@ getResolveFn = (data)->
       r = path data, root
 
       if not r.to?
-        # log.debug {root}
         throw new NotFound data, root
 
       if r.remainder().length > 0

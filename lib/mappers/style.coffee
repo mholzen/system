@@ -13,12 +13,9 @@ links = (data)->
   r
 
 head = (html)->
-  if (h = html.querySelector 'head')
+  if (h = html.querySelector 'head')?
     return h
-  body = html.querySelector 'body'
-  if body == null
-    throw new Error "no body #{html}"
-  body.insertAdjacentHTML 'beforebegin', '<head>'
+  html.insertAdjacentHTML 'afterbegin', '<head>'
   html.querySelector 'head'
 
 style = (data, options)->
@@ -28,6 +25,6 @@ style = (data, options)->
     h.insertAdjacentHTML 'beforeend', links options
     data = html.toString()
 
-  return data
+  data
 
 module.exports = style

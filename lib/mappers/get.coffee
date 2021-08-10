@@ -1,5 +1,4 @@
 _ = require 'lodash'
-log = require '../log'
 {toArray} = require './args'
 
 learnColumn = ->

@@ -15,20 +15,20 @@ beforeEach ->
   r = request s.app
 
 describe 'server', ->
-  it '/mappers/process', ->
-    r.get '/mappers/process'
+  it '/generators/process', ->
+    r.get '/generators/process'
     .then (response)->
       expect response.text
       .includes 'uptime'
 
-  it '/apply,mappers.process.uptime', ->
-    r.get '/apply,mappers.process.uptime'
+  it '/apply,generators.process.uptime', ->
+    r.get '/apply,generators.process.uptime'
     .then (response)->
       expect parseInt response.text
       .above 0
 
-  it '/mappers/process/', ->
-    r.get '/mappers/process/'
+  it '/generators/process/', ->
+    r.get '/generators/process/'
     .then (response)->
       expect parse response.text
       .property 'length'

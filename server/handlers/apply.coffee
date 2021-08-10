@@ -21,8 +21,7 @@ resolveArg = (arg, options)->
 
   # throw new Error "can't resolve #{arg} of type '#{typeof arg}"
 
-
-module.exports = (req, res)->
+apply = (req, res)->
   if isStream req.data
     req.data = req.data.collect().toPromise Promise
 
@@ -52,5 +51,10 @@ module.exports = (req, res)->
   # log "applying mapper '#{name}' to req.data of type #{typeof req.data}: '#{log.print req.data}'"
   # req.data = mapper.apply req.data, [ req.data ]
   a.unshift req.data
-  log 'apply', {args: a}
+  # log 'apply', {args: a}
   req.data = await mapper.apply @, a
+
+Object.assign apply,
+  imports: ['mappers']
+
+module.exports = apply

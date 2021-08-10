@@ -9,10 +9,6 @@ module.exports = (req, res)->
     throw new Error "req.args expects to always be defined by #{req.params.segment}"
 
   name = args.first()
-  if not name?    # TODO: consider requiring /apply,<function> instead of /apply,mappers.<function>  to:consistent
-    args = Arguments.from req.remainder.shift()
-    name = args.first()
-
   if not name?
     throw new NotProvided 'name', mappers
 
