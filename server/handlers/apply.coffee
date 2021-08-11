@@ -27,6 +27,7 @@ apply = (req, res)->
 
   data = if isPromise req.data then await req.data else req.data
 
+  req.params.imports = [ req.root.mappers, req.root ]
   augmentArgsMapper req, res
   mapper = req.mapper
   args = req.args

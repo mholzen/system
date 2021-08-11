@@ -8,14 +8,14 @@ This System should be easy to discover, learn and use.
 
 ### Everything is a resource
 
-The resource should describe itself.
+The resource should describe itself.  Install a JSON viewer to your browser or use Firefox.
 
 ### Consistent way to find what is possible given a resource
 
-Search for ... in a resource:  `.../generate,search`
+Given a resource, search for ways it can be processed:  `/<resource>/generate,search,input`
 
 Examples:
-- search for html vizualization (tables, graphs) for a csv file: `/test/artifacts/data.csv/generate,search,html`
+- search for html vizualization (tables, graphs) for a csv file: `/files/test/artifacts/data.csv/generate,search,input`
 
 
 ## REST
@@ -27,7 +27,7 @@ All functions are discovered and inspected at `/functions`.
 They are organized by the number of arguments they expect:
   * Generators expect no arguments: they generate data from scratch.
   * Mappers expect 1: they take one argument (the input data) and produce another.  They map the input data onto the output data.
-  * Reducers expect 2: they take one argument (the data), incorporate it into the second argument (the memo) and return result
+  * Reducers expect 2: they take one argument (the data), incorporate it into the second argument (the memo) and return a new verison of the memo.
   * Handlers expect 3: a request (the data) and a response (the memo), and a callback used to indicate its work is complete.
 
 Here are examples for each category:
@@ -86,7 +86,7 @@ Other important handlers:
 
 List of imported collections define namespaces:
 
-`/handlers/apply/imports`
+  `/handlers/apply/imports`
 
 
 ## Extensible

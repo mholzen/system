@@ -21,10 +21,41 @@ getRoot = (data)->
 
   throw new NotMapped data, 'root'
 
+getImports = (data)->
+  if typeof data?.req?.imports == 'object'
+    return data.req.imports
+
+  if typeof data?.imports == 'object'
+    return data.imports
+
+  throw new NotMapped data, 'root'
+
+getter = (p)->
+  (item)->
+    try
+      return path(p, item)._get()
+    catch e
+      if not (e instanceof NotFound)
+        throw e
+
+find = (array, fn)->    # TODO: need better name than `find` (find returns the value, this returns the result of the function is not falsey)
+  for i in array
+    if (v = fn(i))
+      return v
 
 getResolveFn = (data)->
   if typeof data?.resolve == 'function'
     return data.resolve
+
+  try
+    imports = getImports data
+    return (d)->
+      # imports.find getter d
+      find imports, getter d
+
+  catch e
+    if not e instanceof NotMapped
+      throw e
 
   root = getRoot data
   if root?

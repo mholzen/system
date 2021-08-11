@@ -8,7 +8,7 @@ reduce = (data, func)->
     return data.reduce func, null
 
   if isStream data
-    return data.reduce null, func
+    return data.reduce( null, func ).collect().toPromise(Promise).then (x)->x[0]
 
   throw new NotMapped data, 'reduce function'
 

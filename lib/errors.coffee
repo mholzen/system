@@ -32,7 +32,7 @@ class NotFound extends Error
     if typeof key == 'undefined'
       super "NotFound: cannot find without a key"
     else
-      super "NotFound: cannot find '#{key}'"
+      super "NotFound: cannot find '#{log.print key}'"
     @key = key
     @sets = keys sets
     # TODO: should fail/warn if @sets is empty to:discover

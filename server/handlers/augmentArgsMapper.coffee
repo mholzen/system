@@ -11,12 +11,10 @@ module.exports = (req, res)->
   name = args.first()
   if not name?
     throw new NotProvided 'name', mappers
-
   # log 'found function', {name}
-
-  options = Object.assign {}, {req, res}
-  Object.assign req.args.options, {req, res}
   args.positional.shift() # remove name
+
+  Object.assign req.args.options, {req, res}, {imports: req.params.imports}
   req.mapper = getFunction name, req.args.options
 
   if req.mapper?.type == 'reducer'

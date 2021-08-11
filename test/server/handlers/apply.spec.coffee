@@ -75,3 +75,8 @@ describe 'servers/handlers/apply', ->
         expect res.text
         .eql '["a","b","c"]'
 
+  it 'handles imports', ->
+    r.get '/literals/123/apply,html'
+    .then (response)->
+      expect response.text
+      .includes '<p>123</p>'
