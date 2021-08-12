@@ -62,7 +62,7 @@ getResolveFn = (data)->
     return (data)->
       r = path data, root
 
-      if not r.to?
+      if not r.to?    # TODO: refactor with path._get
         throw new NotFound data, root
 
       if r.remainder().length > 0

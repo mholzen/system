@@ -4,11 +4,8 @@ Here are the principles I used to develop the System Web Server.
 
 ## Discoverable
 
-This System should be easy to discover, learn and use.
+This System should be easy to discover, learn and use.  Everything should describe itself, in a consistent manner.
 
-### Everything is a resource
-
-The resource should describe itself.  Install a JSON viewer to your browser or use Firefox.
 
 ### Consistent way to find what is possible given a resource
 
@@ -84,10 +81,11 @@ Other important handlers:
 
 ## Configurable
 
-List of imported collections define namespaces:
+A list of resources defines namespaces available to a handler:
 
   `/handlers/apply/imports`
 
+A resource can be an in-memory object, a string defining
 
 ## Extensible
 
@@ -106,13 +104,31 @@ Examples:
   - `/files/test/artifacts/names.ext`  - uses .ext in `/files/test/artifacts/` or above   # TODO
   - `/files/docs/principles.md/apply,urls`  - uses urls.coffee in that directory or above   # TODO: search for an item in a list of locations (find)
 
-## Observability
 
-  - TODO: visualize logs in browser
+### Use code on remote servers
+
+Define a remote host:
+`$ curl -X POST http://localhost:3001/handlers/apply/imports -d '{"r": "http://localhost:3002/"}'`
+
+Use it:
+`/files/foo.csv/apply,r:bar`
+
+
+
+## Observability
 
 Observe behavior, change code easily, and understand the effects of a change.
 
-Pipes provide natural points of inspection.
+Server logs in browser:
+`http://localhost:3001/generators/os/homedir/call/files/.log/generate,generators.lines/transform,transformers.tail,n:500`
+
+Log to file in JSON and in text (#TODO)
+
+Pipes provide natural points of inspection, between every handler:  `/handlers/debug`
+
+`http://localhost:3001/functions/generators/process/cwd/call/apply,mappers.content/map,mappers.stat/apply,mappers.resolve/map,mappers.get,size/reduce,reducers.sum`
+
+
 Logs can be viewed as a resource, filtered by source.
 
 

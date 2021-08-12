@@ -9,6 +9,9 @@ module.exports = (data, options)->
     # parse CSV
     return (parse data)[0]
 
+  if typeof data == 'number'
+    return Array(data)
+
   # NOTE: idempotent side effect
   if typeof options?.res?.type == 'function'
     options.res.type 'text/plain'
