@@ -4,15 +4,22 @@ Here are the principles I used to develop the System Web Server.
 
 ## Discoverable
 
-This System should be easy to discover, learn and use.  Everything should describe itself, in a consistent manner.
+This System should be easy to discover, learn and use.
 
+### Everything should describe itself
+
+  `/.../describe`
 
 ### Consistent way to find what is possible given a resource
 
-Given a resource, search for ways it can be processed:  `/<resource>/generate,search,input`
+Given a resource, search for ways it can be processed:
+  `/<resource>/generate,search,input`
+
+Implemented as:
+  `/functions/search,accepts,.files.test.artifacts.csv.describe`
 
 Examples:
-- search for html vizualization (tables, graphs) for a csv file: `/files/test/artifacts/data.csv/generate,search,input`
+- search for html vizualization (tables, graphs) for a csv file: `/files/test/artifacts/data.csv/apply,search,input`
 
 
 ## REST
@@ -115,7 +122,7 @@ Use it:
 
 
 
-## Observability
+## Observable
 
 Observe behavior, change code easily, and understand the effects of a change.
 
