@@ -9,7 +9,9 @@ isPromise = require 'is-promise'
 {Arguments} = mappers.args
 augmentArgsMapper = require './augmentArgsMapper'
 
-module.exports = (req, res, router)->
+map = (req, res, router)->
+
+  req.params.imports = [ req.root.mappers, req.root ]
   augmentArgsMapper req, res
   func = req.mapper
   args = req.args
@@ -56,3 +58,6 @@ module.exports = (req, res, router)->
       m[k] = req.data[i]
       m
     , {}
+
+module.exports = Object.assign map,
+  imports: ['mappers']

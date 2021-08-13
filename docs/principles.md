@@ -13,13 +13,10 @@ This System should be easy to discover, learn and use.
 ### Consistent way to find what is possible given a resource
 
 Given a resource, search for ways it can be processed:
-  `/<resource>/generate,search,input`
+  `/<resource>/generate,accepts`
 
 Implemented as:
   `/functions/search,accepts,.files.test.artifacts.csv.describe`
-
-Examples:
-- search for html vizualization (tables, graphs) for a csv file: `/files/test/artifacts/data.csv/apply,search,input`
 
 
 ## REST
@@ -84,6 +81,19 @@ Other important handlers:
   type
   redirect
   cache
+
+
+## Visual
+
+Easily visualize data by searching for what applies
+
+  `/<resource>/generate,accepts`
+
+Examples:
+- search for html vizualization (tables, graphs) for a csv file: `/files/test/artifacts/data.csv/apply,search,input`
+
+  * CSV should describe itself as a table
+  * an html table template should describe itself as accepting a table
 
 
 ## Configurable

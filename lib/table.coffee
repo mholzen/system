@@ -1,8 +1,7 @@
-highland = require 'highland'
-parse = require './parse'
 log = require './log'
 _ = require 'lodash'
 html = require './mappers/html'
+isLiteral = require './mappers/isLiteral'
 
 fit = (item, width)->
   item = if typeof item != 'string' then '' else item
@@ -42,25 +41,37 @@ class Table
     if newKey?
       @_keys = newKeys
 
-    if @_keys
+    if @_keys?
       return @_keys
 
     keys = {}
     for row in @datas
-      _.keys(row).forEach (key)->keys[key] = 1
-    Object.keys(keys)
+      continue if isLiteral row
+
+      _.keys(row).forEach (key)->
+        keys[key] = 1
+
+    Object.keys keys
 
   rows: (keys...)->
     rows = []
     keys = if keys.length > 0 then keys else @keys()
-    for data in @datas
-      if data instanceof Array
+
+    if keys.length == 0
+      for data in @datas
         rows.push data
-        continue
+      return rows
+
+    for data in @datas
+      # if data instanceof Array
+      #   rows.push data
+      #   continue
 
       row = []
-      for key in keys
-        row.push data[key]
+      for key, i in keys
+        index = if data instanceof Array then i else key
+        row.push data[index]
+        log {key, i, index, data, row}
       rows.push row
     rows
 
@@ -109,12 +120,21 @@ class Table
     header = @keys().map (key)-> "<th>#{key}</th>"
       .join '\n'
 
+    td = (data)->
+      "<td>#{html.body(data)}</td>"
+
+    tr = (data)->
+      if isLiteral data
+        data = [data]
+
+      "<tr>" +
+      data.map(td).join('\n') +
+      "</tr>"
+
     "<body>" +
     "<table>" +
-      "<tr>" + header +
-      "</tr>" +
-      @rows().map((row)->"<tr>" + row.map((value)->
-        "<td>#{html.body(value)}</td>").join('\n') + "</tr>").join('\n') +
+    "<tr>" + header + "</tr>" +
+    @rows().map(tr).join('\n') +
     "</table>" +
     "</body>"
 

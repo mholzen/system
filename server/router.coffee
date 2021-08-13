@@ -249,6 +249,13 @@ class TreeRouter
         req.data = req.data[first]
         continue
 
+      ownFunctions = false
+      if ownFunctions and (typeof req.data == 'object') and (typeof req.data[first] == 'function')
+        # TODO: resolve conflicts with handlers (eg. map, apply, etc...)
+        req.params._this = req.data
+        req.data = req.data[first]
+        continue
+
       find = (data, first, root) =>
         if (typeof data == 'object') and (data.hasOwnProperty first)
           # DEBUG: when first=mappers, it returns the mappers creator function

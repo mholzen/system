@@ -3,4 +3,4 @@ module.exports = (req, res)->
     throw new Error 'not a function'
 
   fn = req.data
-  req.data = fn.call @
+  req.data = fn.call req.params._this

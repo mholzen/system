@@ -1,5 +1,5 @@
 pug = require 'pug'
-string = require  'lib/mappers/string'
+string = require  '../string'
 
 class Pug
   constructor: (template)->

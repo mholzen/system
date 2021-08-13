@@ -89,6 +89,8 @@ body = (value, options)->
     value = value.toString()
 
   # from Markdown to HTML
+  if not value?
+    value = ''
   return marked value
 
 base = (href)->

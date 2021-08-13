@@ -12,7 +12,7 @@ describe 'servers/handlers/map', ->
     r = request s.app
 
   it 'map resolves converts string to function', ->
-    r.get '/literals/1,3,5/map/augment,increase,name:increment'
+    r.get '/literals/1,3,5/map,augment,increase,name:increment'
     .then (response)->
       expect response.text
       .includes '1'
