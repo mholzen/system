@@ -121,3 +121,20 @@ describe 'coffee', ()->
     a = [1,2,3]
     expect f.apply @, a
     .eql [1,2,3]
+
+  it 'destructuring assignment on function call', ->
+    f = ([a,b])->
+      return a+b
+
+    expect f [1,2]
+    .eql 3
+
+  it 'indent', ->
+    data =
+      if true
+        1
+      else
+        2
+    
+    expect data
+    .eql 1

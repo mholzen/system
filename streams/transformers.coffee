@@ -25,18 +25,6 @@ transformers =
 
     (data)-> f data, positional, options
 
-  map: (mapper, options)->
-    (inputStream)->
-      inputStream
-      .map mapper
-      .map (x)->
-        if options?.flat and isStream x
-          return x
-
-        # this probably lives in outputter
-        stream resolve.deep x
-      .parallel 10
-
   notnull: (inputStream)->
     inputStream.filter (x)->x?
 

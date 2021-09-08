@@ -13,6 +13,8 @@
 
 EventEmitter = require 'events'
 
+require 'test/lib/iterators'
+
 requireDir = require 'require-dir'
 requireDir './mappers'
 

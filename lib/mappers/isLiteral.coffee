@@ -1,4 +1,6 @@
 isLiteral = (data)->
+  if data == null
+    return true
   if ['string', 'number', 'boolean', 'symbol'].includes typeof data
     return true
 

@@ -1,46 +1,52 @@
+{asyncTraverse} = require '../../lib/iterators/traverse'
 {NotMapped} = require '../../lib/errors'
 {filepath, content} = require '../../lib/mappers'
 
-{promisify} = require 'util'
-fs = require 'fs'
+fs = require 'fs/promises'
 {join} = require 'path'
-stat = promisify fs.stat
-lstat = promisify fs.lstat
+stat = fs.stat
+lstat = fs.lstat
 stream = require '../../lib/stream'
 {create} = require './traverse'
 
-node = (start, options)->
+nodeCreator = (start, options)->
   statFunc = if options?.followSymlinks? then stat else lstat
 
-  (data, path)->
+  (data)->
     fp = filepath data, base: start
     if not fp?
       throw new NotMapped data, 'filepath'
     try
+      if fp instanceof Array
+        fp = join fp
       value = await statFunc fp
     catch e
       log.error 'stat', {e}
       value = null
 
-    path ?= []
     if value? and not value.isDirectory()
-      return [value, path]
+      return {value, edges: []}
 
-    if data?
-      path = path.concat data
-    edges = for e from await content fp
-      d = join (data ? ''), e
-      p = path.concat e
-      [d, p]
+    edges = await content fp
 
-    return [value, edges]
+    return {value, edges}
+
+
 
 module.exports = (data, options)->
-  # if options?.req?.dirname?
-  #   data = options.req.dirname
+  if options?.req?.dirname?
+    data = options.req.dirname
 
-  generator = create
-    node: node data, options
-    valueName: 'stat'
+  asyncIt = asyncTraverse '',
+    node: nodeCreator data, options
+    follow: (data, edge)-> join data, edge
 
-  generator '', options   # TODO: passing '' to indicate start is odd
+  stream (push, next)->
+    for await i from asyncIt
+      push null, i
+    push null, stream.nil
+  .map (x)->    # TODO: can this be a mapper?
+    x.stat = x.value
+    x
+
+module.exports.nodeCreator = nodeCreator

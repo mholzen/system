@@ -1,4 +1,5 @@
 lib = require '../lib'
+iterators = require '../lib/iterators'
 streams = require '../streams'
 handlers = require './handlers'
 
@@ -15,6 +16,7 @@ root =
   transformers: transformers
 
   functions:
+    iterators: iterators
     generators: generators
     mappers:
       streams: transformers

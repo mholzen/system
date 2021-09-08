@@ -1,4 +1,5 @@
 # develop faster
+  - separate logs by source sothat: test logs don't impede server logs
   - prioritize by potential for compounding effect
     - so that: more people use my software
     - by: generating source files | map augment content | grep -E '#\ TODO:.*(so|to):'
@@ -9,6 +10,7 @@
   - fail verbosily
 
 # search
+  - refactor multiple traverse into one and fix paths
   - find todos in order to sort them
     - traverse should handle async edges function
   - bookmarks

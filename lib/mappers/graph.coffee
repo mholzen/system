@@ -69,6 +69,8 @@ class SimpleGraph
 
 graph = (value, opts)->
   if typeof value == 'object'
+    if value instanceof Array
+      value = {nodes: value, edges: []}
     if value.nodes? and value.edges?
       return new SimpleGraph value
   throw new Error "cannot make graph from '#{value}"

@@ -2,6 +2,7 @@ stream = require 'lib/stream'
 mappers = require 'lib/mappers'
 generators = require  'streams/generators'
 
+require 'test/lib/reducers/get.spec'
 requireDir = require 'require-dir'
 requireDir './generators'
 

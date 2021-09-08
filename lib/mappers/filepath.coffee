@@ -21,6 +21,8 @@ filepath = (data, options)->
     if not data.startsWith '/'
       b = base options
       if b?
+        if b instanceof Array
+          b = b.join '/'
         data = join b, data
     return data
 

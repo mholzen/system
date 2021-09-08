@@ -71,7 +71,7 @@ class Table
       for key, i in keys
         index = if data instanceof Array then i else key
         row.push data[index]
-        log {key, i, index, data, row}
+        # log {key, i, index, data, row}
       rows.push row
     rows
 

@@ -9,17 +9,23 @@ describe 'content.get', ->
     a = await get {a:1}, ['a']
     expect(a).eql 1
 
+sleep = (time)->
+  return new Promise (resolve) ->
+    setTimeout resolve, time
+
 describe 'content', ->
   it 'from:file', ->
     filename = await post 'foo'
     c = await content filename
-    r = new Buffer(3)
+    r = Buffer.alloc 3
     r.asciiWrite 'foo'
     expect(c).eql r
 
   it 'from object', ->
     file = path: 'test/artifacts/3chars.txt'
     file = await resolve augment file, content
+
+    console.log file.content
     expect file
     .property 'content'
     .eql Buffer.from 'abc'

@@ -82,6 +82,7 @@ Other important handlers:
   redirect
   cache
 
+## Pipelines: code as data
 
 ## Visual
 
@@ -104,7 +105,15 @@ A list of resources defines namespaces available to a handler:
 
 A resource can be an in-memory object, a string defining
 
+Imports should define which handlers imported so that we can avoid using `apply`, for example
+
+
 ## Extensible
+
+### Post to resource to add code
+
+`POST /handlers/files/clean -x '/files/generate,generator.stats/filter,git/'
+
 
 ### Related Data and Code should be close
 
@@ -140,16 +149,19 @@ Server logs in browser:
 `http://localhost:3001/generators/os/homedir/call/files/.log/generate,generators.lines/transform,transformers.tail,n:500`
 
 Log to file in JSON and in text (#TODO)
+Logs can be viewed as a resource, filtered by source.
 
-Pipes provide natural points of inspection, between every handler:  `/handlers/debug`
+Pipes provide natural points of inspection, between every handler:  `/handlers/log`
 
 `http://localhost:3001/functions/generators/process/cwd/call/apply,mappers.content/map,mappers.stat/apply,mappers.resolve/map,mappers.get,size/reduce,reducers.sum`
 
-
-Logs can be viewed as a resource, filtered by source.
+Use a router flag `?log` to log a copy of the input data of every handler:
+Use a router flag `?debug` to save and inspect a copy of the input data of every handler:
 
 
 ## Semantics
+
+Because we know how the result was generated, we know more about a value.  e.g a sum of size can be displayed with the right unit
 
 Embrace semantics through the Principle of least astonishment (POLA)
 
@@ -173,13 +185,32 @@ Examples:
   - `/files/test/artifacts/names.csv/transform,transformers.head` - apply `transform,transformers.lines` because of the content-type
 
 
-## Data driven
+### Data driven
 
 - data should drive behaviour: e.g. name -> resource list -> stat list -> link link -> html
 
 - JSON schema describes everything
 
-## Functional
+
+
+## Functional Basic Building Blocks
+
+Use well defined groups of functions (mappers, iterators, reducers, ...).
+
+Apply those same constructs to modifying functions themselves (eg. node from isValue, isEdge)
+
+### map
+### reduce
+Examples:
+  `get` to follow a path given a starting point
+
+### filter, find
+### traverse
+
+## Language agnostic
+
+The semantics and functional building blocks should provide a system agnostic of its programming language.
+
 
 ## Tested
 

@@ -1,5 +1,7 @@
 generators = require  'streams/generators'
 
+require './generators/traverse.spec'
+
 describe 'generators', ->
   it 'content', ->
     f = generators 'content'

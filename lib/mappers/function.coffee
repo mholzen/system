@@ -21,12 +21,17 @@ getRoot = (data)->
 
   throw new NotMapped data, 'root'
 
-getImports = (data)->
+findImports = (data)->
   if typeof data?.req?.imports == 'object'
     return data.req.imports
 
   if typeof data?.imports == 'object'
     return data.imports
+
+getImports = (data)->
+  imports = findImports data
+  if imports?
+    return imports
 
   throw new NotMapped data, 'root'
 
@@ -40,7 +45,7 @@ getter = (p)->
 
 find = (array, fn)->    # TODO: need better name than `find` (find returns the value, this returns the result of the function is not falsey)
   for i in array
-    if (v = fn(i))
+    if v = fn i
       return v
 
 getResolveFn = (data)->
@@ -95,22 +100,15 @@ module.exports = (data, options)->
       data = data.slice 1
     data = data.replace /\//g, '.'
 
-    # r = _.get options.req.root, data
-    # r = path(data).follow(options?.req?.root)
-    # if not r?
-    #   throw new NotFound data, options.req.root
-
     r = resolveFn data, options
     if typeof r == 'function'
       return r
-      # args = options?.req?.args?.all()    # TODO: weird
-      # if not args?
-
-      # # log 'function.exit', {args}
-      # return (data)-> r data, args...
 
     if typeof r?.create == 'function'
-      return r.create options
+      args = options?.req?.args?.positional
+      if not args?
+        return r.create options
+      return r.create args..., options
 
     if typeof r == 'object'
       # we found an object, but we need more info

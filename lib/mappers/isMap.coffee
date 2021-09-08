@@ -12,18 +12,6 @@ same = (array, f)->
   if not f
     f = (x)->x
 
-  # result = array.next()
-  # if result.done
-  #   return undefined
-
-  # value = f result.value
-  # while not result.done
-  #   value = array.next()
-  #   if value != result.value
-  #     return false
-  #   value = f result.value
-  # return true
-
   for value of array 
     if not prevValue?
       prevValue = f value
@@ -52,6 +40,9 @@ module.exports = (data)->
       return true
 
     # log.debug 'isMap.return false'
+    return false
+
+  if typeof data == 'function'
     return false
 
   throw new Error "cannot evaluate isMap against '#{typeof data}' '#{log.print data}'"

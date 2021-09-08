@@ -73,7 +73,7 @@ body = (value, options)->
   if type?.startsWith 'image/'
     # TODO: if we get a stream, do what?
     # TODO: fix new Buffer
-    return '<div><img src="data:' + type + ';base64,' + (new Buffer(value)).toString('base64') + '"></div>'
+    return '<div><img src="data:' + type + ';base64,' + (Buffer.from(value)).toString('base64') + '"></div>'
 
   if value instanceof Buffer
     value = value.toString()
@@ -133,10 +133,11 @@ html = (data, options)->
 
 type = (data, options)->
   result = html data, options
+
   if result?
-    # NOTE: side effect
     if typeof options?.res?.type == 'function'
       options.res.type 'text/html'
+
   return result
 
 module.exports = Object.assign type, {body, outer, base}

@@ -16,14 +16,22 @@ describe 'transformers', ->
     expect(p).eql [{a:1}, {a:2}]
 
   it 'mappers.traverse', ->
-    mapper = mappers 'traverse', noPath: true
+    mapper = mappers 'traverse'
     p = 
     stream [1,[1,2,3],3]
-    .through map mapper, {flat: true}
+    .through map mapper
     .collect().toPromise Promise
 
     p = await p
-    expect(p).eql [[1],[1,2,3],[3]]
+    expect(p).eql [
+      [{value: 1, path: []}]
+      [
+        {value: 1, path: ['0']}
+        {value: 2, path: ['1']}
+        {value: 3, path: ['2']}
+      ]
+      [{value: 3, path: []}]
+    ]
 
   it 'get:string', ->
     mapper = mappers 'get', 'a'

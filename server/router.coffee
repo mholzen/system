@@ -20,17 +20,17 @@ class RewriteRouter
     @rewrites = rewrites
   process: (req, res)->
     if @rewrites?
-      # log.debug 'router.process pre-rewrite', {url: req.url}
+      # log 'router.process pre-rewrite', {url: req.url}
       if req.url of @rewrites
         req.url = @rewrites[req.url]
-      # log.debug 'router.process post-rewrite', {url: req.url}
+      # log 'router.process post-rewrite', {url: req.url}
 
     if @rewriteRules?
       for rule in @rewriteRules
         if rule[0].test req.url
-          # log.debug 'rewrite.pre', {url: req.url}
+          # log 'rewrite.pre', {url: req.url}
           req.url = req.url.replace rule[0], rule[1]
-          # log.debug 'rewrite.post', {url: req.url}
+          # log 'rewrite.post', {url: req.url}
 
 class RequestLogs
   constructor: (size)->
@@ -183,7 +183,7 @@ class TreeRouter
         # return res.end
         errorsAsData = (err, push)->
           # log.error 'stream.send', {err}
-          push null, err
+          push null, err.stack.split '\n'
         req.data = await req.data.errors(errorsAsData).collect().toPromise Promise
 
       if not isStream req.data
@@ -245,6 +245,12 @@ class TreeRouter
       if isPromise req.data
         req.data = await req.data
 
+      if req.query?.log?
+        log 'handler', {handler: first, data: req.data}
+
+      #
+      # Search for `first`
+      #
       if (typeof req.data == 'object') and (req.data.hasOwnProperty first)
         req.data = req.data[first]
         continue

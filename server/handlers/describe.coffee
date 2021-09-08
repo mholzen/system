@@ -1,4 +1,7 @@
 describeMap =
+  string: (data)->
+    length: data.length
+
   object: (data)->
     res =
       constructor: data.constructor.name
@@ -33,3 +36,6 @@ module.exports = (req, res)->
 
   if (f = describeMap[typeof input])?
     Object.assign req.data, f input
+
+  Object.assign req.data,
+    headers: res.getHeaders()

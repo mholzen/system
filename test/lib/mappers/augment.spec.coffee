@@ -1,6 +1,12 @@
 mappers = require 'lib/mappers'
 augment = mappers.augment
 
+describe 'lib/mappers/augment/create', ->
+  it 'accepts a function', ->
+    f = augment.create Object.keys
+    expect f {a:1}
+    .eql {a:1, keys: ['a']}
+
 describe 'lib/mappers/augment', ->
   it 'accepts a function', ->
     expect augment {a:1}, Object.keys

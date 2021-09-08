@@ -1,3 +1,8 @@
+###
+augment is probably a reducer, that takes an array of values to assign into an object, much like Object.assign
+
+###
+
 _ = require 'lodash'
 {NotFound} = require '../errors'
 log = require '../log'
@@ -30,6 +35,13 @@ getNewName = (name, newData, options)->
 
   identify newData
 
+create = (fn, options)->
+  (data, options)->
+    value = fn data
+    name = identify fn
+    data[name] = value
+    data
+
 augment = (data, name, options)->
   # log {data, name, options}
 
@@ -53,4 +65,4 @@ augment = (data, name, options)->
       array: data
   Object.assign data, [newName]: newData
 
-module.exports = Object.assign augment
+module.exports = Object.assign augment, {create}
