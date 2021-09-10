@@ -52,7 +52,7 @@ class NotFound extends Error
 
 class NotMapped extends Error
   constructor: (data, name)->
-    super "NotMapped: cannot use '#{log.print data}' to map to '#{name}'"
+    super "NotMapped: cannot use '#{log.print data}' to map to '#{log.print name}'"
     @data = data
     @name = name
 
