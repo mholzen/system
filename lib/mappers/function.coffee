@@ -36,17 +36,23 @@ getImports = (data)->
   throw new NotMapped data, 'root'
 
 getter = (p)->
-  (item)->
+  f = (item)->
     try
       return path(p, item)._get()
     catch e
       if not (e instanceof NotFound)
         throw e
+  f.description = "get '#{p}'"
+  f
 
 find = (array, fn)->    # TODO: need better name than `find` (find returns the value, this returns the result of the function is not falsey)
+  if not Array.isArray array
+    throw new Error "cannot find in #{log.print array} because it is not an array"
+
   for i in array
     if v = fn i
       return v
+  throw new Error "could not find '#{fn.description}' in '#{log.print array}'"
 
 getResolveFn = (data)->
   if typeof data?.resolve == 'function'
@@ -114,4 +120,4 @@ module.exports = (data, options)->
       # we found an object, but we need more info
       throw new NotFound data, Object.keys r
 
-  throw new NotMapped data, 'function'
+  throw new NotMapped "#{data} then #{r}", 'function'

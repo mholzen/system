@@ -18,8 +18,4 @@ create = (path, options)->
     # log.debug 'get', {data, path}
     _.get data, path, options?.default
 
-get = (data, path, options)->(create path, options) data
-
-get.create = create
-
-module.exports = get
+module.exports = {create}

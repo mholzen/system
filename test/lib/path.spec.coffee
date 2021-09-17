@@ -1,35 +1,59 @@
-{Path} = require  'lib/path'
+path = require  'lib/path'
 
 describe 'path', ->
   it 'find path', ->
-    path = new Path ['a'], {a:1}
-    expect path.to
+    p = path ['a'], {a:1}
+    expect p.to
     .eql 1
-    expect path.remainder()
+    expect p.remainder()
     .eql []
-    expect path.position
+    expect p.position
     .eql 0
 
-    path = new Path ['a', 'b', 'c'], {a:{b:{c:1}}}
-    expect path.to
+    p = path ['a', 'b', 'c'], {a:{b:{c:1}}}
+    expect p.to
     .eql 1
-    expect path.remainder()
+    expect p.remainder()
     .eql []
-    expect path.position
+    expect p.position
     .eql 2
 
-  it 'non object data', ->
-    path = new Path ['a'], 'data'
-    expect path.to
+  it 'does not find path', ->
+    p = path ['b'], {a:1}
+    expect p.reached()
+    .eql false
+    expect p.to
+    .eql {a: 1}
+    expect p.remainder()
+    .eql ['b']
+    expect p.position
     .eql undefined
 
-  it 'not find full path', ->
-    path = new Path ['a', 'b', 'c'], {a:{b:1}}
-    expect path.reached()
+
+  it 'non object data', ->
+    p = path ['a'], 'data'
+    expect p.reached()
     .eql false
-    expect path.position
+    expect p.to
+    .eql 'data'
+
+  it 'not find full path', ->
+    p = path ['a', 'b', 'c'], {a:{b:1}}
+    expect p.reached()
+    .eql false
+    expect p.position
     .eql 1
-    expect path.remainder()
+    expect p.remainder()
     .eql ['c']
-    expect path.to
+    expect p.to
     .eql 1
+
+  it 'handles root with array', ->
+    p = path [,'a','b'], {a:{b:1}}
+    expect p.reached()
+    .eql true
+
+  it 'handles root with string', ->
+    p = path '.a.b', {a:{b:1}}
+    expect p.reached()
+    .eql true

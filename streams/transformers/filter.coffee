@@ -4,7 +4,8 @@ mappers = require '../../lib/mappers'
 getFunction = require '../../lib/mappers/function'
 
 create = (name, options)->
-  f = mappers name
+  # f = mappers name
+  f = getFunction name, options
   stream.filter f
 
 module.exports = (inputStream, name, options)->
@@ -13,4 +14,3 @@ module.exports = (inputStream, name, options)->
   inputStream.filter f
 
 module.exports.create = create
-

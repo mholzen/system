@@ -4,6 +4,7 @@ isPromise = require 'is-promise'
 {isStream} = require '../../lib/stream'
 {NotProvided} = require '../../lib/errors'
 augmentArgsMapper = require './augmentArgsMapper'
+functionReducer = require '../../lib/reducers/function'
 
 resolveArg = (arg, options)->
   if not (arg instanceof Array)
@@ -31,6 +32,8 @@ apply = (req, res)->
   augmentArgsMapper req, res
   mapper = req.mapper
   args = req.args
+
+  # fn = req.args.positional.reduceRight functionReducer.create(req.root), null
 
   if not mapper?
     return res.type('text/plain').status(404).send "function '#{name}' not found"

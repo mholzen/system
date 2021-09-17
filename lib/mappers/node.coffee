@@ -25,7 +25,7 @@ value = (data)->
       Object.assign memo, {[key]: value}
     , {}
 
-  throw new Error "not defined #{data}"
+  throw new Error "cannot determine value from #{log.print data}"
 
 node = (data)->
   # where

@@ -1,16 +1,33 @@
+# solve problems for others
+  - finish principles.md
+    - demonstrate discoverability
+      - search functions that accept a resource description
+        - [x] refactor multiple traverse into one and fix paths
+        - [x] search functions /functions/iterate,traverse
+        - [ ] filter to accepting a resource  /functions/iterate,functions.iterators.traverse/transform,transformers.filter,mappers.accept,.foo.bar
+          - [ ] make path arguments in function calls handle async functions (eg to .files.test...)
+
+
 # develop faster
-  - separate logs by source sothat: test logs don't impede server logs
   - prioritize by potential for compounding effect
     - so that: more people use my software
-    - by: generating source files | map augment content | grep -E '#\ TODO:.*(so|to):'
+    - need: dir | traverse files | transform filter invert isGit | transform filter isSource | map augment content | filter todo | filter sothat
+      - need:
+        - [x] reduce list of function names into a function
+          - eg: f = [transform filter invert isGit].reduce functionByName, root
+        - [ ] refactor `path` into a `get` reducer.  perhaps it's not a reducer because it can stop in the middle
+        - [ ] use `get` reducer to lookup function names and pass remainder of a path to the function when a function is reached
+        - [ ] handlers to make use of the reducer
     - see: server/handlers/todos2.coffee
     - need: composable handler pipes
+  - write test code more quickly
+  - debug
+    - need: separate logs by source sothat: test logs don't impede server logs
   - keep functions short
   - minimize number of concepts
   - fail verbosily
 
 # search
-  - refactor multiple traverse into one and fix paths
   - find todos in order to sort them
     - traverse should handle async edges function
   - bookmarks
@@ -78,6 +95,9 @@
 
 
 # infrastructure, design, code quality
+  - [ ] use <mapper>.create to support a chain of mappers (e.g: transform,transformers.filter,mappers.invert,mappers.isGit)
+    - separate mappers that need a .create (mappers that return mappers) from mappers that return data
+    - reduce a list of function names into a function `[transform filter invert isGit].reduce lookup, root`
   - clean up mappers for single use and mappers for repeated use
   - define conventions to get data about arguments to a function
     Arguments.Signature
@@ -99,6 +119,10 @@
  
 
 
-# visualize
-  - show a graph inside a node
+# visualize, edit
+  - table editor
+    - either small cells (eg. spreadsheet)
+    - full width and height, (eg presentations)
+  - nested visualization
+    - eg: a table inside of a node of a graph, a graph inside another graph
   - time series

@@ -132,11 +132,11 @@ describe 'Arguments', ->
     expect(a.positional)
     .eql ['a', 'b', 'c']
 
-  it.skip 'turns value with . into positional array', ->
-    a = Arguments.from ['a.b']
+  it 'turns value with . into positional array', ->
+    a = Arguments.from ['a.b', 'd.c']
 
     expect(a.all())
-    .eql [ ['a', 'b'] ]
+    .eql [ ['a', 'b'], ['d', 'c'] ]
 
   it 'validates a signature', ->
     s = Arguments.Signature.from ['a', 'b', 'c']

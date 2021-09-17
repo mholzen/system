@@ -63,12 +63,6 @@ describe 'mappers', ->
     expect(pick {a:1, b:2, c:3}, 'a', 'b' ).eql {a:1, b:2}
     expect(pick {a:{b:1}}, 'a.b' ).eql {a:{b:1}}
 
-  it 'get', ->
-    expect(get {a:1, b:2}, 'a' ).eql 1
-    expect(get {a:1, b:2}, 'a', default:0 ).eql 1
-    expect(get {a:1, b:2}, 'c', default:0 ).eql 0
-    expect(get (new Map [['a', 1]]), 0). eql ['a',1]
-
   it 'string', ->
     expect(string 'a').eql 'a'
     expect(string a:1).eql '{"a":1}'

@@ -1,6 +1,6 @@
 # Principles
 
-Here are the principles I used to develop the System Web Server.
+Here are the principles I used to develop the System Web Server (Data Workbench?)
 
 ## Discoverable
 
@@ -8,15 +8,15 @@ This System should be easy to discover, learn and use.
 
 ### Everything should describe itself
 
-  `/.../describe`
+  `/.../describe`   # TODO: /description or /describe?
 
 ### Consistent way to find what is possible given a resource
 
 Given a resource, search for ways it can be processed:
-  `/<resource>/generate,accepts`
+  `/<resource>/description/recipients`
 
 Implemented as:
-  `/functions/search,accepts,.files.test.artifacts.csv.describe`
+  x/recipients = `/functions/search,accepts,x`
 
 
 ## REST
